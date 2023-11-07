@@ -71,3 +71,24 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## Generate Prisma Client
+
+First, to install Prisma Client:
+
+```bash
+$ pnpm install @prisma/client
+```
+
+
+To generate Prisma Client code or to re-generate Prisma Client code after changing in file schema.prisma:
+
+```bash
+$ pnpm prisma generate
+```
+
+To create tables in database or update tables/fields:
+
+```bash
+$ pnpm prisma db push
+```
