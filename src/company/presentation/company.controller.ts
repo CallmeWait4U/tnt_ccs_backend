@@ -12,7 +12,7 @@ export class CompanyController {
     readonly queryBus: QueryBus,
   ) {}
 
-  @Get('all')
+  @Get()
   async findAll(@Query() q: FindAllDTO) {
     const searchModel = q.searchModel ? JSON.parse(q.searchModel) : undefined;
     const query = new FindAllQuery(searchModel, q.offset, q.limit);
