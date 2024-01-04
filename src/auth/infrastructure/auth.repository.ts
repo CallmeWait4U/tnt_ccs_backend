@@ -1,6 +1,6 @@
-import { Inject } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Account } from '@prisma/client';
+import { Account, TypeAccount } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'libs/database.module';
 import { SignUpCommand } from '../application/command/signup.command';
@@ -16,10 +16,28 @@ export class AuthRepository {
   async createUser(command: SignUpCommand) {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(command.password, salt);
+    let type: TypeAccount;
+    switch (command.type) {
+      case 0: {
+        type = 'ADMIN';
+        break;
+      }
+      case 1: {
+        type = 'EMPLOYEE';
+        break;
+      }
+      case 2: {
+        type = 'CUSTOMER';
+        break;
+      }
+      default: {
+        return new HttpException('Wrong Type', HttpStatus.BAD_REQUEST);
+      }
+    }
     const data = {
       username: command.username,
       password: hashPassword,
-      type: command.type,
+      type: type,
     };
     await this.prisma.account.create({
       data,

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TypeAccount } from '@prisma/client';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class SignUpDTO {
   @ApiProperty({ example: 'user', type: String })
@@ -18,8 +17,8 @@ export class SignUpDTO {
   @IsNotEmpty()
   passwordConfirm: string;
 
-  @ApiProperty({ enum: ['ADMIN', 'EMPLOYEE', 'CUSTOMER'] })
-  @IsString()
+  @ApiProperty({ enum: [0, 1, 2] })
+  @IsNumber()
   @IsNotEmpty()
-  type: TypeAccount;
+  type: number;
 }

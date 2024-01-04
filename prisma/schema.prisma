@@ -34,7 +34,7 @@ model Account {
 }
 
 enum TypeAccount {
-  ADMIN    @map("ADMIN")
-  EMPLOYEE @map("EMPLOYEE")
-  CUSTOMER @map("CUSTOMER")
+  ADMIN    @map("0")
+  EMPLOYEE @map("1")
+  CUSTOMER @map("2")
 }
