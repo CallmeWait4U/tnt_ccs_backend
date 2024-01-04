@@ -12,14 +12,14 @@ export class CompanyController {
     readonly queryBus: QueryBus,
   ) {}
 
-  @Get('all')
+  @Get()
   async findAll(@Query() q: FindAllDTO) {
     const searchModel = q.searchModel ? JSON.parse(q.searchModel) : undefined;
     const query = new FindAllQuery(searchModel, q.offset, q.limit);
     return await this.queryBus.execute(query);
   }
 
-  @Post('create')
+  @Post()
   async createCompany(@Body() b: CreateCompanyDTO) {
     const command = new CreateCompanyCommand(b);
     await this.commandBus.execute(command);
