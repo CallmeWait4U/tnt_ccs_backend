@@ -22,3 +22,19 @@ model Company {
   domain                     String
   tenantId                   String
 }
+
+model Account {
+  id           String      @id @default(uuid())
+  username     String
+  password     String
+  refreshToken String?
+  accessToken  String?
+  type         TypeAccount
+  tenantId     String?
+}
+
+enum TypeAccount {
+  ADMIN    @map("ADMIN")
+  EMPLOYEE @map("EMPLOYEE")
+  CUSTOMER @map("CUSTOMER")
+}
