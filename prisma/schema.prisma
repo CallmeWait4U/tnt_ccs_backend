@@ -57,3 +57,20 @@ enum TypeAccount {
   EMPLOYEE @map("1")
   CUSTOMER @map("2")
 }
+
+
+model Customer {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid()) @unique
+  code         String 
+  name         String
+  isBusiness   Boolean
+  source       Int?
+  city         Int?
+  district     String?
+  detailAddress String?
+  email        String?
+  phoneNumber  String
+  description  String?
+  receiveMail  String?
+}

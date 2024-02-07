@@ -39,9 +39,7 @@ export class AuthRepository {
       password: hashPassword,
       type: type,
     };
-    await this.prisma.account.create({
-      data,
-    });
+    await this.prisma.account.create({ data });
   }
 
   async signIn(
