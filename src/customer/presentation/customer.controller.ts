@@ -31,7 +31,7 @@ export class CustomerController {
     @Query('limit') limit: number,
   ) {
     const Offset = !offset || offset < 0 ? 0 : offset;
-    const Limit = !limit || limit < 0 ? 0 : limit;
+    const Limit = !limit || limit < 0 ? 10 : limit;
     const query = new ListCustomerQuery(null, Offset, Limit);
     return await this.queryBus.execute(query);
   }
