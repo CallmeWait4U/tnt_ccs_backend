@@ -24,13 +24,32 @@ model Company {
 }
 
 model Account {
-  id           String      @id @default(uuid())
-  username     String
-  password     String
-  refreshToken String?
-  accessToken  String?
-  type         TypeAccount
-  tenantId     String?
+  id            String         @id @default(uuid())
+  username      String
+  password      String
+  refreshToken  String?
+  accessToken   String?
+  type          TypeAccount
+  tenantId      String?
+  permissions   Permission[]
+  notifications Notification[]
+}
+
+model Permission {
+  id             String    @id @default(uuid())
+  namePermission String
+  description    String
+  Account        Account[]
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      String?
+  title     String
+  content   String
+  time      DateTime
+  Account   Account? @relation(fields: [accountId], references: [id])
+  accountId String?
 }
 
 enum TypeAccount {

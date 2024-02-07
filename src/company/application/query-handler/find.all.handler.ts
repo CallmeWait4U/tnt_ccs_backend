@@ -1,6 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { plainToClass } from 'class-transformer';
 import { FindAllQuery } from '../query/find.all.query';
-import { FindAllResult } from '../query/result/find.all.result';
+import { FindAllItem, FindAllResult } from '../query/result/find.all.result';
 
 @QueryHandler(FindAllQuery)
 export class FindAllHandler
@@ -9,6 +10,23 @@ export class FindAllHandler
   // @Inject
   async execute(query: FindAllQuery): Promise<FindAllResult> {
     console.log(query);
-    return new FindAllResult();
+    const data = [
+      {
+        id: '1',
+        name: '1',
+      },
+      {
+        id: '2',
+        name: '2',
+      },
+      {
+        id: '3',
+        name: '3',
+      },
+    ];
+    return {
+      items: data.map((item) => plainToClass(FindAllItem, item)),
+      total: data.length,
+    };
   }
 }
