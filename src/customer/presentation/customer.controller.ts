@@ -9,6 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateCustomerCommand } from '../application/command/create.customer.command';
 import { DeleteCustomerCommand } from '../application/command/delete.command';
 import { UpdateCustomerCommand } from '../application/command/update.customer.command';
@@ -17,7 +18,7 @@ import {
   ReadCustomerQuery,
 } from '../application/query/customer.query';
 import { CreateCustomerDTO } from './dto/create.customer.dto';
-
+@ApiTags('customers')
 @Controller('customers')
 export class CustomerController {
   constructor(

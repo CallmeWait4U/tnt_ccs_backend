@@ -74,3 +74,21 @@ model Customer {
   description  String?
   receiveMail  String?
 }
+
+model Employee {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid()) @unique
+  code         String?
+  name         String
+  city         Int?
+  district     String?
+  detailAddress String?
+  email        String?
+  phoneNumber  String
+  description  String?
+  gender       Boolean
+  position     String?
+  avatar       Bytes?
+  nationality  String?
+  
+}
