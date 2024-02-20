@@ -28,6 +28,37 @@ export class CustomerRespository {
     };
 
     await this.prisma.customer.create({ data });
+    // if (command.isBusiness) {
+    //   const dataBusiness = {
+    //     name: command.name,
+    //     code: command.code,
+    //     isBusiness: command.isBusiness,
+    //     source: command.source,
+    //     city: command.city,
+    //     district: command.district,
+    //     detailAddress: command.detailAddress,
+    //     email: command.email,
+    //     phoneNumber: command.phoneNumber,
+    //     description: command.description,
+    //     receiveMail: command.receiveMail,
+    //   };
+    //   await this.prisma.business.create({ data: dataBusiness });
+    // } else {
+    //   const dataIndividual = {
+    //     name: command.name,
+    //     code: command.code,
+    //     isBusiness: command.isBusiness,
+    //     source: command.source,
+    //     city: command.city,
+    //     district: command.district,
+    //     detailAddress: command.detailAddress,
+    //     email: command.email,
+    //     phoneNumber: command.phoneNumber,
+    //     description: command.description,
+    //     receiveMail: command.receiveMail,
+    //   };
+    //   await this.prisma.individual.create({ data: dataIndividual });
+    // }
     return { uuid: data.uuid };
   }
 
@@ -50,6 +81,23 @@ export class CustomerRespository {
       data,
       where: { uuid: command.uuid },
     });
+    // if (command.isBusiness){
+    //   const dataBusiness = {
+    //     name: command.name,
+    //     code: command.code,
+    //     isBusiness: command.isBusiness,
+    //     source: command.source,
+    //     city: command.city,
+    //     district: command.district,
+    //     detailAddress: command.detailAddress,
+    //     email: command.email,
+    //     phoneNumber: command.phoneNumber,
+    //     description: command.description,
+    //     receiveMail: command.receiveMail,
+    //   };
+    //   await this.prisma.business.update({ data: dataBusiness, where: { uuid: command.uuid } });
+
+    // }
   }
   async deleteCustomer(command: DeleteCustomerCommand) {
     await this.prisma.customer.delete({ where: { uuid: command.uuid } });
