@@ -12,6 +12,7 @@ export class CustomerRespository {
   @Inject()
   private readonly prisma: PrismaService;
   async createCustomer(command: CreateCustomerCommand) {
+    const customerUUID = uuidv4().toString();
     const data = {
       name: command.name,
       code: command.code,
@@ -23,42 +24,24 @@ export class CustomerRespository {
       email: command.email,
       phoneNumber: command.phoneNumber,
       description: command.description,
-      uuid: uuidv4(),
+      uuid: customerUUID,
       receiveMail: command.receiveMail,
     };
 
     await this.prisma.customer.create({ data });
-    // if (command.isBusiness) {
-    //   const dataBusiness = {
-    //     name: command.name,
-    //     code: command.code,
-    //     isBusiness: command.isBusiness,
-    //     source: command.source,
-    //     city: command.city,
-    //     district: command.district,
-    //     detailAddress: command.detailAddress,
-    //     email: command.email,
-    //     phoneNumber: command.phoneNumber,
-    //     description: command.description,
-    //     receiveMail: command.receiveMail,
-    //   };
-    //   await this.prisma.business.create({ data: dataBusiness });
-    // } else {
-    //   const dataIndividual = {
-    //     name: command.name,
-    //     code: command.code,
-    //     isBusiness: command.isBusiness,
-    //     source: command.source,
-    //     city: command.city,
-    //     district: command.district,
-    //     detailAddress: command.detailAddress,
-    //     email: command.email,
-    //     phoneNumber: command.phoneNumber,
-    //     description: command.description,
-    //     receiveMail: command.receiveMail,
-    //   };
-    //   await this.prisma.individual.create({ data: dataIndividual });
-    // }
+    if (command.isBusiness && command?.business) {
+      const dataBusiness = {
+        ...command?.business,
+        customerUUID: customerUUID,
+      };
+      await this.prisma.business.create({
+        data: dataBusiness,
+      });
+    } else if (command?.individual) {
+      await this.prisma.individual.create({
+        data: { ...command.individual, customerUUID: customerUUID },
+      });
+    }
     return { uuid: data.uuid };
   }
 
@@ -81,23 +64,17 @@ export class CustomerRespository {
       data,
       where: { uuid: command.uuid },
     });
-    // if (command.isBusiness){
-    //   const dataBusiness = {
-    //     name: command.name,
-    //     code: command.code,
-    //     isBusiness: command.isBusiness,
-    //     source: command.source,
-    //     city: command.city,
-    //     district: command.district,
-    //     detailAddress: command.detailAddress,
-    //     email: command.email,
-    //     phoneNumber: command.phoneNumber,
-    //     description: command.description,
-    //     receiveMail: command.receiveMail,
-    //   };
-    //   await this.prisma.business.update({ data: dataBusiness, where: { uuid: command.uuid } });
-
-    // }
+    if (command.isBusiness && command?.business) {
+      await this.prisma.business.update({
+        data: command.business,
+        where: { customerUUID: command.uuid },
+      });
+    } else if (command?.individual) {
+      await this.prisma.individual.update({
+        data: command.individual,
+        where: { customerUUID: command.uuid },
+      });
+    }
   }
   async deleteCustomer(command: DeleteCustomerCommand) {
     await this.prisma.customer.delete({ where: { uuid: command.uuid } });

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsString,
+} from 'class-validator';
 
 export class CreateCustomerDTO {
   @ApiProperty({ example: 'String', type: String })
@@ -51,4 +57,33 @@ export class CreateCustomerDTO {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @IsObject()
+  business: {
+    name: string;
+    nationality?: string;
+    registrationNumber?: string;
+    taxCode?: string;
+    industryId?: string;
+    representativeName?: string;
+    representativeBirthday?: Date;
+    representativeCccd?: string;
+    representativePosition?: string;
+    representativePositon?: string;
+    representativeGender?: string;
+    representativePhone?: string;
+    representativeEmail?: string;
+  };
+  @IsObject()
+  individual: {
+    name: string;
+
+    birthday: Date;
+
+    cccd: string;
+
+    gender: string;
+
+    nationality: string;
+  };
 }
