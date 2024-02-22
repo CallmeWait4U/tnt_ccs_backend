@@ -32,7 +32,7 @@ export class CreateCustomerCommand implements ICommand {
 
     representativePosition?: string;
 
-    representativeGender?: string;
+    representativeGender?: number;
 
     representativePhone?: string;
 
@@ -45,7 +45,7 @@ export class CreateCustomerCommand implements ICommand {
 
     cccd: string;
 
-    gender: string;
+    gender: number;
 
     nationality: string;
   };

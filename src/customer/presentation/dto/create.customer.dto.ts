@@ -58,6 +58,23 @@ export class CreateCustomerDTO {
   @IsString()
   description: string;
 
+  @ApiProperty({
+    example: {
+      name: 'string',
+      nationality: 'string',
+      registrationNumber: 'string',
+      taxCode: 'string',
+      industryId: 'string',
+      representativeName: 'string',
+      representativeBirthday: new Date(),
+      representativeCccd: 'string',
+      representativePosition: 'string',
+      representativeGender: 1,
+      representativePhone: 'string',
+      representativeEmail: 'string',
+    },
+    type: Object,
+  })
   @IsObject()
   business: {
     name: string;
@@ -69,11 +86,21 @@ export class CreateCustomerDTO {
     representativeBirthday?: Date;
     representativeCccd?: string;
     representativePosition?: string;
-    representativePositon?: string;
-    representativeGender?: string;
+    representativeGender?: number;
     representativePhone?: string;
     representativeEmail?: string;
   };
+
+  @ApiProperty({
+    example: {
+      name: 'string',
+      birthday: new Date(),
+      cccd: 'string',
+      gender: 1,
+      nationality: 'string',
+    },
+    type: Object,
+  })
   @IsObject()
   individual: {
     name: string;
@@ -82,7 +109,7 @@ export class CreateCustomerDTO {
 
     cccd: string;
 
-    gender: string;
+    gender: number;
 
     nationality: string;
   };

@@ -11,7 +11,8 @@ export class ReadCustomerHandler
 
   async execute(query: ReadCustomerQuery): Promise<GetCustomerResult> {
     const customer = await this.customerQUery.readCustomer(query.uuid);
-    if (customer.isBusiness) {
+
+    if (customer?.isBusiness) {
       const business = await this.customerQUery.readBusiness(query.uuid);
       const res = new GetCustomerResult({
         business,

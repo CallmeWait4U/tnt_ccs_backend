@@ -76,10 +76,7 @@ export class BusinessResult implements IQueryResult {
   representativePosition?: string;
 
   @Expose()
-  representativePositon?: string;
-
-  @Expose()
-  representativeGender?: string;
+  representativeGender?: number;
 
   @Expose()
   representativePhone?: string;
@@ -99,7 +96,7 @@ export class IndividualResult implements IQueryResult {
   cccd: string;
 
   @Expose()
-  gender: string;
+  gender: number;
 
   @Expose()
   nationality: string;

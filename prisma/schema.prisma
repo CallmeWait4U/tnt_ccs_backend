@@ -58,11 +58,7 @@ enum TypeAccount {
   CUSTOMER @map("2")
 }
 
-enum Gender {
-  MALE   @map("0")
-  FEMALE @map("1")
-  OTHER  @map("2")
-}
+
 
 model Customer {
   id            Int         @id @default(autoincrement())
@@ -78,8 +74,8 @@ model Customer {
   phoneNumber   String
   description   String?
   receiveMail   String?
-  Business Business?
-  Individual Individual?
+  Business Business[]
+  Individual Individual[]
 }
 
 model Business {
@@ -92,8 +88,8 @@ model Business {
   representativeName     String?
   representativeBirthday DateTime?
   representativeCccd     String?
-  representativePositon  String?
-  representativeGender   Gender?
+  representativePosition  String?
+  representativeGender   Int?
   representativePhone    String?
   representativeEmail    String?
   Customer               Customer @relation(fields:[customerUUID],references:[uuid])
@@ -105,10 +101,10 @@ model Individual {
   name        String
   birthday    DateTime?
   cccd        String?
-  gender      Gender?
+  gender      Int?
   nationality String?
   Customer               Customer @relation(fields:[customerUUID],references:[uuid])
-  customerUUID  String @unique
+  customerUUID  String  @unique
 }
 
 model Employee {
