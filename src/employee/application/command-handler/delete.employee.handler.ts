@@ -4,7 +4,7 @@ import { EmployeeRespository } from 'src/employee/insfrastructure/employee.repos
 import { DeleteEmployeeCommand } from '../command/delete.employee.command';
 
 @CommandHandler(DeleteEmployeeCommand)
-export class DeleteEpmloyeeHandler
+export class DeleteEmployeeHandler
   implements ICommandHandler<DeleteEmployeeCommand, any>
 {
   @Inject()
