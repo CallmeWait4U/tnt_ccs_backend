@@ -9,7 +9,6 @@ export class FindAllHandler
 {
   // @Inject
   async execute(query: FindAllQuery): Promise<FindAllResult> {
-    console.log(query);
     const data = [
       {
         id: '1',

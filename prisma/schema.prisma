@@ -59,38 +59,69 @@ enum TypeAccount {
 }
 
 
+
 model Customer {
-  id           Int      @id @default(autoincrement())
-  uuid         String   @default(uuid()) @unique
-  code         String 
-  name         String
-  isBusiness   Boolean
-  source       Int?
-  city         Int?
-  district     String?
+  id            Int         @id @default(autoincrement())
+  uuid          String      @unique @default(uuid())
+  code          String
+  name          String
+  isBusiness    Boolean
+  source        Int?
+  city          Int?
+  district      String?
   detailAddress String?
-  email        String?
-  phoneNumber  String
-  description  String?
-  receiveMail  String?
+  email         String?
+  phoneNumber   String
+  description   String?
+  receiveMail   String?
+  Business Business[]
+  Individual Individual[]
+}
+
+model Business {
+  id                     Int       @id @default(autoincrement())
+  name                   String
+  nationality            String?
+  registrationNumber     String?
+  taxCode                String?
+  industryId             String?
+  representativeName     String?
+  representativeBirthday DateTime?
+  representativeCccd     String?
+  representativePosition  String?
+  representativeGender   Int?
+  representativePhone    String?
+  representativeEmail    String?
+  Customer               Customer @relation(fields:[customerUUID],references:[uuid])
+  customerUUID           String @unique
+}
+
+model Individual {
+  id          Int       @id @default(autoincrement())
+  name        String
+  birthday    DateTime?
+  cccd        String?
+  gender      Int?
+  nationality String?
+  Customer               Customer @relation(fields:[customerUUID],references:[uuid])
+  customerUUID  String  @unique
 }
 
 model Employee {
-  id           Int      @id @default(autoincrement())
-  uuid         String   @default(uuid()) @unique
-  code         String?
-  name         String
-  city         Int?
-  district     String?
+  id            Int     @id @default(autoincrement())
+  uuid          String  @unique @default(uuid())
+  code          String?
+  name          String
+  city          Int?
+  district      String?
   detailAddress String?
-  email        String?
-  phoneNumber  String
-  description  String?
-  gender       Boolean
-  position     String?
-  avatar       Bytes?
-  nationality  String?
-  
+  email         String?
+  phoneNumber   String
+  description   String?
+  gender        Boolean
+  position      String?
+  avatar        Bytes?
+  nationality   String?
 }
 
 model Activity {

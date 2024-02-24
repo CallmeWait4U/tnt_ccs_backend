@@ -12,6 +12,7 @@ export class CustomerRespository {
   @Inject()
   private readonly prisma: PrismaService;
   async createCustomer(command: CreateCustomerCommand) {
+    const customerUUID: string = uuidv4().toString();
     const data = {
       name: command.name,
       code: command.code,
@@ -23,11 +24,29 @@ export class CustomerRespository {
       email: command.email,
       phoneNumber: command.phoneNumber,
       description: command.description,
-      uuid: uuidv4(),
+      uuid: customerUUID,
       receiveMail: command.receiveMail,
     };
 
     await this.prisma.customer.create({ data });
+
+    if (command.isBusiness && command?.business) {
+      const dataBusiness = {
+        ...command?.business,
+
+        Customer: { connect: { uuid: customerUUID } }, // Liên kết với Customer
+      };
+
+      await this.prisma.business.create({ data: dataBusiness });
+    } else if (command?.individual) {
+      const dataIndividual = {
+        ...command.individual,
+        Customer: { connect: { uuid: customerUUID } }, // Liên kết với Customer
+      };
+
+      await this.prisma.individual.create({ data: dataIndividual });
+    }
+
     return { uuid: data.uuid };
   }
 
@@ -43,15 +62,37 @@ export class CustomerRespository {
       email: command.email,
       phoneNumber: command.phoneNumber,
       description: command.description,
-      uuid: uuidv4(),
       receiveMail: command.receiveMail,
     };
     await this.prisma.customer.update({
       data,
       where: { uuid: command.uuid },
     });
+    if (command.isBusiness && command?.business) {
+      const dataBusiness = await this.prisma.business.findFirst({
+        where: { customerUUID: command.uuid },
+      });
+      await this.prisma.business.update({
+        data: command.business,
+        where: { id: dataBusiness.id },
+      });
+    } else if (command?.individual) {
+      const dataIndividual = await this.prisma.individual.findFirst({
+        where: { customerUUID: command.uuid },
+      });
+      await this.prisma.individual.update({
+        data: command.individual,
+        where: { id: dataIndividual.id },
+      });
+    }
   }
   async deleteCustomer(command: DeleteCustomerCommand) {
+    await this.prisma.individual.deleteMany({
+      where: { customerUUID: command.uuid },
+    });
+    await this.prisma.business.deleteMany({
+      where: { customerUUID: command.uuid },
+    });
     await this.prisma.customer.delete({ where: { uuid: command.uuid } });
   }
 }

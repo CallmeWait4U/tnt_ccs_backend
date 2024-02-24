@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsString,
+} from 'class-validator';
 
 export class UpdateCustomerDTO {
   @ApiProperty({ example: 'String', type: String })
@@ -51,4 +57,60 @@ export class UpdateCustomerDTO {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @ApiProperty({
+    example: {
+      name: 'string',
+      nationality: 'string',
+      registrationNumber: 'string',
+      taxCode: 'string',
+      industryId: 'string',
+      representativeName: 'string',
+      representativeBirthday: new Date(),
+      representativeCccd: 'string',
+      representativePosition: 'string',
+      representativeGender: 1,
+      representativePhone: 'string',
+      representativeEmail: 'string',
+    },
+    type: Object,
+  })
+  @IsObject()
+  business: {
+    name: string;
+    nationality?: string;
+    registrationNumber?: string;
+    taxCode?: string;
+    industryId?: string;
+    representativeName?: string;
+    representativeBirthday?: Date;
+    representativeCccd?: string;
+    representativePosition?: string;
+    representativeGender?: number;
+    representativePhone?: string;
+    representativeEmail?: string;
+  };
+
+  @ApiProperty({
+    example: {
+      name: 'string',
+      birthday: new Date(),
+      cccd: 'string',
+      gender: 1,
+      nationality: 'string',
+    },
+    type: Object,
+  })
+  @IsObject()
+  individual: {
+    name: string;
+
+    birthday: Date;
+
+    cccd: string;
+
+    gender: number;
+
+    nationality: string;
+  };
 }
