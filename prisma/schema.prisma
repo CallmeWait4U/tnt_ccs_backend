@@ -76,6 +76,7 @@ model Customer {
   receiveMail   String?
   Business Business[]
   Individual Individual[]
+  ActivityAssign ActivityAssign[]
 }
 
 model Business {
@@ -122,6 +123,7 @@ model Employee {
   position      String?
   avatar        Bytes?
   nationality   String?
+  ActivityAssign ActivityAssign[]
 }
 
 model Activity {
@@ -129,6 +131,7 @@ model Activity {
   uuid         String   @default(uuid()) @unique
   name         String
   description  String
+  ActivityAssign ActivityAssign[]
 
 }
 
@@ -141,10 +144,10 @@ model ActivityAssign {
   doneDate     DateTime?
   status       Int
   note         String
-  Customer               Customer @relation(field:customerUUID,reference:uuid)
+  Customer               Customer @relation(fields:[customerUUID],references:[uuid])
   customerUUID           String @unique
-  Employee               Employee @relation(field:employeeUUID,reference:uuid)
+  Employee               Employee @relation(fields:[employeeUUID],references:[uuid])
   employeeUUID           String @unique
-  Activity Activity @relation(field:activityUUID,reference:uuid)
+  Activity Activity @relation(fields:[activityUUID],references:[uuid])
   activityUUID  String @unique
 }

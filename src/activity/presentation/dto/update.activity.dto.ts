@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateActivityDTO {
   @ApiProperty({ example: 'String', type: String })
@@ -15,47 +9,35 @@ export class UpdateActivityDTO {
 
   @ApiProperty({ example: 'String', type: String })
   @IsString()
-  code: string | null;
+  description: string | null;
+}
+
+export class UpdateAssignActivityDTO {
+  @ApiProperty({ example: new Date(), type: Date })
+  @IsNotEmpty()
+  @IsDate()
+  startDate: Date;
+
+  @ApiProperty({ example: new Date(), type: Date })
+  @IsNotEmpty()
+  @IsDate()
+  endDate: Date;
+
+  @ApiProperty({ example: new Date(), type: Date })
+  @IsNotEmpty()
+  @IsDate()
+  createDate: Date;
+
+  @ApiProperty({ example: new Date(), type: Date })
+  @IsDate()
+  doneDate?: Date;
 
   @ApiProperty({ example: 1, type: Number })
   @IsNotEmpty()
-  @IsNumber()
-  city: number | null;
+  @IsDate()
+  status: number;
 
   @ApiProperty({ example: 'String', type: String })
   @IsString()
-  district: string | null;
-
-  @ApiProperty({ example: 'String', type: String })
-  @IsString()
-  detailAddress: string | null;
-
-  @ApiProperty({ example: 'String', type: String })
-  @IsEmail()
-  email: string | null;
-
-  @ApiProperty({ example: 'String', type: String })
-  @IsNotEmpty()
-  @IsString()
-  phoneNumber: string;
-
-  @ApiProperty({ example: 'String', type: String })
-  @IsString()
-  description: string | null;
-
-  @ApiProperty({ example: true, type: Boolean })
-  @IsNotEmpty()
-  @IsBoolean()
-  gender: boolean;
-
-  @ApiProperty({ example: 'String', type: String })
-  @IsString()
-  position: string | null;
-
-  @ApiProperty({ type: 'string', format: 'binary' })
-  avatar: any;
-
-  @ApiProperty({ example: 'String', type: String })
-  @IsString()
-  nationality: string | null;
+  note: string;
 }

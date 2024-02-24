@@ -6,3 +6,9 @@ export class DeleteActivityCommand implements ICommand {
     Object.assign(this, data);
   }
 }
+export class DeleteAssignActivityCommand implements ICommand {
+  uuid: string;
+  constructor(readonly data: Partial<DeleteAssignActivityCommand>) {
+    Object.assign(this, data);
+  }
+}

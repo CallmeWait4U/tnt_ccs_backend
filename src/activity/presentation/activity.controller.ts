@@ -27,7 +27,7 @@ export class ActivityController {
   ) {}
 
   @Get('')
-  async listActivitys(
+  async listActivities(
     @Query('offset') offset: number,
     @Query('limit') limit: number,
   ) {
