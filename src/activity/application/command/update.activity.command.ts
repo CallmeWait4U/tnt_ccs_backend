@@ -9,14 +9,14 @@ export class UpdateActivityCommand implements ICommand {
     Object.assign(this, data);
   }
 }
-export class UpdateAssignActivityCommand implements ICommand {
+export class UpdateTaskCommand implements ICommand {
   uuid: string;
   startDate: Date;
   endDate: Date;
   createDate: Date;
   doneDate?: Date;
   status: number;
-  note: string;
+  note?: string;
   employeeUUID: string;
   activityUUID: string;
   customerUUID: string;

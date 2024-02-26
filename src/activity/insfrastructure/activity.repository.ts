@@ -4,15 +4,15 @@ import { PrismaService } from 'libs/database.module';
 import { v4 as uuidv4 } from 'uuid';
 import {
   CreateActivityCommand,
-  CreateAssignActivityCommand,
+  CreateTaskCommand,
 } from '../application/command/create.activity.command';
 import {
   DeleteActivityCommand,
-  DeleteAssignActivityCommand,
+  DeleteTaskCommand,
 } from '../application/command/delete.activity.command';
 import {
   UpdateActivityCommand,
-  UpdateAssignActivityCommand,
+  UpdateTaskCommand,
 } from '../application/command/update.activity.command';
 export class ActivityRespository {
   @Inject()
@@ -45,8 +45,16 @@ export class ActivityRespository {
   async deleteActivity(command: DeleteActivityCommand) {
     await this.prisma.activity.delete({ where: { uuid: command.uuid } });
   }
+}
 
-  async createAssignActivity(command: CreateAssignActivityCommand) {
+export class TaskRespository {
+  @Inject()
+  private readonly jwtService: JwtService;
+
+  @Inject()
+  private readonly prisma: PrismaService;
+  async createTask(command: CreateTaskCommand) {
+    console.log('command in repository', command);
     const data = {
       uuid: uuidv4(),
       createDate: command.createDate,
@@ -55,22 +63,22 @@ export class ActivityRespository {
       doneDate: command.doneDate,
       status: command.status,
       note: command.note,
-      activity: {
+      Activity: {
         connect: { uuid: command.activityUUID },
       },
-      customer: {
+      Customer: {
         connect: { uuid: command.customerUUID },
       },
-      employee: {
+      Employee: {
         connect: { uuid: command.employeeUUID },
       },
     };
 
-    await this.prisma.assignActivity.create({ data });
+    await this.prisma.task.create({ data });
     return { uuid: data.uuid };
   }
 
-  async updateAssignActivity(command: UpdateAssignActivityCommand) {
+  async updateTask(command: UpdateTaskCommand) {
     const data = {
       createDate: command.createDate,
       startDate: command.startDate,
@@ -78,22 +86,22 @@ export class ActivityRespository {
       doneDate: command.doneDate,
       status: command.status,
       note: command.note,
-      activity: {
+      Activity: {
         connect: { uuid: command.activityUUID },
       },
-      customer: {
+      Customer: {
         connect: { uuid: command.customerUUID },
       },
-      employee: {
+      Employee: {
         connect: { uuid: command.employeeUUID },
       },
     };
-    await this.prisma.activity.update({
+    await this.prisma.task.update({
       data,
       where: { uuid: command.uuid },
     });
   }
-  async deleteAssignActivity(command: DeleteAssignActivityCommand) {
-    await this.prisma.activity.delete({ where: { uuid: command.uuid } });
+  async deleteTask(command: DeleteTaskCommand) {
+    await this.prisma.task.delete({ where: { uuid: command.uuid } });
   }
 }

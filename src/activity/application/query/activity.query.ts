@@ -11,10 +11,15 @@ export class ReadActivityQuery implements IQuery {
   constructor(readonly uuid: string) {}
 }
 
-export class ListAssignActivityQuery implements IQuery {
+export class ListTaskQuery implements IQuery {
   constructor(
     readonly searchModel?: any,
+    readonly activityUUID?: string,
     readonly offset?: number,
     readonly limit?: number,
   ) {}
+}
+
+export class ReadTaskQuery implements IQuery {
+  constructor(readonly uuid: string) {}
 }

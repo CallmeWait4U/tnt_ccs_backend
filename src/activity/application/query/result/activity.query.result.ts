@@ -18,7 +18,7 @@ export class ListActivityResult implements IQueryResult {
   @Expose()
   total: number;
 }
-export class AssignActivityItem implements IQueryResult {
+export class TaskItem implements IQueryResult {
   @Expose()
   uuid: string;
 
@@ -50,9 +50,9 @@ export class AssignActivityItem implements IQueryResult {
   customerUUID: string;
 }
 
-export class ListAssignActivityResult implements IQueryResult {
+export class ListTaskResult implements IQueryResult {
   @Expose()
-  items: AssignActivityItem[];
+  items: TaskItem[];
 
   @Expose()
   total: number;

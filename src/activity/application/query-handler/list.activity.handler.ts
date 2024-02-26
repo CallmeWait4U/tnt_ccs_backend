@@ -1,7 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { ActivityQuery } from 'src/activity/insfrastructure/activity.query';
-import { ListActivityQuery } from '../query/activity.query';
+import {
+  ActivityQuery,
+  TaskQuery,
+} from 'src/activity/insfrastructure/activity.query';
+import { ListActivityQuery, ListTaskQuery } from '../query/activity.query';
 import { ListActivityResult } from '../query/result/activity.query.result';
 
 @QueryHandler(ListActivityQuery)
@@ -20,5 +23,18 @@ export class ListActivitysHandler
     listActivityResult.total = dataItems.length;
 
     return listActivityResult;
+  }
+}
+
+@QueryHandler(ListTaskQuery)
+export class ListTasksHandler implements IQueryHandler<ListTaskQuery, any> {
+  constructor(private readonly taskQuery: TaskQuery) {}
+
+  async execute(query: ListTaskQuery): Promise<any> {
+    return await this.taskQuery.listTask(
+      query.activityUUID,
+      query.offset,
+      query.limit,
+    );
   }
 }

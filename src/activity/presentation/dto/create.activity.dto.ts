@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateActivityDTO {
   @ApiProperty({ example: 'String', type: String })
@@ -12,29 +12,25 @@ export class CreateActivityDTO {
   description: string | null;
 }
 
-export class CreateAssignActivityDTO {
+export class CreateTaskDTO {
   @ApiProperty({ example: new Date(), type: Date })
   @IsNotEmpty()
-  @IsDate()
   startDate: Date;
 
   @ApiProperty({ example: new Date(), type: Date })
   @IsNotEmpty()
-  @IsDate()
   endDate: Date;
 
   @ApiProperty({ example: new Date(), type: Date })
   @IsNotEmpty()
-  @IsDate()
   createDate: Date;
 
   @ApiProperty({ example: new Date(), type: Date })
-  @IsDate()
-  doneDate?: Date;
+  doneDate: Date;
 
   @ApiProperty({ example: 1, type: Number })
   @IsNotEmpty()
-  @IsDate()
+  @IsNumber()
   status: number;
 
   @ApiProperty({ example: 'String', type: String })

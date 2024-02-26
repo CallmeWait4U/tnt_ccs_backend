@@ -10,14 +10,27 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateActivityCommand } from '../application/command/create.activity.command';
-import { DeleteActivityCommand } from '../application/command/delete.activity.command';
-import { UpdateActivityCommand } from '../application/command/update.activity.command';
+import {
+  CreateActivityCommand,
+  CreateTaskCommand,
+} from '../application/command/create.activity.command';
+import {
+  DeleteActivityCommand,
+  DeleteTaskCommand,
+} from '../application/command/delete.activity.command';
+import {
+  UpdateActivityCommand,
+  UpdateTaskCommand,
+} from '../application/command/update.activity.command';
+
 import {
   ListActivityQuery,
+  ListTaskQuery,
   ReadActivityQuery,
+  ReadTaskQuery,
 } from '../application/query/activity.query';
-import { CreateActivityDTO } from './dto/create.activity.dto';
+import { CreateActivityDTO, CreateTaskDTO } from './dto/create.activity.dto';
+import { UpdateTaskDTO } from './dto/update.activity.dto';
 @ApiTags('activities')
 @Controller('activities')
 export class ActivityController {
@@ -58,6 +71,49 @@ export class ActivityController {
   @Delete('/:uuid')
   async deleteActivity(@Param('uuid') uuid: string) {
     const command = new DeleteActivityCommand({ uuid: uuid });
+    return await this.commandBus.execute(command);
+  }
+}
+
+@ApiTags('tasks')
+@Controller('tasks')
+export class TaskController {
+  constructor(
+    readonly commandBus: CommandBus,
+    readonly queryBus: QueryBus,
+  ) {}
+
+  @Get('/listByActivity/:activityUUID')
+  async listTasks(
+    @Query('activityUUID') activityUUID: string,
+    @Query('offset') offset?: number,
+    @Query('limit') limit?: number,
+  ) {
+    const Offset = !offset || offset < 0 ? 0 : offset;
+    const Limit = !limit || limit < 0 ? 10 : limit;
+    const query = new ListTaskQuery(null, activityUUID, Offset, Limit);
+    return await this.queryBus.execute(query);
+  }
+  @Get('/:uuid')
+  async readTask(@Param('uuid') uuid: string) {
+    const query = new ReadTaskQuery(uuid);
+    return await this.queryBus.execute(query);
+  }
+
+  @Post('')
+  async createTask(@Body() body: CreateTaskDTO) {
+    console.log('DTO ', body);
+    const command = new CreateTaskCommand(body);
+    return await this.commandBus.execute(command);
+  }
+  @Put('/:uuid')
+  async updateTask(@Param('uuid') uuid: string, @Body() body: UpdateTaskDTO) {
+    const command = new UpdateTaskCommand({ ...body, uuid });
+    return await this.commandBus.execute(command);
+  }
+  @Delete('/:uuid')
+  async deleteTask(@Param('uuid') uuid: string) {
+    const command = new DeleteTaskCommand({ uuid: uuid });
     return await this.commandBus.execute(command);
   }
 }

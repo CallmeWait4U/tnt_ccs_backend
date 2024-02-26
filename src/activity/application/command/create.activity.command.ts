@@ -9,18 +9,18 @@ export class CreateActivityCommand implements ICommand {
     Object.assign(this, data);
   }
 }
-export class CreateAssignActivityCommand implements ICommand {
+export class CreateTaskCommand implements ICommand {
   uuid: string;
   startDate: Date;
   endDate: Date;
   createDate: Date;
   doneDate?: Date;
   status: number;
-  note: string;
+  note?: string;
   employeeUUID: string;
   activityUUID: string;
   customerUUID: string;
-  constructor(readonly data: Partial<CreateAssignActivityCommand>) {
+  constructor(readonly data: Partial<CreateTaskCommand>) {
     Object.assign(this, data);
   }
 }

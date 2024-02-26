@@ -1,9 +1,12 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ActivityRespository } from 'src/activity/insfrastructure/activity.repository';
+import {
+  ActivityRespository,
+  TaskRespository,
+} from 'src/activity/insfrastructure/activity.repository';
 import {
   CreateActivityCommand,
-  CreateAssignActivityCommand,
+  CreateTaskCommand,
 } from '../command/create.activity.command';
 @CommandHandler(CreateActivityCommand)
 export class CreateActivityHandler
@@ -17,14 +20,15 @@ export class CreateActivityHandler
   }
 }
 
-@CommandHandler(CreateAssignActivityCommand)
-export class CreateAssignActivityHandler
-  implements ICommandHandler<CreateAssignActivityCommand, any>
+@CommandHandler(CreateTaskCommand)
+export class CreateTaskHandler
+  implements ICommandHandler<CreateTaskCommand, any>
 {
   @Inject()
-  private readonly activityRespository: ActivityRespository;
+  private readonly taskRespository: TaskRespository;
 
-  async execute(command: CreateAssignActivityCommand): Promise<any> {
-    return await this.activityRespository.createAssignActivity(command);
+  async execute(command: CreateTaskCommand): Promise<any> {
+    console.log('command in hanler', command);
+    return await this.taskRespository.createTask(command);
   }
 }

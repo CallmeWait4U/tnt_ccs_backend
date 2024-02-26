@@ -1,9 +1,12 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ActivityRespository } from 'src/activity/insfrastructure/activity.repository';
+import {
+  ActivityRespository,
+  TaskRespository,
+} from 'src/activity/insfrastructure/activity.repository';
 import {
   DeleteActivityCommand,
-  DeleteAssignActivityCommand,
+  DeleteTaskCommand,
 } from '../command/delete.activity.command';
 
 @CommandHandler(DeleteActivityCommand)
@@ -17,14 +20,14 @@ export class DeleteEpmloyeeHandler
     return await this.activityRespository.deleteActivity(command);
   }
 }
-@CommandHandler(DeleteAssignActivityCommand)
-export class DeleteAssignActivityHandler
-  implements ICommandHandler<DeleteAssignActivityCommand, any>
+@CommandHandler(DeleteTaskCommand)
+export class DeleteTaskHandler
+  implements ICommandHandler<DeleteTaskCommand, any>
 {
   @Inject()
-  private readonly activityRespository: ActivityRespository;
+  private readonly taskRespository: TaskRespository;
 
-  async execute(command: DeleteAssignActivityCommand): Promise<void> {
-    return await this.activityRespository.deleteAssignActivity(command);
+  async execute(command: DeleteTaskCommand): Promise<void> {
+    return await this.taskRespository.deleteTask(command);
   }
 }
