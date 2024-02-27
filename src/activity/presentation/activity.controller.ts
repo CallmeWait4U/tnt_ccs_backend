@@ -42,7 +42,6 @@ export class ActivityController {
 
   @Get('')
   async listActivities(@Query() q: FindAllActivityDTO) {
-    console.log(q);
     const Offset = !q.offset || q.offset < 0 ? 0 : q.offset;
     const Limit = !q.limit || q.limit < 0 ? 10 : q.limit;
     const query = new ListActivityQuery(null, Offset, Limit);
