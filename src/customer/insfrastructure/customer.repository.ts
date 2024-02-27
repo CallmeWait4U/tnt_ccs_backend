@@ -54,7 +54,6 @@ export class CustomerRespository {
     const data = {
       name: command.name,
       code: command.code,
-      isBusiness: command.isBusiness,
       source: command.source,
       city: command.city,
       district: command.district,
@@ -68,7 +67,10 @@ export class CustomerRespository {
       data,
       where: { uuid: command.uuid },
     });
-    if (command.isBusiness && command?.business) {
+    const customer = await this.prisma.customer.findFirst({
+      where: { uuid: command.uuid },
+    });
+    if (customer.isBusiness && command?.business) {
       const dataBusiness = await this.prisma.business.findFirst({
         where: { customerUUID: command.uuid },
       });

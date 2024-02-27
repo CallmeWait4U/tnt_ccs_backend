@@ -4,7 +4,6 @@ export class UpdateCustomerCommand implements ICommand {
   uuid: string;
   code: string;
   name: string;
-  isBusiness: boolean;
   source: number;
   city: number;
   district: string;
