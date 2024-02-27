@@ -18,6 +18,7 @@ import {
   ReadCustomerQuery,
 } from '../application/query/customer.query';
 import { CreateCustomerDTO } from './dto/create.customer.dto';
+import { UpdateCustomerDTO } from './dto/update.customer.dto';
 @ApiTags('customers')
 @Controller('customers')
 export class CustomerController {
@@ -50,7 +51,7 @@ export class CustomerController {
   @Put('/:uuid')
   async updateCustomer(
     @Param('uuid') uuid: string,
-    @Body() body: CreateCustomerDTO,
+    @Body() body: UpdateCustomerDTO,
   ) {
     const command = new UpdateCustomerCommand({ ...body, uuid });
     return await this.commandBus.execute(command);
