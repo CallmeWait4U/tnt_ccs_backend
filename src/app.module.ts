@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { DatabaseModule } from 'libs/database.module';
+import { ActivityModule } from './activity/activity.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -19,6 +20,7 @@ import { ImageModule } from './image/image.module';
     CustomerModule,
     EmployeeModule,
     ImageModule,
+    ActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
