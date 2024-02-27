@@ -30,6 +30,7 @@ import {
   ReadTaskQuery,
 } from '../application/query/activity.query';
 import { CreateActivityDTO, CreateTaskDTO } from './dto/create.activity.dto';
+import { FindAllActivityDTO } from './dto/find.all.activity.dto';
 import { UpdateTaskDTO } from './dto/update.activity.dto';
 @ApiTags('activities')
 @Controller('activities')
@@ -40,12 +41,9 @@ export class ActivityController {
   ) {}
 
   @Get('')
-  async listActivities(
-    @Query('offset') offset: number,
-    @Query('limit') limit: number,
-  ) {
-    const Offset = !offset || offset < 0 ? 0 : offset;
-    const Limit = !limit || limit < 0 ? 10 : limit;
+  async listActivities(@Query() q: FindAllActivityDTO) {
+    const Offset = !q.offset || q.offset < 0 ? 0 : q.offset;
+    const Limit = !q.limit || q.limit < 0 ? 10 : q.limit;
     const query = new ListActivityQuery(null, Offset, Limit);
     return await this.queryBus.execute(query);
   }
