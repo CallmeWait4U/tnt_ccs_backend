@@ -76,6 +76,7 @@ model Customer {
   receiveMail   String?
   Business Business[]
   Individual Individual[]
+  Task Task[]
 }
 
 model Business {
@@ -122,4 +123,31 @@ model Employee {
   position      String?
   avatar        Bytes?
   nationality   String?
+  Task Task[]
+}
+
+model Activity {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid()) @unique
+  name         String
+  description  String
+  Task Task[]
+
+}
+
+model Task {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid()) @unique
+  startDate    DateTime
+  endDate      DateTime
+  createDate   DateTime
+  doneDate     DateTime?
+  status       Int
+  note         String?
+  Customer               Customer @relation(fields:[customerUUID],references:[uuid])
+  customerUUID           String
+  Employee               Employee @relation(fields:[employeeUUID],references:[uuid])
+  employeeUUID           String 
+  Activity Activity @relation(fields:[activityUUID],references:[uuid])
+  activityUUID  String 
 }
