@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Put,
   Query,
@@ -13,12 +12,16 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateCustomerCommand } from '../application/command/create.customer.command';
 import { DeleteCustomerCommand } from '../application/command/delete.command';
 import { UpdateCustomerCommand } from '../application/command/update.customer.command';
-import {
-  ListCustomerQuery,
-  ReadCustomerQuery,
-} from '../application/query/customer.query';
-import { CreateCustomerDTO } from './dto/create.customer.dto';
-import { UpdateCustomerDTO } from './dto/update.customer.dto';
+import { GetCustomersQuery } from '../application/query/get.customers.query';
+import { ReadCustomerQuery } from '../application/query/read.customer.query';
+import { CreateBusinessCustomerDTO } from './dto/create.business.customer.dto';
+import { CreateIndividualCustomerDTO } from './dto/create.individual.customer.dto';
+import { DeleteCustomerDTO } from './dto/delete.customer.dto';
+import { GetCustomersDTO } from './dto/get.customers.dto';
+import { ReadCustomerDTO } from './dto/read.customer.dto';
+import { UpdateBusinessCustomerDTO } from './dto/update.business.customer.dto';
+import { UpdateIndividualCustomerDTO } from './dto/update.individual.customer.dto';
+
 @ApiTags('customers')
 @Controller('customers')
 export class CustomerController {
@@ -27,38 +30,47 @@ export class CustomerController {
     readonly queryBus: QueryBus,
   ) {}
 
-  @Get('')
-  async listCustomers(
-    @Query('offset') offset: number,
-    @Query('limit') limit: number,
-  ) {
-    const Offset = !offset || offset < 0 ? 0 : offset;
-    const Limit = !limit || limit < 0 ? 10 : limit;
-    const query = new ListCustomerQuery(null, Offset, Limit);
-    return await this.queryBus.execute(query);
-  }
-  @Get('/:uuid')
-  async readCustomer(@Param('uuid') uuid: string) {
-    const query = new ReadCustomerQuery(uuid);
+  @Get('/all')
+  async getCustomers(@Query() q: GetCustomersDTO) {
+    const offset = !q.offset || q.offset < 0 ? 0 : q.offset;
+    const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
+    const query = new GetCustomersQuery(offset, limit, q.searchModel);
     return await this.queryBus.execute(query);
   }
 
-  @Post('')
-  async createCustomer(@Body() body: CreateCustomerDTO) {
+  @Get('/detail')
+  async readCustomer(@Query() q: ReadCustomerDTO) {
+    const query = new ReadCustomerQuery(q.uuid);
+    return await this.queryBus.execute(query);
+  }
+
+  @Post('/create/business')
+  async createBusinessCustomer(@Body() body: CreateBusinessCustomerDTO) {
     const command = new CreateCustomerCommand(body);
     return await this.commandBus.execute(command);
   }
-  @Put('/:uuid')
-  async updateCustomer(
-    @Param('uuid') uuid: string,
-    @Body() body: UpdateCustomerDTO,
-  ) {
-    const command = new UpdateCustomerCommand({ ...body, uuid });
+
+  @Post('/create/individual')
+  async createIndividualCustomer(@Body() body: CreateIndividualCustomerDTO) {
+    const command = new CreateCustomerCommand(body);
     return await this.commandBus.execute(command);
   }
-  @Delete('/:uuid')
-  async deleteCustomer(@Param('uuid') uuid: string) {
-    const command = new DeleteCustomerCommand({ uuid: uuid });
+
+  @Put('/update/business')
+  async updateBusinessCustomer(@Body() body: UpdateBusinessCustomerDTO) {
+    const command = new UpdateCustomerCommand(body);
+    return await this.commandBus.execute(command);
+  }
+
+  @Put('/update/individual')
+  async updateIndividualCustomer(@Body() body: UpdateIndividualCustomerDTO) {
+    const command = new UpdateCustomerCommand(body);
+    return await this.commandBus.execute(command);
+  }
+
+  @Delete('/delete')
+  async deleteCustomer(@Body() body: DeleteCustomerDTO) {
+    const command = new DeleteCustomerCommand(body);
     return await this.commandBus.execute(command);
   }
 }

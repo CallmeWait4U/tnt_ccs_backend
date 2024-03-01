@@ -5,12 +5,13 @@ import { DeleteCustomerCommand } from '../command/delete.command';
 
 @CommandHandler(DeleteCustomerCommand)
 export class DeleteCustomerHandler
-  implements ICommandHandler<DeleteCustomerCommand, any>
+  implements ICommandHandler<DeleteCustomerCommand, string[]>
 {
   @Inject()
   private readonly customerRespository: CustomerRespository;
 
-  async execute(command: DeleteCustomerCommand): Promise<void> {
-    return await this.customerRespository.deleteCustomer(command);
+  async execute(command: DeleteCustomerCommand): Promise<string[]> {
+    const models = await this.customerRespository.getByUUIDs(command.uuid);
+    return await this.customerRespository.delete(models);
   }
 }

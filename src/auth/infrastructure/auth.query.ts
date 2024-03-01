@@ -6,8 +6,8 @@ export class AuthQuery {
   @Inject()
   private readonly prisma: PrismaService;
 
-  async getUserById(id: string): Promise<Account | null> {
-    const res = await this.prisma.account.findFirst({ where: { id } });
+  async getUserByUUID(uuid: string): Promise<Account | null> {
+    const res = await this.prisma.account.findFirst({ where: { uuid } });
     return res ? res : null;
   }
 

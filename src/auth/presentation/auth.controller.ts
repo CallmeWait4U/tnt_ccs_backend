@@ -33,7 +33,7 @@ export class AuthController {
   @Post('sign-out')
   @UseGuards(AuthGuard('jwt'))
   async signOut(@GetUser() user: any) {
-    const command = new SignOutCommand({ id: user.id });
+    const command = new SignOutCommand({ uuid: user.uuid });
     await this.commandBus.execute(command);
   }
 
@@ -41,7 +41,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt-refresh'))
   async refreshTokensPair(@GetUser() user: any) {
     const command = new RefreshTokensPairCommand({
-      id: user.id,
+      uuid: user.uuid,
       refreshToken: user.refreshToken,
     });
     return await this.commandBus.execute(command);
