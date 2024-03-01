@@ -1,55 +1,38 @@
 import { ICommand } from '@nestjs/cqrs';
+import { Gender } from '@prisma/client';
 
 export class CreateCustomerCommand implements ICommand {
-  uuid: string;
-  code: string;
-  name: string;
   isBusiness: boolean;
   source: number;
   city: number;
   district: string;
   detailAddress: string;
-  email: string;
-  phoneNumber: string;
   description: string;
-  receiveMail: string;
-  business: {
-    name: string;
+  createdDate: Date;
+  hasAccount: boolean;
+  name: string;
+  // Business
+  businessNationality?: string;
+  registrationNumber?: string;
+  taxCode?: string;
+  industry?: string;
+  representativeName?: string;
+  representativeDayOfBirth?: Date;
+  representativeCccd?: string;
+  representativePosition?: string;
+  representativeGender?: Gender;
+  representativePhone?: string;
+  representativeEmail?: string;
+  representativeNationality?: string;
+  //Individual
+  dayOfBirth?: Date;
+  cccd?: string;
+  gender?: Gender;
+  email?: string;
+  phoneNumber?: string;
+  nationality?: string;
 
-    nationality?: string;
-
-    registrationNumber?: string;
-
-    taxCode?: string;
-
-    industryId?: string;
-
-    representativeName?: string;
-
-    representativeBirthday?: Date;
-
-    representativeCccd?: string;
-
-    representativePosition?: string;
-
-    representativeGender?: number;
-
-    representativePhone?: string;
-
-    representativeEmail?: string;
-  };
-  individual: {
-    name: string;
-
-    birthday: Date;
-
-    cccd: string;
-
-    gender: number;
-
-    nationality: string;
-  };
-  constructor(readonly data: Partial<CreateCustomerCommand>) {
+  constructor(data: Partial<CreateCustomerCommand>) {
     Object.assign(this, data);
   }
 }

@@ -14,7 +14,13 @@ export class SearchDTO {
   @IsNumber()
   readonly limit: number;
 
-  @ApiProperty({ required: false, type: String, example: '' })
+  @ApiProperty({
+    required: false,
+    type: String,
+    example: JSON.stringify(
+      '[name: {isCustom: false, value: "Thanh", valueType: "text"}]',
+    ),
+  })
   @IsOptional()
   @Type(() => String)
   @IsString()

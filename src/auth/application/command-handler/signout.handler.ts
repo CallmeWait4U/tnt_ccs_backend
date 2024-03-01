@@ -9,6 +9,6 @@ export class SignOutHandler implements ICommandHandler<SignOutCommand, void> {
   private readonly authenticationRepository: AuthRepository;
 
   async execute(command: SignOutCommand): Promise<void> {
-    await this.authenticationRepository.signOut(command.data.id);
+    await this.authenticationRepository.signOut(command.data.uuid);
   }
 }

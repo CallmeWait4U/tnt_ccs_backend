@@ -53,18 +53,18 @@ export class AuthRepository {
         accessToken: tokens.accessToken,
         refreshToken: hashRefreshToken,
       },
-      where: { id: account.id },
+      where: { uuid: account.uuid },
     });
     return tokens;
   }
 
-  async signOut(id: string): Promise<void> {
+  async signOut(uuid: string): Promise<void> {
     await this.prisma.account.update({
       data: {
         accessToken: null,
         refreshToken: null,
       },
-      where: { id },
+      where: { uuid },
     });
   }
 
@@ -77,7 +77,7 @@ export class AuthRepository {
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
       },
-      where: { id: account.id },
+      where: { uuid: account.uuid },
     });
     return tokens;
   }
@@ -88,7 +88,7 @@ export class AuthRepository {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          id: account.id,
+          uuid: account.uuid,
           username: account.username,
         },
         {
@@ -98,7 +98,7 @@ export class AuthRepository {
       ),
       this.jwtService.signAsync(
         {
-          id: account.id,
+          uuid: account.uuid,
           username: account.username,
         },
         {

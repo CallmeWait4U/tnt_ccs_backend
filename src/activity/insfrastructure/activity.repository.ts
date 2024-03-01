@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { StatusTask } from '@prisma/client';
 import { PrismaService } from 'libs/database.module';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -61,15 +62,15 @@ export class TaskRespository {
       startDate: command.startDate,
       endDate: command.endDate,
       doneDate: command.doneDate,
-      status: command.status,
+      status: StatusTask.INCOMING,
       note: command.note,
-      Activity: {
+      activity: {
         connect: { uuid: command.activityUUID },
       },
-      Customer: {
+      customer: {
         connect: { uuid: command.customerUUID },
       },
-      Employee: {
+      employee: {
         connect: { uuid: command.employeeUUID },
       },
     };
@@ -84,15 +85,15 @@ export class TaskRespository {
       startDate: command.startDate,
       endDate: command.endDate,
       doneDate: command.doneDate,
-      status: command.status,
+      status: StatusTask.COMPLETED,
       note: command.note,
-      Activity: {
+      activity: {
         connect: { uuid: command.activityUUID },
       },
-      Customer: {
+      customer: {
         connect: { uuid: command.customerUUID },
       },
-      Employee: {
+      employee: {
         connect: { uuid: command.employeeUUID },
       },
     };

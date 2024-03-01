@@ -17,7 +17,9 @@ export class RefreshTokensPairHandler
   async execute(
     command: RefreshTokensPairCommand,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.authenticationQuery.getUserById(command.data.id);
+    const user = await this.authenticationQuery.getUserByUUID(
+      command.data.uuid,
+    );
     if (
       !user ||
       !user.refreshToken ||

@@ -1,7 +1,7 @@
 import { ICommand } from '@nestjs/cqrs';
 
 export class RefreshTokensPairCommand implements ICommand {
-  id: string;
+  uuid: string;
   refreshToken: string;
 
   constructor(readonly data: Partial<RefreshTokensPairCommand>) {
