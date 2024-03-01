@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { DatabaseModule } from 'libs/database.module';
+import { FirebaseModule } from 'libs/firebase.module';
 import { ActivityModule } from './activity/activity.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,18 +9,17 @@ import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
 import { CustomerModule } from './customer/customer.module';
 import { EmployeeModule } from './employee/employee.module';
-import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
     DatabaseModule,
+    FirebaseModule,
     PrismaClient,
     CompanyModule,
     AuthModule,
     CompanyModule,
     CustomerModule,
     EmployeeModule,
-    ImageModule,
     ActivityModule,
   ],
   controllers: [AppController],
