@@ -33,13 +33,13 @@ export class EmployeeItem {
   description: string | null;
 
   @Expose()
-  gender: boolean;
+  gender: number;
 
   @Expose()
   position: string | null;
 
   @Expose()
-  avatar: Buffer | null;
+  avatar: string | null;
 
   @Expose()
   nationality: string | null;

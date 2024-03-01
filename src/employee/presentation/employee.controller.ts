@@ -7,9 +7,12 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CreateEmployeeCommand } from '../application/command/create.employee.command';
 import { DeleteEmployeeCommand } from '../application/command/delete.employee.command';
 import { UpdateEmployeeCommand } from '../application/command/update.employee.command';
@@ -18,6 +21,7 @@ import {
   ReadEmployeeQuery,
 } from '../application/query/employee.query';
 import { CreateEmployeeDTO } from './dto/create.employee.dto';
+import { UpdateEmployeeDTO } from './dto/update.employee.dto';
 @ApiTags('employees')
 @Controller('employees')
 export class EmployeeController {
@@ -43,16 +47,29 @@ export class EmployeeController {
   }
 
   @Post('')
-  async createEmployee(@Body() body: CreateEmployeeDTO) {
-    const command = new CreateEmployeeCommand(body);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('avatar'))
+  async createEmployee(
+    @Body() body: CreateEmployeeDTO,
+    @UploadedFile() avatar: Express.Multer.File,
+  ) {
+    body.gender = parseInt(body.gender.toString());
+    body.city = parseInt(body.city.toString());
+    const command = new CreateEmployeeCommand({ ...body, avatar });
     return await this.commandBus.execute(command);
   }
+
   @Put('/:uuid')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('avatar'))
   async updateEmployee(
     @Param('uuid') uuid: string,
-    @Body() body: CreateEmployeeDTO,
+    @Body() body: UpdateEmployeeDTO,
+    @UploadedFile() avatar: Express.Multer.File,
   ) {
-    const command = new UpdateEmployeeCommand({ ...body, uuid });
+    body.gender = parseInt(body.gender.toString());
+    body.city = parseInt(body.city.toString());
+    const command = new UpdateEmployeeCommand({ ...body, avatar, uuid });
     return await this.commandBus.execute(command);
   }
   @Delete('/:uuid')

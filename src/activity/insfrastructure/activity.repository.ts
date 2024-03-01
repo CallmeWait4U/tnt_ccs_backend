@@ -54,7 +54,6 @@ export class TaskRespository {
   @Inject()
   private readonly prisma: PrismaService;
   async createTask(command: CreateTaskCommand) {
-    console.log('command in repository', command);
     const data = {
       uuid: uuidv4(),
       createDate: command.createDate,

@@ -119,9 +119,9 @@ model Employee {
   email         String?
   phoneNumber   String
   description   String?
-  gender        Boolean
+  gender        Int
   position      String?
-  avatar        Bytes?
+  avatar        String?
   nationality   String?
   Task Task[]
 }

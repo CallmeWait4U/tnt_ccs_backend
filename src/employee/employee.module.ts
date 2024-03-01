@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 import { CreateEmployeeHandler } from './application/command-handler/create.employee.handler';
 import { DeleteEmployeeHandler } from './application/command-handler/delete.employee.handler';
 import { UpdateEmployeeHandler } from './application/command-handler/update.employee.handler';
@@ -22,7 +23,7 @@ const infrastructure = [EmployeeRespository, EmployeeQuery];
 const domain = [];
 
 @Module({
-  imports: [CqrsModule],
+  imports: [CqrsModule, NestjsFormDataModule],
   providers: [...application, ...infrastructure, ...domain],
   controllers: [EmployeeController],
 })

@@ -11,9 +11,10 @@ export class UpdateEmployeeCommand implements ICommand {
   phoneNumber: string;
   description: string;
   receiveMail: string;
-  gender: boolean;
+  gender: number;
   position: string;
-  avatar: Buffer; // Thêm thuộc tính avatar với kiểu Buffer
+  isChangeImage: boolean;
+  avatar: Express.Multer.File; // Thêm thuộc tính avatar với kiểu Buffer
   nationality: string;
   constructor(readonly data: Partial<UpdateEmployeeCommand>) {
     Object.assign(this, data);

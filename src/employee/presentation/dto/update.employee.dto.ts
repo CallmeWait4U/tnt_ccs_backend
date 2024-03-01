@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsBoolean,
   IsEmail,
   IsNotEmpty,
-  IsNumber,
+  IsNumberString,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -15,12 +15,12 @@ export class UpdateEmployeeDTO {
 
   @ApiProperty({ example: 'String', type: String })
   @IsString()
-  code: string | null;
+  code: string;
 
   @ApiProperty({ example: 1, type: Number })
+  @IsNumberString()
   @IsNotEmpty()
-  @IsNumber()
-  city: number | null;
+  city: number;
 
   @ApiProperty({ example: 'String', type: String })
   @IsString()
@@ -30,7 +30,7 @@ export class UpdateEmployeeDTO {
   @IsString()
   detailAddress: string | null;
 
-  @ApiProperty({ example: 'String', type: String })
+  @ApiProperty({ example: 'example@gmail.com', type: String })
   @IsEmail()
   email: string | null;
 
@@ -43,17 +43,22 @@ export class UpdateEmployeeDTO {
   @IsString()
   description: string | null;
 
-  @ApiProperty({ example: true, type: Boolean })
+  @ApiProperty({ example: 1, type: Number })
+  @IsNumberString()
   @IsNotEmpty()
-  @IsBoolean()
-  gender: boolean;
+  gender: number;
 
   @ApiProperty({ example: 'String', type: String })
   @IsString()
   position: string | null;
 
-  @ApiProperty({ type: 'string', format: 'binary' })
-  avatar: any;
+  @ApiProperty({ example: true, type: Boolean })
+  @IsNotEmpty()
+  isChangeImage: boolean;
+
+  @ApiProperty({ required: false, type: 'string', format: 'binary' })
+  @IsOptional()
+  avatar: Express.Multer.File;
 
   @ApiProperty({ example: 'String', type: String })
   @IsString()

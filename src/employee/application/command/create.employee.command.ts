@@ -11,9 +11,9 @@ export class CreateEmployeeCommand implements ICommand {
   phoneNumber: string;
   description: string;
   receiveMail: string;
-  gender: boolean;
+  gender: number;
   position: string;
-  avatar: Buffer; // Thêm thuộc tính avatar với kiểu Buffer
+  avatar: Express.Multer.File; // Thêm thuộc tính avatar với kiểu Buffer
   nationality: string;
   constructor(readonly data: Partial<CreateEmployeeCommand>) {
     Object.assign(this, data);
