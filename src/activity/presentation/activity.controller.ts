@@ -100,7 +100,6 @@ export class TaskController {
 
   @Post('')
   async createTask(@Body() body: CreateTaskDTO) {
-    console.log('DTO ', body);
     const command = new CreateTaskCommand(body);
     return await this.commandBus.execute(command);
   }
