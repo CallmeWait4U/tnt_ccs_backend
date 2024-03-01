@@ -28,7 +28,6 @@ export class CreateTaskHandler
   private readonly taskRespository: TaskRespository;
 
   async execute(command: CreateTaskCommand): Promise<any> {
-    console.log('command in hanler', command);
     return await this.taskRespository.createTask(command);
   }
 }

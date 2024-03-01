@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { DatabaseModule } from 'libs/database.module';
+import { FirebaseModule } from 'libs/firebase.module';
 import { UtilityModule } from 'libs/utility.module';
 import { AccountModule } from './account/account.module';
 import { ActivityModule } from './activity/activity.module';
@@ -15,6 +16,7 @@ import { TestModule } from './test/test.module';
   imports: [
     UtilityModule,
     DatabaseModule,
+    FirebaseModule,
     PrismaClient,
     CompanyModule,
     AuthModule,
