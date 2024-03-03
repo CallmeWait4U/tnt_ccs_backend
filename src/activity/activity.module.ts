@@ -1,61 +1,50 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import {
-  CreateActivityHandler,
-  CreateTaskHandler,
-} from './application/command-handler/create.activity.handler';
-import {
-  DeleteEpmloyeeHandler,
-  DeleteTaskHandler,
-} from './application/command-handler/delete.activity.handler';
-import {
-  UpdateActivityHandler,
-  UpdateTaskHandler,
-} from './application/command-handler/update.activity.handler';
-import {
-  ListActivitysHandler,
-  ListTasksHandler,
-} from './application/query-handler/list.activity.handler';
-import {
-  ReadActivityHandler,
-  ReadTaskHandler,
-} from './application/query-handler/read.activity.handler';
-import { ActivityQuery, TaskQuery } from './insfrastructure/activity.query';
-import {
-  ActivityRespository,
-  TaskRespository,
-} from './insfrastructure/activity.repository';
-import {
-  ActivityController,
-  TaskController,
-} from './presentation/activity.controller';
+import { CreateActivityHandler } from './application/activity/command-handler/create.activity.handler';
+import { DeleteEpmloyeeHandler } from './application/activity/command-handler/delete.activity.handler';
+import { UpdateActivityHandler } from './application/activity/command-handler/update.activity.handler';
+import { GetActivitiesHandler } from './application/activity/query-handler/get.activities.handler';
+import { ReadActivityHandler } from './application/activity/query-handler/read.activity.handler';
+import { CreateTaskHandler } from './application/task/command-handler/create.task.handler';
+import { DeleteTaskHandler } from './application/task/command-handler/delete.task.handler';
+import { GetTasksHandler } from './application/task/query-handler/get.tasks.handler';
+import { ReadTaskHandler } from './application/task/query-handler/read.task.handler';
+import { ActivityDomain } from './domain/activity/activity.domain';
+import { TaskDomain } from './domain/task/task.domain';
+import { ActivityFactory } from './insfrastructure/activity/activity.factory';
+import { ActivityQuery } from './insfrastructure/activity/activity.query';
+import { ActivityRespository } from './insfrastructure/activity/activity.repository';
+import { TaskFactory } from './insfrastructure/task/task.factory';
+import { TaskQuery } from './insfrastructure/task/task.query';
+import { TaskRepository } from './insfrastructure/task/task.repository';
+import { ActivityController } from './presentation/activity.controller';
 
 const application = [
-  ListActivitysHandler,
+  GetActivitiesHandler,
   CreateActivityHandler,
   UpdateActivityHandler,
   DeleteEpmloyeeHandler,
   ReadActivityHandler,
-
-  ListTasksHandler,
+  GetTasksHandler,
   ReadTaskHandler,
   CreateTaskHandler,
-  UpdateTaskHandler,
   DeleteTaskHandler,
 ];
 
 const infrastructure = [
+  ActivityFactory,
   ActivityRespository,
   ActivityQuery,
-  TaskRespository,
+  TaskFactory,
+  TaskRepository,
   TaskQuery,
 ];
 
-const domain = [];
+const domain = [ActivityDomain, TaskDomain];
 
 @Module({
   imports: [CqrsModule],
   providers: [...application, ...infrastructure, ...domain],
-  controllers: [ActivityController, TaskController],
+  controllers: [ActivityController],
 })
 export class ActivityModule {}
