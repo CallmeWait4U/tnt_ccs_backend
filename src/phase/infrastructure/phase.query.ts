@@ -54,20 +54,28 @@ export class PhaseQuery {
         skip: Number(offset),
         take: Number(limit),
         where: { AND: conditions },
-
+        include: {
+          _count: {
+            select: { customers: true },
+          },
+        },
         orderBy: [{ id: 'asc' }],
       }),
       this.prisma.phase.count({ where: { AND: conditions } }),
     ]);
+
     return {
-      items: data.map((i) => {
-        return plainToClass(
+      items: data.map((phase) => {
+        const customersNumber = phase._count.customers;
+        const phaseItem = plainToClass(
           PhaseItem,
           {
-            ...i,
+            ...phase,
+            customersNumber,
           },
           { excludeExtraneousValues: true },
         );
+        return phaseItem;
       }),
       total,
     };
@@ -76,15 +84,21 @@ export class PhaseQuery {
   async readPhase(uuid: string): Promise<ReadPhaseResult> {
     const res = await this.prisma.phase.findUnique({
       where: { uuid },
+      include: {
+        _count: {
+          select: { customers: true },
+        },
+      },
     });
     if (res) {
+      const customersNumber = res._count.customers;
       return plainToClass(
         ReadPhaseResult,
-        { ...res },
+        { ...res, customersNumber },
         { excludeExtraneousValues: true },
       );
     }
-    return {} as ReadPhaseResult;
+    return null;
   }
 
   async listPhaseOptions(): Promise<ListPhaseOptionsResult> {
@@ -94,7 +108,7 @@ export class PhaseQuery {
       }),
       this.prisma.phase.count(),
     ]);
-    const result = {
+    return {
       items: data.map((i) => {
         return plainToClass(
           PhaseOptionItem,
@@ -106,7 +120,5 @@ export class PhaseQuery {
       }),
       total,
     };
-    console.log(result);
-    return result;
   }
 }

@@ -13,4 +13,7 @@ export class ReadPhaseResult implements IQueryResult {
 
   @Expose()
   description: string;
+
+  @Expose()
+  customersNumber: number;
 }

@@ -13,6 +13,9 @@ export class PhaseItem {
 
   @Expose()
   description: string;
+
+  @Expose()
+  customersNumber: number;
 }
 
 export class GetPhasesResult implements IQueryResult {
