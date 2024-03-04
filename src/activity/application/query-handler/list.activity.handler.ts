@@ -14,15 +14,7 @@ export class ListActivitysHandler
   constructor(private readonly listActivityQuery: ActivityQuery) {}
 
   async execute(query: ListActivityQuery): Promise<ListActivityResult> {
-    const dataItems = await this.listActivityQuery.listActivity(
-      query.offset,
-      query.limit,
-    );
-    const listActivityResult = new ListActivityResult();
-    listActivityResult.items = dataItems;
-    listActivityResult.total = dataItems.length;
-
-    return listActivityResult;
+    return await this.listActivityQuery.listActivity(query.offset, query.limit);
   }
 }
 

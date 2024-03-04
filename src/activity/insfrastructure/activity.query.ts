@@ -1,26 +1,60 @@
 import { Inject } from '@nestjs/common';
-import { Activity } from '@prisma/client';
+import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
+import {
+  ActivityItem,
+  ListActivityResult,
+} from '../application/query/result/activity.query.result';
 
 export class ActivityQuery {
   @Inject()
   private readonly prisma: PrismaService;
 
-  async listActivity(offset: number, limit: number): Promise<Activity[]> {
-    const skip = offset * limit;
-    const res = await this.prisma.activity.findMany({
-      take: parseInt(limit.toString()),
-      skip: skip,
-    });
-
-    return res;
+  async listActivity(
+    offset: number,
+    limit: number,
+  ): Promise<ListActivityResult> {
+    const [data, total] = await Promise.all([
+      this.prisma.activity.findMany({
+        skip: Number(offset),
+        take: Number(limit),
+        include: {
+          _count: {
+            select: { tasks: true },
+          },
+        },
+        orderBy: [{ id: 'asc' }],
+      }),
+      this.prisma.account.count(),
+    ]);
+    return {
+      items: data.map((item) => {
+        return plainToClass(
+          ActivityItem,
+          { ...item, tasksCount: item._count.tasks },
+          { excludeExtraneousValues: true },
+        );
+      }),
+      total,
+    };
   }
 
-  async readActivity(uuid: string): Promise<Activity> {
+  async readActivity(uuid: string): Promise<ActivityItem> {
     const res = await this.prisma.activity.findFirst({
       where: { uuid: uuid },
+      include: {
+        _count: {
+          select: { tasks: true },
+        },
+      },
     });
-    return res;
+    if (res)
+      return plainToClass(
+        ActivityItem,
+        { ...res, tasksCount: res._count.tasks },
+        { excludeExtraneousValues: true },
+      );
+    return {} as ActivityItem;
   }
 }
 

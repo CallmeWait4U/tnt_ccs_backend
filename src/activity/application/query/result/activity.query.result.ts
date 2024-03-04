@@ -10,6 +10,9 @@ export class ActivityItem {
 
   @Expose()
   description: string | null;
+
+  @Expose()
+  tasksCount: number;
 }
 export class ListActivityResult implements IQueryResult {
   @Expose()
