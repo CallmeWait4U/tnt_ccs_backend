@@ -2,6 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 
 export class UpdateActivityDTO {
+  @ApiProperty({ example: 'uuid', type: String })
+  @IsNotEmpty()
+  @IsString()
+  uuid: string;
+
   @ApiProperty({ example: 'String', type: String })
   @IsNotEmpty()
   @IsString()

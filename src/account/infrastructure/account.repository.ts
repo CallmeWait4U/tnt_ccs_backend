@@ -23,8 +23,6 @@ export class AccountRepository {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { uuid, employee, customer, ...data } = account;
     await this.prisma.account.update({ data, where: { uuid } });
-    // const { uuid, ...dataEmployee } = employee;
-    // console.log(employee);
     await this.prisma.employee.update({
       data: {
         ...employee,

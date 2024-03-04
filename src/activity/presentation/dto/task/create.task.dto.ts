@@ -1,16 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-
-export class CreateActivityDTO {
-  @ApiProperty({ example: 'String', type: String })
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
-  @ApiProperty({ example: 'String', type: String })
-  @IsString()
-  description: string | null;
-}
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateTaskDTO {
   @ApiProperty({ example: new Date(), type: Date })
@@ -25,23 +14,25 @@ export class CreateTaskDTO {
   @IsNotEmpty()
   createDate: Date;
 
-  @ApiProperty({ required: false, example: new Date(), type: Date })
-  @IsOptional()
-  doneDate: Date;
-
-  @ApiProperty({ example: 1, type: Number })
-  @IsNotEmpty()
-  @IsNumber()
-  status: number;
-
   @ApiProperty({ required: false, example: 'String', type: String })
   @IsOptional()
+  @IsString()
   note: string;
 
-  @ApiProperty({ example: 'String', type: String })
-  @IsNotEmpty()
-  @IsString()
-  employeeUUID: string;
+  @ApiProperty({ example: false, type: Boolean })
+  @IsOptional()
+  @IsBoolean()
+  autoAnnounceCus: boolean;
+
+  @ApiProperty({ example: false, type: Boolean })
+  @IsOptional()
+  @IsBoolean()
+  autoAnnounceEmp: boolean;
+
+  //   @ApiProperty({ example: ['String'], type: [String] })
+  //   @IsNotEmpty({ each: true })
+  //   @IsArray()
+  //   employeeUUID: string[];
 
   @ApiProperty({ example: 'String', type: String })
   @IsNotEmpty()
