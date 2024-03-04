@@ -50,15 +50,12 @@ dependencies:
   helmet:
     specifier: ^7.0.0
     version: 7.0.0
-<<<<<<< HEAD
   moment:
     specifier: ^2.30.1
     version: 2.30.1
-=======
   multer:
     specifier: 1.4.5-lts.1
     version: 1.4.5-lts.1
->>>>>>> c35f0bfba3d8ae6b5a62c4bf851cf2cd744ae4a2
   passport-jwt:
     specifier: ^4.0.1
     version: 4.0.1

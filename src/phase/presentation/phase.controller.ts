@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Query,
@@ -13,6 +14,7 @@ import { CreatePhaseCommand } from '../application/command/create.phase.command'
 import { DeletePhaseCommand } from '../application/command/delete.phase.command';
 import { UpdatePhaseCommand } from '../application/command/update.phase.command';
 import { GetPhasesQuery } from '../application/query/get.phase.query';
+import { ListPhaseOptionsQuery } from '../application/query/list.phase.options.query';
 import { ReadPhaseQuery } from '../application/query/read.phase.query';
 import { CreatePhaseDTO } from './dto/create.phase.dto';
 import { DeletePhaseDTO } from './dto/delete.phase.dto';
@@ -37,7 +39,7 @@ export class PhaseController {
   }
 
   @Get('/:uuid')
-  async readPhase(@Query() q: ReadPhaseDTO) {
+  async readPhase(@Param() q: ReadPhaseDTO) {
     const query = new ReadPhaseQuery(q.uuid);
     return await this.queryBus.execute(query);
   }
@@ -49,14 +51,20 @@ export class PhaseController {
   }
 
   @Put('/:uuid')
-  async updatePhase(@Body() body: UpdatePhaseDTO) {
-    const command = new UpdatePhaseCommand(body);
+  async updatePhase(@Param('uuid') uuid: string, @Body() body: UpdatePhaseDTO) {
+    const command = new UpdatePhaseCommand({ ...body, uuid });
     return await this.commandBus.execute(command);
   }
 
   @Delete('/:uuid')
-  async DeleteCustomerCommand(@Body() body: DeletePhaseDTO) {
+  async deleteCustomerCommand(@Param() body: DeletePhaseDTO) {
     const command = new DeletePhaseCommand(body);
     return await this.commandBus.execute(command);
+  }
+
+  @Get('/listPhaseOptions')
+  async listPhaseOptions() {
+    const query = new ListPhaseOptionsQuery();
+    return await this.queryBus.execute(query);
   }
 }

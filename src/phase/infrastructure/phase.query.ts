@@ -6,6 +6,10 @@ import {
   GetPhasesResult,
   PhaseItem,
 } from '../application/query/result/get.phase.query.result';
+import {
+  ListPhaseOptionsResult,
+  PhaseOptionItem,
+} from '../application/query/result/list.phase.options.query.result';
 import { ReadPhaseResult } from '../application/query/result/read.phase.query.result';
 
 export class PhaseQuery {
@@ -29,13 +33,13 @@ export class PhaseQuery {
         if (item.isCustom) {
           const { value } = this.util.buildSearch(item);
           if (prop === 'name') {
-            conditions.push({ employee: { some: { name: value } } });
+            conditions.push({ name: { some: { name: value } } });
           }
           if (prop === 'priority') {
-            conditions.push({ priority: { some: { code: value } } });
+            conditions.push({ priority: { some: { priority: value } } });
           }
           if (prop === 'description') {
-            conditions.push({ customer: { some: { name: value } } });
+            conditions.push({ description: { some: { description: value } } });
           }
         } else {
           const { value } = this.util.buildSearch(item);
@@ -61,8 +65,6 @@ export class PhaseQuery {
           PhaseItem,
           {
             ...i,
-            ...i.employee,
-            ...i.customer,
           },
           { excludeExtraneousValues: true },
         );
@@ -74,9 +76,6 @@ export class PhaseQuery {
   async readPhase(uuid: string): Promise<ReadPhaseResult> {
     const res = await this.prisma.phase.findUnique({
       where: { uuid },
-      include: {
-        employee: true,
-      },
     });
     if (res) {
       return plainToClass(
@@ -86,5 +85,26 @@ export class PhaseQuery {
       );
     }
     return {} as ReadPhaseResult;
+  }
+
+  async listPhaseOptions(): Promise<ListPhaseOptionsResult> {
+    const [data, total] = await Promise.all([
+      this.prisma.phase.findMany({
+        orderBy: [{ id: 'asc' }],
+      }),
+      this.prisma.phase.count(),
+    ]);
+    return {
+      items: data.map((i) => {
+        return plainToClass(
+          PhaseOptionItem,
+          {
+            ...i,
+          },
+          { excludeExtraneousValues: true },
+        );
+      }),
+      total,
+    };
   }
 }
