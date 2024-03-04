@@ -94,7 +94,7 @@ export class PhaseQuery {
       }),
       this.prisma.phase.count(),
     ]);
-    return {
+    const result = {
       items: data.map((i) => {
         return plainToClass(
           PhaseOptionItem,
@@ -106,5 +106,7 @@ export class PhaseQuery {
       }),
       total,
     };
+    console.log(result);
+    return result;
   }
 }

@@ -16,6 +16,7 @@ import { UpdatePhaseCommand } from '../application/command/update.phase.command'
 import { GetPhasesQuery } from '../application/query/get.phase.query';
 import { ListPhaseOptionsQuery } from '../application/query/list.phase.options.query';
 import { ReadPhaseQuery } from '../application/query/read.phase.query';
+import { ListPhaseOptionsResult } from '../application/query/result/list.phase.options.query.result';
 import { CreatePhaseDTO } from './dto/create.phase.dto';
 import { DeletePhaseDTO } from './dto/delete.phase.dto';
 import { GetPhasesDTO } from './dto/get.phase.dto';
@@ -62,8 +63,9 @@ export class PhaseController {
     return await this.commandBus.execute(command);
   }
 
-  @Get('/listPhaseOptions')
-  async listPhaseOptions() {
+  @Get('/listPhaseOptions/:uuid')
+  async listPhaseOptions(): Promise<ListPhaseOptionsResult> {
+    console.log('listPhaseOptions controller');
     const query = new ListPhaseOptionsQuery();
     return await this.queryBus.execute(query);
   }

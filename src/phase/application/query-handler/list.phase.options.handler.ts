@@ -10,6 +10,7 @@ export class ListPhaseOptionsHandler
   constructor(private readonly phaseQuery: PhaseQuery) {}
 
   async execute(): Promise<ListPhaseOptionsResult> {
+    console.log('listPhaseOptions handler');
     return await this.phaseQuery.listPhaseOptions();
   }
 }
