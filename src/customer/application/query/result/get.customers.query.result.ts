@@ -12,6 +12,9 @@ export class CustomerItem {
   code: string;
 
   @Expose()
+  isBusiness: boolean;
+
+  @Expose()
   email: string;
 
   @Expose()

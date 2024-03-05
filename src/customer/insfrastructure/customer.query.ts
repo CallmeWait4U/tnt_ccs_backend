@@ -61,6 +61,8 @@ export class CustomerQuery {
               name: true,
             },
           },
+          business: true,
+          individual: true,
         },
         orderBy: [{ id: 'asc' }],
       }),
@@ -69,10 +71,20 @@ export class CustomerQuery {
 
     return {
       items: data.map((i) => {
+        const propRelation = {
+          name: i.isBusiness ? i.business.name : i.individual.name,
+          email: i.isBusiness
+            ? i.business.representativeEmail
+            : i.individual.email,
+          phoneNumber: i.isBusiness
+            ? i.business.representativePhone
+            : i.individual.phoneNumber,
+        };
         return plainToClass(
           CustomerItem,
           {
             ...i,
+            ...propRelation,
             employees: i.employees
               ? i.employees.map((employee) => employee.name)
               : [],
@@ -102,13 +114,20 @@ export class CustomerQuery {
             name: true,
           },
         },
+        business: true,
+        individual: true,
       },
     });
     if (res) {
       if (res.isBusiness) {
         return plainToClass(
           ReadBusinessResult,
-          { ...res, phaseName: res.phase ? res.phase.name : '' },
+          {
+            ...res,
+            ...res.business,
+            ...res.individual,
+            phaseName: res.phase ? res.phase.name : '',
+          },
           {
             excludeExtraneousValues: true,
           },
@@ -125,19 +144,4 @@ export class CustomerQuery {
     }
     return {} as ReadIndividualResult;
   }
-
-  // async readBusiness(uuid: string): Promise<Business> {
-  //   const res = await this.prisma.business.findFirst({
-  //     where: { customerUUID: uuid },
-  //   });
-
-  //   return res;
-  // }
-  // async readInvididual(uuid: string): Promise<Individual> {
-  //   const res = await this.prisma.individual.findFirst({
-  //     where: { customerUUID: uuid },
-  //   });
-
-  //   return res;
-  // }
 }
