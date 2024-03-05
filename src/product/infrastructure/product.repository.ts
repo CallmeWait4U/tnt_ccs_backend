@@ -7,54 +7,44 @@ export class ProductRepository {
   @Inject()
   private readonly prisma: PrismaService;
   @Inject()
-  private readonly accountFactory: ProductFactory;
+  private readonly productFactory: ProductFactory;
 
-  async create(account: ProductModel): Promise<string> {
+  async create(product: ProductModel): Promise<any> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { employee, customer, ...data } = account;
-    await this.prisma.account.create({ data });
-    await this.prisma.employee.create({
-      data: { ...employee, account: { connect: { uuid: account.uuid } } },
-    });
-    return account.uuid;
+    const { ...data } = product;
+    await this.prisma.product.create({ data });
+    return { uuid: product.uuid };
   }
 
-  async update(account: ProductModel): Promise<string> {
+  async update(product: ProductModel): Promise<any> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { uuid, employee, customer, ...data } = account;
-    await this.prisma.account.update({ data, where: { uuid } });
-    await this.prisma.employee.update({
-      data: {
-        ...employee,
-      },
-      where: { uuid: employee.uuid },
-    });
-    return uuid;
+    const { uuid, ...data } = product;
+    await this.prisma.product.update({ data, where: { uuid } });
+
+    return { uuid: product.uuid };
   }
 
   async delete(models: ProductModel[]): Promise<string[]> {
     const uuids = models.map((model) => model.uuid);
-    await this.prisma.account.deleteMany({ where: { uuid: { in: uuids } } });
+    await this.prisma.product.deleteMany({ where: { uuid: { in: uuids } } });
     return uuids;
   }
 
   async getByUUID(uuid: string): Promise<ProductModel> {
-    const entity = await this.prisma.account.findUnique({
+    const entity = await this.prisma.product.findUnique({
       where: { uuid },
-      include: { employee: true },
     });
-    return this.accountFactory.createProductModel(entity);
+    return this.productFactory.createProductModel(entity);
   }
 
   async getByUUIDs(uuids: string[] | string): Promise<ProductModel[]> {
-    const entities = await this.prisma.account.findMany({
+    const entities = await this.prisma.product.findMany({
       where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] } },
-      include: { employee: true },
     });
-    return this.accountFactory.createProductModels(entities);
+    return this.productFactory.createProductModels(entities);
   }
 
   async count(): Promise<number> {
-    return await this.prisma.account.count();
+    return await this.prisma.product.count();
   }
 }

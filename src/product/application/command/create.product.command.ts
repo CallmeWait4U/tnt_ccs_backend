@@ -1,20 +1,14 @@
 import { ICommand } from '@nestjs/cqrs';
-import { Gender } from '@prisma/client';
 
 export class CreateProductCommand implements ICommand {
   name: string;
   code: string;
-  position: string;
-  dayOfBirth: Date;
-  gender: Gender;
-  nationality: string;
-  cccd: string;
-  phoneNumber: string;
-  email: string;
-  city: number;
-  district: string;
-  detailAddress: string;
+  features: string;
+  quantity: number;
   description: string;
+  price: number;
+  unite: string;
+
   constructor(data: Partial<CreateProductCommand>) {
     Object.assign(this, data);
   }

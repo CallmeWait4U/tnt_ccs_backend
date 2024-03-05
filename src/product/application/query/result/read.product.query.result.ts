@@ -1,5 +1,4 @@
 import { IQueryResult } from '@nestjs/cqrs';
-import { Gender } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class ReadProductResult implements IQueryResult {
@@ -13,34 +12,16 @@ export class ReadProductResult implements IQueryResult {
   code: string;
 
   @Expose()
-  position: string;
+  features: string;
 
   @Expose()
-  dayOfBirth: Date;
+  quantity: number;
 
   @Expose()
-  gender: Gender;
+  price: number;
 
   @Expose()
-  nationality: string;
-
-  @Expose()
-  cccd: string;
-
-  @Expose()
-  phoneNumber: string;
-
-  @Expose()
-  email: string;
-
-  @Expose()
-  detailAddress: string;
-
-  @Expose()
-  district: string;
-
-  @Expose()
-  city: number;
+  unite: string;
 
   @Expose()
   description: string;

@@ -12,22 +12,22 @@ export class ProductItem {
   code: string;
 
   @Expose()
-  gender: string;
+  features: string;
 
   @Expose()
-  position: string;
+  quantity: number;
 
   @Expose()
-  dayOfBirth: string;
+  price: number;
 
   @Expose()
-  email: string;
+  unite: string;
 
   @Expose()
-  phoneNumber: string;
+  description: string;
 }
 
-export class GetProductsResult implements IQueryResult {
+export class ListProductResult implements IQueryResult {
   @Expose()
   items: ProductItem[];
 

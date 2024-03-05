@@ -1,15 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Gender, TypeProduct } from '@prisma/client';
-import {
-  IsDateString,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateProductDTO {
-  @ApiProperty({ example: 'Nguyễn Văn A', type: String })
+  @ApiProperty({ example: 'sản phẩm', type: String })
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -19,71 +12,28 @@ export class CreateProductDTO {
   @IsString()
   code: string;
 
-  @ApiProperty({ example: 'Nhân viên CSKH', type: String })
-  @IsNotEmpty()
-  @IsString()
-  position: string;
-
-  @ApiProperty({ example: new Date('01-01-1998'), type: Date })
-  @IsNotEmpty()
-  @IsDateString()
-  dayOfBirth: Date;
-
-  @ApiProperty({ example: Gender.MALE, enum: Gender })
-  @IsNotEmpty()
-  @IsString()
-  gender: Gender;
-
-  @ApiProperty({ required: false, example: 'Việt Nam', type: String })
+  @ApiProperty({ required: false, example: 'string', type: String })
   @IsOptional()
   @IsString()
-  nationality: string;
-
-  @ApiProperty({ example: '001082946357', type: String, maxLength: 12 })
-  @IsNotEmpty()
-  @IsString()
-  cccd: string;
-
-  @ApiProperty({ required: false, example: '0907529892', type: String })
-  @IsOptional()
-  @IsString()
-  phoneNumber: string;
-
-  @ApiProperty({ example: 'a@gmail.com', type: String })
-  @IsNotEmpty()
-  @IsString()
-  email: string;
+  features: string;
 
   @ApiProperty({ example: 1, type: Number })
   @IsNotEmpty()
-  @IsNumber()
-  city: number;
+  @IsInt()
+  quantity: number;
 
-  @ApiProperty({ example: 'Quận 10', type: String })
-  @IsNotEmpty()
-  @IsString()
-  district: string;
-
-  @ApiProperty({
-    required: false,
-    example: '246, Lý Thường Kiệt',
-    type: String,
-  })
-  @IsOptional()
-  @IsString()
-  detailAddress: string;
-
-  @ApiProperty({
-    required: false,
-    example: 'Nhân viên hay đi trễ',
-    type: String,
-  })
+  @ApiProperty({ required: false, example: 'string', type: String })
   @IsOptional()
   @IsString()
   description: string;
 
-  @ApiProperty({ example: TypeProduct.EMPLOYEE, enum: TypeProduct })
+  @ApiProperty({ example: 1000, type: Number })
   @IsNotEmpty()
+  @IsInt()
+  price: number;
+
+  @ApiProperty({ required: false, example: 'string', type: String })
+  @IsOptional()
   @IsString()
-  type: TypeProduct;
+  unite: string;
 }
