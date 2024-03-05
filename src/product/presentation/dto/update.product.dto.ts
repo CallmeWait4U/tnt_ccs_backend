@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsInt,
   IsNotEmpty,
-  IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -25,7 +24,7 @@ export class UpdateProductDTO {
 
   @ApiProperty({ example: 1, type: Number })
   @IsNotEmpty()
-  @IsInt()
+  @IsNumberString()
   quantity: number;
 
   @ApiProperty({ required: false, example: 'string', type: String })
@@ -35,11 +34,30 @@ export class UpdateProductDTO {
 
   @ApiProperty({ example: 1000, type: Number })
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumberString()
   price: number;
 
   @ApiProperty({ required: false, example: 'string', type: String })
   @IsOptional()
   @IsString()
   unite: string;
+
+  @ApiProperty({ example: false, type: Boolean })
+  @IsNotEmpty()
+  isChangeImage: boolean;
+
+  @ApiProperty({
+    required: false,
+    description: 'Attachments',
+    type: 'array',
+    items: {
+      type: 'file',
+      items: {
+        type: 'string',
+        format: 'binary',
+      },
+    },
+  })
+  @IsOptional()
+  images: Express.Multer.File[];
 }

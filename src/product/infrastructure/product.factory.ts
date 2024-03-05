@@ -1,6 +1,6 @@
 import { Prisma, Product } from '@prisma/client';
 import { BaseFactory } from 'libs/base.factory';
-import { ProductModel } from '../domain/product.model';
+import { ImageProductModel, ProductModel } from '../domain/product.model';
 
 type ProductEntity = Prisma.ProductGetPayload<{}>;
 
@@ -20,5 +20,11 @@ export class ProductFactory extends BaseFactory {
   ) {
     if (!products) return null;
     return products.map((product) => this.createProductModel(product));
+  }
+
+  createImageProductModel(url: string) {
+    return this.createModel(ImageProductModel, {
+      url,
+    });
   }
 }

@@ -9,6 +9,8 @@ export class UpdateProductCommand implements ICommand {
   description: string;
   price: number;
   unite: string;
+  isChangeImage: boolean;
+  images: Express.Multer.File[];
 
   constructor(data: Partial<UpdateProductCommand>) {
     Object.assign(this, data);

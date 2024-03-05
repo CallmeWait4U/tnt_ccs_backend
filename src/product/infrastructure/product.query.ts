@@ -54,10 +54,15 @@ export class ProductQuery {
         skip: Number(offset),
         take: Number(limit),
         where: { AND: conditions },
+        include: {
+          images: true,
+        },
         orderBy: [{ id: 'asc' }],
       }),
-      this.prisma.account.count({ where: { AND: conditions } }),
+      this.prisma.product.count({ where: { AND: conditions } }),
     ]);
+    console.log(data);
+
     return {
       items: data.map((item) => {
         return plainToClass(
@@ -75,6 +80,7 @@ export class ProductQuery {
   async readProduct(uuid: string): Promise<ReadProductResult> {
     const res = await this.prisma.product.findUnique({
       where: { uuid },
+      include: { images: true },
     });
     if (res) {
       return plainToClass(

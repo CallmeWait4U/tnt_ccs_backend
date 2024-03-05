@@ -1,6 +1,13 @@
 import { IQueryResult } from '@nestjs/cqrs';
 import { Expose } from 'class-transformer';
 
+export class ImageProduct {
+  @Expose()
+  uuid: string;
+
+  @Expose()
+  url: string;
+}
 export class ProductItem {
   @Expose()
   uuid: string;
@@ -25,6 +32,9 @@ export class ProductItem {
 
   @Expose()
   description: string;
+
+  @Expose()
+  images: ImageProduct[];
 }
 
 export class ListProductResult implements IQueryResult {

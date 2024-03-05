@@ -24,4 +24,14 @@ export class ProductModel {
 
   @Expose()
   description: string;
+
+  @Expose()
+  images: ImageProductModel[];
+}
+export class ImageProductModel {
+  @Expose()
+  uuid: string;
+
+  @Expose()
+  url: string;
 }

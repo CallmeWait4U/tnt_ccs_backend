@@ -7,9 +7,12 @@ import {
   Post,
   Put,
   Query,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiTags } from '@nestjs/swagger';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CreateProductCommand } from '../application/command/create.product.command';
 import { DeleteProductCommand } from '../application/command/delete.product.command';
 import { UpdateProductCommand } from '../application/command/update.product.command';
@@ -44,17 +47,26 @@ export class ProductController {
   }
 
   @Post('')
-  async createProduct(@Body() body: CreateProductDTO) {
-    const command = new CreateProductCommand(body);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('images'))
+  async createProduct(@Body() body: CreateProductDTO, @UploadedFiles() images) {
+    body.price = Number(body.price);
+    body.quantity = Number(body.quantity);
+    const command = new CreateProductCommand({ ...body, images });
     return await this.commandBus.execute(command);
   }
 
   @Put('/:uuid')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('images'))
   async updateProduct(
     @Param('uuid') uuid: string,
     @Body() body: UpdateProductDTO,
+    @UploadedFiles() images,
   ) {
-    const command = new UpdateProductCommand({ ...body, uuid });
+    body.price = Number(body.price);
+    body.quantity = Number(body.quantity);
+    const command = new UpdateProductCommand({ ...body, uuid, images });
     return await this.commandBus.execute(command);
   }
 
