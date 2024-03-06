@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
 import { CustomerModule } from './customer/customer.module';
+import { ProductModule } from './product/product.module';
 import { TestModule } from './test/test.module';
 
 @Module({
@@ -24,6 +25,7 @@ import { TestModule } from './test/test.module';
     CustomerModule,
     AccountModule,
     ActivityModule,
+    ProductModule,
     TestModule,
   ],
   controllers: [AppController],
