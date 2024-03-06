@@ -61,7 +61,6 @@ export class ProductQuery {
       }),
       this.prisma.product.count({ where: { AND: conditions } }),
     ]);
-    console.log(data);
 
     return {
       items: data.map((item) => {

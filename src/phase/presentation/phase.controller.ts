@@ -63,9 +63,8 @@ export class PhaseController {
     return await this.commandBus.execute(command);
   }
 
-  @Get('/listPhaseOptions/:uuid')
+  @Get('/list-phase-options/all')
   async listPhaseOptions(): Promise<ListPhaseOptionsResult> {
-    console.log('listPhaseOptions controller');
     const query = new ListPhaseOptionsQuery();
     return await this.queryBus.execute(query);
   }
