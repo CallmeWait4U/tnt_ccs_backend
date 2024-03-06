@@ -287,25 +287,6 @@ model Complaint {
 ///////////////////////
 
 model Product {
-  id          Int            @id @default(autoincrement())
-  uuid        String         @unique @default(uuid())
-  name        String
-  code        String
-  features    String?
-  quantity    Int
-  description String?
-  price       Int
-  unite       String?
-  tenantId    String?
-  images      ImageProduct[]
-}
-
-model ImageProduct {
-  id          Int     @id @default(autoincrement())
-  uuid        String  @unique @default(uuid())
-  url         String
-  productUUID String
-  product     Product @relation(fields: [productUUID], references: [uuid])
   id                        Int                        @id @default(autoincrement())
   uuid                      String                     @unique @default(uuid())
   name                      String
