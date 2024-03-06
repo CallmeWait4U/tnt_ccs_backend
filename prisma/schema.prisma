@@ -373,3 +373,5 @@ enum StatusComplaint {
   SOLVED     @map("Đã xử lý")
   REPROCESS  @map("Xử lý lại")
 }
+
+

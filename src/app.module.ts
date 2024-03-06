@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
 import { CustomerModule } from './customer/customer.module';
+import { PhaseModule } from './phase/phase.module';
 import { ProductModule } from './product/product.module';
 import { TestModule } from './test/test.module';
 
@@ -25,6 +26,7 @@ import { TestModule } from './test/test.module';
     CustomerModule,
     AccountModule,
     ActivityModule,
+    PhaseModule,
     ProductModule,
     TestModule,
   ],
