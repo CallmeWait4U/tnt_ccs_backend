@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common';
 import { PrismaService } from 'libs/database.module';
 import { CustomerModel } from '../domain/customer.model';
 import { CustomerFactory } from './customer.factory';
+
 export class CustomerRespository {
   @Inject()
   private readonly prisma: PrismaService;
