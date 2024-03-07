@@ -17,10 +17,8 @@ export class CreatePriceQuoteHandler
   private readonly priceQuoteDomain: PriceQuoteDomain;
 
   async execute(command: CreatePriceQuoteCommand): Promise<string> {
-    const id = (await this.priceQuoteRepository.count()) + 1;
     const model = this.priceQuoteFactory.createPriceQuoteModel(command);
-
-    const priceQuote = await this.priceQuoteDomain.create(id, model);
+    const priceQuote = await this.priceQuoteDomain.create(model);
 
     return await this.priceQuoteRepository.create(priceQuote);
   }

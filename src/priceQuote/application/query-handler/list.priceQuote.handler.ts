@@ -13,7 +13,6 @@ export class GetPriceQuotesHandler
     return await this.priceQuoteQuery.getPriceQuotes(
       query.offset,
       query.limit,
-      query.type,
       query.searchModel,
     );
   }

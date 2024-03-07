@@ -297,9 +297,18 @@ model Product {
   price                     Int
   unite                     String?
   tenantId                  String?
+  images                    ImageProduct[]
   productPriceQuotes        ProductPriceQuote[]
   productPriceQuoteRequests ProductPriceQuoteRequest[]
   productBills              ProductBill[]
+}
+
+model ImageProduct {
+  id          Int     @id @default(autoincrement())
+  uuid        String  @unique @default(uuid())
+  url         String
+  productUUID String
+  product     Product @relation(fields: [productUUID], references: [uuid])
 }
 
 // Các Model sử dụng chung

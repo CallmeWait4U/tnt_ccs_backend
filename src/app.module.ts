@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
 import { CustomerModule } from './customer/customer.module';
+import { PriceQuoteModule } from './priceQuote/priceQuote.module';
 import { ProductModule } from './product/product.module';
 import { TestModule } from './test/test.module';
 
@@ -26,6 +27,7 @@ import { TestModule } from './test/test.module';
     AccountModule,
     ActivityModule,
     ProductModule,
+    PriceQuoteModule,
     TestModule,
   ],
   controllers: [AppController],

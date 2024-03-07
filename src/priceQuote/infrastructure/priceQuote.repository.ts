@@ -11,24 +11,77 @@ export class PriceQuoteRepository {
 
   async create(priceQuote: PriceQuoteModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { employee, customer, ...data } = priceQuote;
-    await this.prisma.priceQuote.create({ data });
-    await this.prisma.employee.create({
-      data: { ...employee, priceQuote: { connect: { uuid: priceQuote.uuid } } },
+    const { customerUUID, products, ...data } = priceQuote;
+    await this.prisma.priceQuote.create({
+      data: {
+        ...data,
+        customer: {
+          connect: {
+            uuid: customerUUID,
+          },
+        },
+      },
     });
+
+    if (products.length > 0) {
+      await Promise.all(
+        products.map(async (item) => {
+          const { uuid, ...data } = item;
+          await this.prisma.productPriceQuote.create({
+            data: {
+              ...data,
+              product: {
+                connect: {
+                  uuid: item.uuid,
+                },
+              },
+              priceQuote: {
+                connect: {
+                  uuid: priceQuote.uuid,
+                },
+              },
+            },
+          });
+        }),
+      );
+    }
+
     return priceQuote.uuid;
   }
 
   async update(priceQuote: PriceQuoteModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { uuid, employee, customer, ...data } = priceQuote;
+    const { uuid, products, ...data } = priceQuote;
     await this.prisma.priceQuote.update({ data, where: { uuid } });
-    await this.prisma.employee.update({
-      data: {
-        ...employee,
+    await this.prisma.productPriceQuote.deleteMany({
+      where: {
+        priceQuoteUUID: uuid,
       },
-      where: { uuid: employee.uuid },
     });
+
+    if (products.length > 0) {
+      await Promise.all(
+        products.map(async (item) => {
+          const { uuid, ...data } = item;
+          await this.prisma.productPriceQuote.create({
+            data: {
+              ...data,
+              product: {
+                connect: {
+                  uuid: item.uuid,
+                },
+              },
+              priceQuote: {
+                connect: {
+                  uuid: priceQuote.uuid,
+                },
+              },
+            },
+          });
+        }),
+      );
+    }
+
     return uuid;
   }
 
@@ -41,7 +94,6 @@ export class PriceQuoteRepository {
   async getByUUID(uuid: string): Promise<PriceQuoteModel> {
     const entity = await this.prisma.priceQuote.findUnique({
       where: { uuid },
-      include: { employee: true },
     });
     return this.priceQuoteFactory.createPriceQuoteModel(entity);
   }
@@ -49,7 +101,6 @@ export class PriceQuoteRepository {
   async getByUUIDs(uuids: string[] | string): Promise<PriceQuoteModel[]> {
     const entities = await this.prisma.priceQuote.findMany({
       where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] } },
-      include: { employee: true },
     });
     return this.priceQuoteFactory.createPriceQuoteModels(entities);
   }
