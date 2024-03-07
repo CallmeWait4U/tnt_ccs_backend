@@ -70,24 +70,40 @@ export class PriceQuoteRequestRepository {
       );
       await Promise.all(
         products.map(async (item) => {
-          if (item.uuid && !listProductCurrentUUIDS.includes(item.uuid)) {
-            const { uuid, ...data } = item;
-            await this.prisma.productPriceQuoteRequest.create({
-              data: {
-                ...data,
-                product: {
-                  connect: {
-                    uuid: item.uuid,
+          if (item.uuid)
+            if (!listProductCurrentUUIDS.includes(item.uuid)) {
+              const { uuid, ...data } = item;
+              await this.prisma.productPriceQuoteRequest.create({
+                data: {
+                  ...data,
+                  product: {
+                    connect: {
+                      uuid: item.uuid,
+                    },
+                  },
+                  priceQuoteRequest: {
+                    connect: {
+                      uuid: priceQuoteRequest.uuid,
+                    },
                   },
                 },
-                priceQuoteRequest: {
-                  connect: {
-                    uuid: priceQuoteRequest.uuid,
+              });
+            } else {
+              const currentProduct =
+                await this.prisma.productPriceQuoteRequest.findFirst({
+                  where: {
+                    priceQuoteRequestUUID: uuid,
+                    productUUID: item.uuid,
                   },
-                },
-              },
-            });
-          }
+                });
+              if (currentProduct?.id) {
+                const { uuid, ...dataUpdate } = item;
+                await this.prisma.productPriceQuoteRequest.update({
+                  data: { ...dataUpdate },
+                  where: { id: currentProduct.id },
+                });
+              }
+            }
         }),
       );
     }
