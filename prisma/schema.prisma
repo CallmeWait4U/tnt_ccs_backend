@@ -295,7 +295,7 @@ model Product {
   quantity                  Int
   description               String?
   price                     Int
-  unite                     String?
+  unit                     String?
   tenantId                  String?
   images                    ImageProduct[]
   productPriceQuotes        ProductPriceQuote[]

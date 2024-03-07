@@ -14,6 +14,9 @@ export class ProductItemOfPriceQuote {
 
   @Expose()
   name: string;
+
+  @Expose()
+  unit: string;
 }
 export class ReadPriceQuoteResult implements IQueryResult {
   @Expose()

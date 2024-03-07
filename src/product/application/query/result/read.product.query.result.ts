@@ -28,7 +28,7 @@ export class ReadProductResult implements IQueryResult {
   price: number;
 
   @Expose()
-  unite: string;
+  unit: string;
 
   @Expose()
   description: string;

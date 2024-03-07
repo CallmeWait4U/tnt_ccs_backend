@@ -44,8 +44,8 @@ export class ProductQuery {
         if (prop === 'price') {
           conditions.push({ some: { price: value } });
         }
-        if (prop === 'unite') {
-          conditions.push({ some: { unite: value } });
+        if (prop === 'unit') {
+          conditions.push({ some: { unit: value } });
         }
       }
     }

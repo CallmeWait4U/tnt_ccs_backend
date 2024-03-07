@@ -40,7 +40,7 @@ export class CreateProductDTO {
   @ApiProperty({ required: false, example: 'string', type: String })
   @IsOptional()
   @IsString()
-  unite: string;
+  unit: string;
 
   @ApiProperty({
     description: 'Attachments',

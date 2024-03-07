@@ -40,7 +40,7 @@ export class UpdateProductDTO {
   @ApiProperty({ required: false, example: 'string', type: String })
   @IsOptional()
   @IsString()
-  unite: string;
+  unit: string;
 
   @ApiProperty({ example: false, type: Boolean })
   @IsNotEmpty()
