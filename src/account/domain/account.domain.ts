@@ -3,9 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { AccountModel, EmployeeType } from './account.model';
 
 export class AccountDomain {
-  async create(id: number, model: AccountModel): Promise<AccountModel> {
+  async create(model: AccountModel): Promise<AccountModel> {
     const accountUUID = uuidv4().toString();
-    model.id = id;
     model.uuid = accountUUID;
     if (model.type === 'CUSTOMER') {
       model.username = model.customer.isBusiness
