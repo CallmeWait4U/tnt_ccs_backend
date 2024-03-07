@@ -28,7 +28,7 @@ export class ProductItem {
   price: number;
 
   @Expose()
-  unite: string;
+  unit: string;
 
   @Expose()
   description: string;

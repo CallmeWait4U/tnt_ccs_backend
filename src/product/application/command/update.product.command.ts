@@ -8,7 +8,7 @@ export class UpdateProductCommand implements ICommand {
   quantity: number;
   description: string;
   price: number;
-  unite: string;
+  unit: string;
   isChangeImage: boolean;
   images: Express.Multer.File[];
 
