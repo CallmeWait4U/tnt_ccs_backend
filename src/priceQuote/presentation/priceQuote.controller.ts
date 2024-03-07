@@ -21,8 +21,8 @@ import { GetPriceQuotesDTO } from './dto/list.priceQuote.dto';
 import { ReadPriceQuoteDTO } from './dto/read.priceQuote.dto';
 import { UpdatePriceQuoteDTO } from './dto/update.priceQuote.dto';
 
-@ApiTags('priceQuotes')
-@Controller('priceQuotes')
+@ApiTags('price-quotes')
+@Controller('price-quotes')
 export class PriceQuoteController {
   constructor(
     readonly commandBus: CommandBus,
