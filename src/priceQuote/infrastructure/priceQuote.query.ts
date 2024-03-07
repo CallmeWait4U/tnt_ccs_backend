@@ -82,6 +82,7 @@ export class PriceQuoteQuery {
             {
               uuid: item.productUUID,
               name: item.product.name,
+              unit: item.product.unit,
               negotiatedPrice: item.negotiatedPrice,
               quantity: item.quantity,
             },
