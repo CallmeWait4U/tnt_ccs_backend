@@ -147,6 +147,8 @@ model PriceQuoteRequest {
   products     ProductPriceQuoteRequest[]
   customer     Customer?                  @relation(fields: [customerUUID], references: [uuid])
   customerUUID String?
+  quote        PriceQuote?                @relation(fields: [quoteUUID], references: [uuid])     
+  quoteUUID    String?                    
   tenantId     String?
 }
 
@@ -159,6 +161,7 @@ model PriceQuote {
   sentDate     DateTime?
   products     ProductPriceQuote[]
   customer     Customer?           @relation(fields: [customerUUID], references: [uuid])
+  request      PriceQuoteRequest[]
   customerUUID String?
   tenantId     String?
 }
@@ -178,6 +181,7 @@ model Bill {
 // Các Model đặc biệt
 model ProductPriceQuoteRequest {
   id                    Int               @id @default(autoincrement())
+  quantity              Int
   priceQuoteRequest     PriceQuoteRequest @relation(fields: [priceQuoteRequestUUID], references: [uuid])
   priceQuoteRequestUUID String
   product               Product           @relation(fields: [productUUID], references: [uuid])
@@ -295,7 +299,7 @@ model Product {
   quantity                  Int
   description               String?
   price                     Int
-  unit                     String?
+  unit                      String?
   tenantId                  String?
   images                    ImageProduct[]
   productPriceQuotes        ProductPriceQuote[]

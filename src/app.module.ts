@@ -12,6 +12,7 @@ import { CompanyModule } from './company/company.module';
 import { CustomerModule } from './customer/customer.module';
 import { PhaseModule } from './phase/phase.module';
 import { PriceQuoteModule } from './priceQuote/priceQuote.module';
+import { PriceQuoteRequestModule } from './priceQuoteRequest/priceQuoteRequest.module';
 import { ProductModule } from './product/product.module';
 import { TestModule } from './test/test.module';
 
@@ -30,6 +31,7 @@ import { TestModule } from './test/test.module';
     PhaseModule,
     ProductModule,
     PriceQuoteModule,
+    PriceQuoteRequestModule,
     TestModule,
   ],
   controllers: [AppController],
