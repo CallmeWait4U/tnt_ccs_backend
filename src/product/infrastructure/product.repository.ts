@@ -35,7 +35,7 @@ export class ProductRepository {
   ): Promise<any> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { uuid, images, ...data } = product;
-    console.log('data', data);
+
     await this.prisma.product.update({
       data,
       where: { uuid },

@@ -25,11 +25,6 @@ class ProductItem {
   negotiatedPrice: number;
 }
 export class UpdatePriceQuoteDTO {
-  @ApiProperty({ example: 'uuid', type: String })
-  @IsNotEmpty()
-  @IsString()
-  uuid: string;
-
   @ApiProperty({ example: 'NV-00001', type: String })
   @IsNotEmpty()
   @IsString()

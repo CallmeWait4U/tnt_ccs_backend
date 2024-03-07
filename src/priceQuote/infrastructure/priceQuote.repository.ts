@@ -50,34 +50,44 @@ export class PriceQuoteRepository {
   }
 
   async update(priceQuote: PriceQuoteModel): Promise<string> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { uuid, products, ...data } = priceQuote;
     await this.prisma.priceQuote.update({ data, where: { uuid } });
+
     await this.prisma.productPriceQuote.deleteMany({
       where: {
-        priceQuoteUUID: uuid,
+        productUUID: { notIn: products.map((item) => item.uuid) },
       },
     });
-
     if (products.length > 0) {
+      const listProductPriceQuote =
+        await this.prisma.productPriceQuote.findMany({
+          select: { productUUID: true },
+          where: { priceQuoteUUID: uuid },
+        });
+      console.log(listProductPriceQuote);
+      const listProductCurrentUUIDS = listProductPriceQuote.map(
+        (item) => item.productUUID,
+      );
       await Promise.all(
         products.map(async (item) => {
-          const { uuid, ...data } = item;
-          await this.prisma.productPriceQuote.create({
-            data: {
-              ...data,
-              product: {
-                connect: {
-                  uuid: item.uuid,
+          if (item.uuid && !listProductCurrentUUIDS.includes(item.uuid)) {
+            const { uuid, ...data } = item;
+            await this.prisma.productPriceQuote.create({
+              data: {
+                ...data,
+                product: {
+                  connect: {
+                    uuid: item.uuid,
+                  },
+                },
+                priceQuote: {
+                  connect: {
+                    uuid: priceQuote.uuid,
+                  },
                 },
               },
-              priceQuote: {
-                connect: {
-                  uuid: priceQuote.uuid,
-                },
-              },
-            },
-          });
+            });
+          }
         }),
       );
     }
@@ -87,7 +97,11 @@ export class PriceQuoteRepository {
 
   async delete(models: PriceQuoteModel[]): Promise<string[]> {
     const uuids = models.map((model) => model.uuid);
+    await this.prisma.productPriceQuote.deleteMany({
+      where: { priceQuoteUUID: { in: uuids } },
+    });
     await this.prisma.priceQuote.deleteMany({ where: { uuid: { in: uuids } } });
+
     return uuids;
   }
 

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Query,
@@ -36,8 +37,8 @@ export class PriceQuoteController {
     return await this.queryBus.execute(query);
   }
 
-  @Get(':/uuid')
-  async readPriceQuote(@Query() q: ReadPriceQuoteDTO) {
+  @Get('/:uuid')
+  async readPriceQuote(@Param() q: ReadPriceQuoteDTO) {
     const query = new ReadPriceQuoteQuery(q.uuid);
     return await this.queryBus.execute(query);
   }
@@ -49,13 +50,16 @@ export class PriceQuoteController {
   }
 
   @Put('/:uuid')
-  async updatePriceQuote(@Body() body: UpdatePriceQuoteDTO) {
-    const command = new UpdatePriceQuoteCommand(body);
+  async updatePriceQuote(
+    @Param('uuid') uuid: string,
+    @Body() body: UpdatePriceQuoteDTO,
+  ) {
+    const command = new UpdatePriceQuoteCommand({ ...body, uuid });
     return await this.commandBus.execute(command);
   }
 
   @Delete('/:uuid')
-  async deletePriceQuote(@Body() body: DeletePriceQuoteDTO) {
+  async deletePriceQuote(@Param() body: DeletePriceQuoteDTO) {
     const command = new DeletePriceQuoteCommand(body);
     return await this.commandBus.execute(command);
   }

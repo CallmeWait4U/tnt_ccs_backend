@@ -6,7 +6,10 @@ import {
   GetPriceQuotesResult,
   PriceQuoteItem,
 } from '../application/query/result/list.priceQuote.query.result';
-import { ReadPriceQuoteResult } from '../application/query/result/read.priceQuote.query.result';
+import {
+  ProductItemOfPriceQuote,
+  ReadPriceQuoteResult,
+} from '../application/query/result/read.priceQuote.query.result';
 
 export class PriceQuoteQuery {
   @Inject()
@@ -56,15 +59,37 @@ export class PriceQuoteQuery {
   }
 
   async readPriceQuote(uuid: string): Promise<ReadPriceQuoteResult> {
-    const res = await this.prisma.priceQuote.findUnique({
+    const priceQuote = await this.prisma.priceQuote.findUnique({
+      include: {
+        products: {
+          include: { product: true },
+        },
+      },
       where: { uuid },
     });
-    if (res) {
-      return plainToClass(
+
+    if (priceQuote) {
+      const { products, ...data } = priceQuote;
+      const res = plainToClass(
         ReadPriceQuoteResult,
-        { ...res },
+        { ...data, products: [] },
         { excludeExtraneousValues: true },
       );
+      if (products.length > 0) {
+        res.products = products.map((item) => {
+          return plainToClass(
+            ProductItemOfPriceQuote,
+            {
+              uuid: item.productUUID,
+              name: item.product.name,
+              negotiatedPrice: item.negotiatedPrice,
+              quantity: item.quantity,
+            },
+            { excludeExtraneousValues: true },
+          );
+        });
+      }
+      return res;
     }
     return {} as ReadPriceQuoteResult;
   }

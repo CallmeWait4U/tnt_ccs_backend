@@ -1,47 +1,39 @@
 import { IQueryResult } from '@nestjs/cqrs';
-import { Gender } from '@prisma/client';
+import { StatusPriceQuote } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
+export class ProductItemOfPriceQuote {
+  @Expose()
+  uuid: string;
+
+  @Expose()
+  negotiatedPrice: number;
+
+  @Expose()
+  quantity: number;
+
+  @Expose()
+  name: string;
+}
 export class ReadPriceQuoteResult implements IQueryResult {
   @Expose()
   uuid: string;
 
   @Expose()
-  name: string;
-
-  @Expose()
   code: string;
 
   @Expose()
-  position: string;
+  createdDate: Date;
 
   @Expose()
-  dayOfBirth: Date;
+  status: StatusPriceQuote;
 
   @Expose()
-  gender: Gender;
+  sentDate: Date;
 
   @Expose()
-  nationality: string;
+  customerUUID: string;
 
   @Expose()
-  cccd: string;
-
-  @Expose()
-  phoneNumber: string;
-
-  @Expose()
-  email: string;
-
-  @Expose()
-  detailAddress: string;
-
-  @Expose()
-  district: string;
-
-  @Expose()
-  city: number;
-
-  @Expose()
-  description: string;
+  products: ProductItemOfPriceQuote[];
 }

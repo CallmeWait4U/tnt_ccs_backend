@@ -1,4 +1,5 @@
 import { IQueryResult } from '@nestjs/cqrs';
+import { StatusPriceQuote } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class PriceQuoteItem {
@@ -6,25 +7,19 @@ export class PriceQuoteItem {
   uuid: string;
 
   @Expose()
-  name: string;
-
-  @Expose()
   code: string;
 
   @Expose()
-  gender: string;
+  createdDate: Date;
 
   @Expose()
-  position: string;
+  status: StatusPriceQuote;
 
   @Expose()
-  dayOfBirth: string;
+  sentDate: Date;
 
   @Expose()
-  email: string;
-
-  @Expose()
-  phoneNumber: string;
+  customerUUID: string;
 }
 
 export class GetPriceQuotesResult implements IQueryResult {
