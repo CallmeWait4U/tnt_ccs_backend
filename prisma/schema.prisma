@@ -175,6 +175,35 @@ model Bill {
   tenantId     String?
 }
 
+// Các Model đặc biệt
+model ProductPriceQuoteRequest {
+  id                    Int               @id @default(autoincrement())
+  priceQuoteRequest     PriceQuoteRequest @relation(fields: [priceQuoteRequestUUID], references: [uuid])
+  priceQuoteRequestUUID String
+  product               Product           @relation(fields: [productUUID], references: [uuid])
+  productUUID           String
+}
+
+model ProductPriceQuote {
+  id              Int        @id @default(autoincrement())
+  negotiatedPrice Int
+  quantity        Int
+  priceQuote      PriceQuote @relation(fields: [priceQuoteUUID], references: [uuid])
+  priceQuoteUUID  String
+  product         Product    @relation(fields: [productUUID], references: [uuid])
+  productUUID     String
+}
+
+model ProductBill {
+  id          Int     @id @default(autoincrement())
+  fixedPrice  Int
+  quantity    Int
+  bill        Bill    @relation(fields: [billUUID], references: [uuid])
+  billUUID    String
+  product     Product @relation(fields: [productUUID], references: [uuid])
+  productUUID String
+}
+
 ///////////////////////
 
 model Employee {
@@ -258,17 +287,20 @@ model Complaint {
 ///////////////////////
 
 model Product {
-  id          Int            @id @default(autoincrement())
-  uuid        String         @unique @default(uuid())
-  name        String
-  code        String
-  features    String?
-  quantity    Int
-  description String?
-  price       Int
-  unite       String?
-  tenantId    String?
-  images      ImageProduct[]
+  id                        Int                        @id @default(autoincrement())
+  uuid                      String                     @unique @default(uuid())
+  name                      String
+  code                      String
+  features                  String?
+  quantity                  Int
+  description               String?
+  price                     Int
+  unite                     String?
+  tenantId                  String?
+  images                    ImageProduct[]
+  productPriceQuotes        ProductPriceQuote[]
+  productPriceQuoteRequests ProductPriceQuoteRequest[]
+  productBills              ProductBill[]
 }
 
 model ImageProduct {
@@ -287,36 +319,6 @@ model Address {
   city          String
   tenant        Tenant? @relation(fields: [tenantUUID], references: [uuid])
   tenantUUID    String? @unique
-}
-
-// Các Model đặc biệt
-model ProductPriceQuoteRequest {
-  id                    Int                @id @default(autoincrement())
-  productName           String
-  quantity              Int
-  description           String?
-  priceQuoteRequest     PriceQuoteRequest? @relation(fields: [priceQuoteRequestUUID], references: [uuid])
-  priceQuoteRequestUUID String?
-}
-
-model ProductPriceQuote {
-  id              Int         @id @default(autoincrement())
-  negotiatedPrice Int
-  quantity        Int
-  productCode     String
-  productName     String
-  priceQuote      PriceQuote? @relation(fields: [priceQuoteUUID], references: [uuid])
-  priceQuoteUUID  String?
-}
-
-model ProductBill {
-  id          Int     @id @default(autoincrement())
-  fixedPrice  Int
-  quantity    Int
-  productCode String
-  productName String
-  bill        Bill?   @relation(fields: [billUUID], references: [uuid])
-  billUUID    String?
 }
 
 model FieldComplaint {
@@ -373,5 +375,3 @@ enum StatusComplaint {
   SOLVED     @map("Đã xử lý")
   REPROCESS  @map("Xử lý lại")
 }
-
-
