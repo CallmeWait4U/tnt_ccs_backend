@@ -76,7 +76,9 @@ export class PriceQuoteQuery {
         { excludeExtraneousValues: true },
       );
       if (products.length > 0) {
+        let total = 0;
         res.products = products.map((item) => {
+          total += item.negotiatedPrice * item.quantity;
           return plainToClass(
             ProductItemOfPriceQuote,
             {
@@ -89,7 +91,9 @@ export class PriceQuoteQuery {
             { excludeExtraneousValues: true },
           );
         });
+        res.total = total;
       }
+
       return res;
     }
     return {} as ReadPriceQuoteResult;

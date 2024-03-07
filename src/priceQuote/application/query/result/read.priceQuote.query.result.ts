@@ -38,5 +38,8 @@ export class ReadPriceQuoteResult implements IQueryResult {
   customerUUID: string;
 
   @Expose()
+  total: number;
+
+  @Expose()
   products: ProductItemOfPriceQuote[];
 }

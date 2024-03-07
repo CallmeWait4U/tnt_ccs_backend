@@ -64,30 +64,45 @@ export class PriceQuoteRepository {
           select: { productUUID: true },
           where: { priceQuoteUUID: uuid },
         });
-      console.log(listProductPriceQuote);
       const listProductCurrentUUIDS = listProductPriceQuote.map(
         (item) => item.productUUID,
       );
       await Promise.all(
         products.map(async (item) => {
-          if (item.uuid && !listProductCurrentUUIDS.includes(item.uuid)) {
-            const { uuid, ...data } = item;
-            await this.prisma.productPriceQuote.create({
-              data: {
-                ...data,
-                product: {
-                  connect: {
-                    uuid: item.uuid,
+          if (item.uuid)
+            if (!listProductCurrentUUIDS.includes(item.uuid)) {
+              const { uuid, ...data } = item;
+              await this.prisma.productPriceQuote.create({
+                data: {
+                  ...data,
+                  product: {
+                    connect: {
+                      uuid: item.uuid,
+                    },
+                  },
+                  priceQuote: {
+                    connect: {
+                      uuid: priceQuote.uuid,
+                    },
                   },
                 },
-                priceQuote: {
-                  connect: {
-                    uuid: priceQuote.uuid,
+              });
+            } else {
+              const currentProduct =
+                await this.prisma.productPriceQuote.findFirst({
+                  where: {
+                    productUUID: item.uuid,
+                    priceQuoteUUID: priceQuote.uuid,
                   },
-                },
-              },
-            });
-          }
+                });
+              if (currentProduct?.id) {
+                const { uuid, ...dataUpdate } = item;
+                await this.prisma.productPriceQuote.update({
+                  data: { ...dataUpdate },
+                  where: { id: currentProduct.id },
+                });
+              }
+            }
         }),
       );
     }
