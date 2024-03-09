@@ -2,11 +2,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { BusinessType, CustomerModel, IndividualType } from './customer.model';
 
 export class CustomerDomain {
-  create(id: number, model: CustomerModel): CustomerModel {
+  create(model: CustomerModel): CustomerModel {
     const customerUUID = uuidv4().toString();
-    model.id = id;
     model.uuid = customerUUID;
-    model.code = 'KH-' + id.toString().padStart(8, '0');
+    model.code = 'KH-';
     model.receiveMail = false;
     return model;
   }
