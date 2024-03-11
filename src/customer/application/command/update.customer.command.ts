@@ -1,5 +1,5 @@
 import { ICommand } from '@nestjs/cqrs';
-import { Gender } from '@prisma/client';
+import { Gender, StatusCustomerAccount } from '@prisma/client';
 
 export class UpdateCustomerCommand implements ICommand {
   uuid: string;
@@ -9,7 +9,7 @@ export class UpdateCustomerCommand implements ICommand {
   detailAddress: string;
   receiveMail: boolean;
   description: string;
-  hasAccount: boolean;
+  hasAccount: StatusCustomerAccount;
   name: string;
   // Business
   businessNationality: string;

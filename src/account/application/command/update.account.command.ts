@@ -12,7 +12,7 @@ export class UpdateAccountCommand implements ICommand {
   cccd: string;
   phoneNumber: string;
   email: string;
-  city: number;
+  city: string;
   district: string;
   detailAddress: string;
   description: string;

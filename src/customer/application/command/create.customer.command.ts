@@ -1,5 +1,5 @@
 import { ICommand } from '@nestjs/cqrs';
-import { Gender } from '@prisma/client';
+import { Gender, StatusCustomerAccount } from '@prisma/client';
 
 export class CreateCustomerCommand implements ICommand {
   isBusiness: boolean;
@@ -9,7 +9,7 @@ export class CreateCustomerCommand implements ICommand {
   detailAddress: string;
   description: string;
   createdDate: Date;
-  hasAccount: boolean;
+  hasAccount: StatusCustomerAccount;
   name: string;
   // Business
   businessNationality?: string;

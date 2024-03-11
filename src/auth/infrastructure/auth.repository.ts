@@ -1,45 +1,32 @@
-import { HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Account, TypeAccount } from '@prisma/client';
+import { Account } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'libs/database.module';
-import { SignUpCommand } from '../application/command/signup.command';
+import { AccountModel, TenantModel } from '../domain/auth.model';
 import { jwtConfig } from '../presentation/jwt/jwt.config';
 
 export class AuthRepository {
   @Inject()
   private readonly jwtService: JwtService;
-
   @Inject()
   private readonly prisma: PrismaService;
 
-  async createUser(command: SignUpCommand) {
-    const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(command.password, salt);
-    let type: TypeAccount;
-    switch (command.type) {
-      case 0: {
-        type = 'ADMIN';
-        break;
-      }
-      case 1: {
-        type = 'EMPLOYEE';
-        break;
-      }
-      case 2: {
-        type = 'CUSTOMER';
-        break;
-      }
-      default: {
-        return new HttpException('Wrong Type', HttpStatus.BAD_REQUEST);
-      }
-    }
-    const data = {
-      username: command.username,
-      password: hashPassword,
-      type: type,
-    };
+  async createTenant(tenant: TenantModel): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...data } = tenant;
+    await this.prisma.tenant.create({ data });
+    return tenant.tenantId;
+  }
+
+  async createAccount(account: AccountModel): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, employee, ...data } = account;
     await this.prisma.account.create({ data });
+    await this.prisma.employee.create({
+      data: { ...employee, account: { connect: { uuid: account.uuid } } },
+    });
+    return account.uuid;
   }
 
   async signIn(

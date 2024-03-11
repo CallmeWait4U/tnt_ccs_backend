@@ -55,7 +55,6 @@ export class AuthController {
           username: 'admin',
           password: '123456',
           passwordConfirm: '123456',
-          type: 0,
         }),
       ),
       this.commandBus.execute(
@@ -63,7 +62,6 @@ export class AuthController {
           username: 'employee',
           password: '123456',
           passwordConfirm: '123456',
-          type: 1,
         }),
       ),
       this.commandBus.execute(
@@ -71,7 +69,6 @@ export class AuthController {
           username: 'customer',
           password: '123456',
           passwordConfirm: '123456',
-          type: 2,
         }),
       ),
     ]);

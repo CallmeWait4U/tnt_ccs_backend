@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Gender } from '@prisma/client';
+import { Gender, StatusCustomerAccount } from '@prisma/client';
 import {
   IsBoolean,
   IsDateString,
@@ -53,10 +53,13 @@ export class CreateIndividualCustomerDTO {
   @IsDateString()
   createdDate: Date;
 
-  @ApiProperty({ example: false, type: Boolean })
+  @ApiProperty({
+    example: StatusCustomerAccount.NOTAPPROVED,
+    enum: StatusCustomerAccount,
+  })
   @IsNotEmpty()
-  @IsBoolean()
-  hasAccount: boolean;
+  @IsString()
+  hasAccount: StatusCustomerAccount;
 
   @ApiProperty({ example: 'Nguyễn Văn B', type: String })
   @IsNotEmpty()

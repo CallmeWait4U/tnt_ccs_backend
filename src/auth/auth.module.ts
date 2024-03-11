@@ -5,6 +5,8 @@ import { RefreshTokensPairHandler } from './application/command-handler/refreshT
 import { SignOutHandler } from './application/command-handler/signout.handler';
 import { SignUpHandler } from './application/command-handler/signup.handler';
 import { SignInHandler } from './application/query-handler/signin.handler';
+import { AuthDomain } from './domain/auth.domain';
+import { AuthFactory } from './infrastructure/auth.factory';
 import { AuthQuery } from './infrastructure/auth.query';
 import { AuthRepository } from './infrastructure/auth.repository';
 import { AuthController } from './presentation/auth.controller';
@@ -19,9 +21,9 @@ const application = [
   RefreshTokensPairHandler,
 ];
 
-const infrastructure = [AuthRepository, AuthQuery];
+const infrastructure = [AuthRepository, AuthQuery, AuthFactory];
 
-const domain = [];
+const domain = [AuthDomain];
 
 const strategies = [AccessTokenStrategy, RefreshTokenStrategy];
 

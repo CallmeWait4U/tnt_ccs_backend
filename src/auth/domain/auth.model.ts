@@ -1,25 +1,37 @@
 import { Gender, TypeAccount } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
-export class CustomerType {
+export class TenantModel {
+  @Expose()
+  id: number;
   @Expose()
   uuid: string;
   @Expose()
-  code: string;
+  name: string;
   @Expose()
-  isBusiness: boolean;
+  taxCode: string;
   @Expose()
-  receiveMail: boolean;
+  businessRegistrationNumber: string;
   @Expose()
-  business: {
-    name: string;
-    representativeEmail: string;
-  };
+  businessNationality: string;
   @Expose()
-  individual: {
-    name: string;
-    email: string;
-  };
+  businessIndustry: string;
+  @Expose()
+  phoneNumber: string;
+  @Expose()
+  email: string;
+  @Expose()
+  addressDetail: string;
+  @Expose()
+  district: string;
+  @Expose()
+  city: string;
+  @Expose()
+  country: string;
+  @Expose()
+  domain: string;
+  @Expose()
+  tenantId: string;
 }
 
 export class EmployeeType {
@@ -51,6 +63,8 @@ export class EmployeeType {
   position: string;
   @Expose()
   nationality: string;
+  @Expose()
+  tenantId: string;
 }
 
 export class AccountModel {
@@ -70,8 +84,6 @@ export class AccountModel {
   type: TypeAccount;
   @Expose()
   tenantId: string;
-  @Expose()
-  customer: CustomerType;
   @Expose()
   employee: EmployeeType;
 }

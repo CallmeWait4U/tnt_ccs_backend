@@ -3,7 +3,6 @@ import { Gender, TypeAccount } from '@prisma/client';
 import {
   IsDateString,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -54,10 +53,10 @@ export class CreateAccountDTO {
   @IsString()
   email: string;
 
-  @ApiProperty({ example: 1, type: Number })
+  @ApiProperty({ example: 'TP HCM', type: String })
   @IsNotEmpty()
-  @IsNumber()
-  city: number;
+  @IsString()
+  city: string;
 
   @ApiProperty({ example: 'Quận 10', type: String })
   @IsNotEmpty()
