@@ -17,10 +17,9 @@ export class CreateCustomerHandler
   private readonly customerDomain: CustomerDomain;
 
   async execute(command: CreateCustomerCommand): Promise<string> {
-    const id = (await this.customerRespository.count()) + 1;
     const model = this.customerFactory.createCustomerModel(command);
 
-    const customer = this.customerDomain.create(id, model);
+    const customer = this.customerDomain.create(model);
 
     return await this.customerRespository.create(customer);
   }

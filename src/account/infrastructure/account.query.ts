@@ -80,9 +80,9 @@ export class AccountQuery {
         return plainToClass(
           AccountItem,
           {
-            ...i,
             ...i.employee,
             ...i.customer,
+            ...i,
           },
           { excludeExtraneousValues: true },
         );

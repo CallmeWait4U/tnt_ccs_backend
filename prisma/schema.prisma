@@ -150,6 +150,8 @@ model PriceQuoteRequest {
   products     ProductPriceQuoteRequest[]
   customer     Customer?                  @relation(fields: [customerUUID], references: [uuid])
   customerUUID String?
+  quote        PriceQuote?                @relation(fields: [quoteUUID], references: [uuid])     
+  quoteUUID    String?                    
   tenantId     String?
 }
 
@@ -162,6 +164,7 @@ model PriceQuote {
   sentDate     DateTime?
   products     ProductPriceQuote[]
   customer     Customer?           @relation(fields: [customerUUID], references: [uuid])
+  request      PriceQuoteRequest[]
   customerUUID String?
   tenantId     String?
 }
@@ -176,6 +179,36 @@ model Bill {
   customer     Customer?     @relation(fields: [customerUUID], references: [uuid])
   customerUUID String?
   tenantId     String?
+}
+
+// Các Model đặc biệt
+model ProductPriceQuoteRequest {
+  id                    Int               @id @default(autoincrement())
+  quantity              Int
+  priceQuoteRequest     PriceQuoteRequest @relation(fields: [priceQuoteRequestUUID], references: [uuid])
+  priceQuoteRequestUUID String
+  product               Product           @relation(fields: [productUUID], references: [uuid])
+  productUUID           String
+}
+
+model ProductPriceQuote {
+  id              Int        @id @default(autoincrement())
+  negotiatedPrice Int
+  quantity        Int
+  priceQuote      PriceQuote @relation(fields: [priceQuoteUUID], references: [uuid])
+  priceQuoteUUID  String
+  product         Product    @relation(fields: [productUUID], references: [uuid])
+  productUUID     String
+}
+
+model ProductBill {
+  id          Int     @id @default(autoincrement())
+  fixedPrice  Int
+  quantity    Int
+  bill        Bill    @relation(fields: [billUUID], references: [uuid])
+  billUUID    String
+  product     Product @relation(fields: [productUUID], references: [uuid])
+  productUUID String
 }
 
 ///////////////////////
@@ -261,16 +294,28 @@ model Complaint {
 ///////////////////////
 
 model Product {
+  id                        Int                        @id @default(autoincrement())
+  uuid                      String                     @unique @default(uuid())
+  name                      String
+  code                      String
+  features                  String?
+  quantity                  Int
+  description               String?
+  price                     Int
+  unit                      String?
+  tenantId                  String?
+  images                    ImageProduct[]
+  productPriceQuotes        ProductPriceQuote[]
+  productPriceQuoteRequests ProductPriceQuoteRequest[]
+  productBills              ProductBill[]
+}
+
+model ImageProduct {
   id          Int     @id @default(autoincrement())
   uuid        String  @unique @default(uuid())
-  name        String
-  code        String
-  features    String?
-  quantity    Int
-  description String?
-  price       Int
-  unite       String?
-  tenantId    String?
+  url         String
+  productUUID String
+  product     Product @relation(fields: [productUUID], references: [uuid])
 }
 
 // Các Model sử dụng chung
@@ -279,36 +324,6 @@ model Product {
 //   tenant        Tenant? @relation(fields: [tenantUUID], references: [uuid])
 //   tenantUUID    String? @unique
 // }
-
-// Các Model đặc biệt
-model ProductPriceQuoteRequest {
-  id                    Int                @id @default(autoincrement())
-  productName           String
-  quantity              Int
-  description           String?
-  priceQuoteRequest     PriceQuoteRequest? @relation(fields: [priceQuoteRequestUUID], references: [uuid])
-  priceQuoteRequestUUID String?
-}
-
-model ProductPriceQuote {
-  id              Int         @id @default(autoincrement())
-  negotiatedPrice Int
-  quantity        Int
-  productCode     String
-  productName     String
-  priceQuote      PriceQuote? @relation(fields: [priceQuoteUUID], references: [uuid])
-  priceQuoteUUID  String?
-}
-
-model ProductBill {
-  id          Int     @id @default(autoincrement())
-  fixedPrice  Int
-  quantity    Int
-  productCode String
-  productName String
-  bill        Bill?   @relation(fields: [billUUID], references: [uuid])
-  billUUID    String?
-}
 
 model FieldComplaint {
   id                Int            @id @default(autoincrement())
