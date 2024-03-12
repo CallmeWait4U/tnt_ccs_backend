@@ -11,4 +11,9 @@ export class SignInDTO {
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  @ApiProperty({ example: 'congtya', type: String })
+  @IsString()
+  @IsNotEmpty()
+  domain: string;
 }
