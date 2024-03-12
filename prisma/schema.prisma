@@ -97,7 +97,7 @@ model Customer {
 }
 
 model Business {
-  id                        Int       @id @default(autoincrement())
+  id                        Int       @id @unique @default(autoincrement())
   name                      String
   businessNationality       String?
   registrationNumber        String?
@@ -111,7 +111,7 @@ model Business {
   representativePhone       String?
   representativeEmail       String?
   representativeNationality String?
-  customer                  Customer  @relation(fields: [customerUUID], references: [uuid])
+  customer                  Customer  @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
   customerUUID              String    @unique
 }
 
@@ -124,7 +124,7 @@ model Individual {
   email        String?
   phoneNumber  String
   nationality  String?
-  customer     Customer  @relation(fields: [customerUUID], references: [uuid])
+  customer     Customer  @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
   customerUUID String    @unique
 }
 
@@ -150,8 +150,8 @@ model PriceQuoteRequest {
   products     ProductPriceQuoteRequest[]
   customer     Customer?                  @relation(fields: [customerUUID], references: [uuid])
   customerUUID String?
-  quote        PriceQuote?                @relation(fields: [quoteUUID], references: [uuid])     
-  quoteUUID    String?                    
+  quote        PriceQuote?                @relation(fields: [quoteUUID], references: [uuid])
+  quoteUUID    String?
   tenantId     String?
 }
 

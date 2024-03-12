@@ -112,6 +112,12 @@ export class ReadIndividualResult implements IQueryResult {
   dayOfBirth: string;
 
   @Expose()
+  phoneNumber: string;
+
+  @Expose()
+  email: string;
+
+  @Expose()
   cccd: string;
 
   @Expose()
