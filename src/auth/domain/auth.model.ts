@@ -1,4 +1,4 @@
-import { Gender, TypeAccount } from '@prisma/client';
+import { Gender, Permission, TypeAccount } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class TenantModel {
@@ -84,6 +84,8 @@ export class AccountModel {
   type: TypeAccount;
   @Expose()
   tenantId: string;
+  @Expose()
+  permissions: Permission[];
   @Expose()
   employee: EmployeeType;
 }

@@ -1,26 +1,30 @@
-import { HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import * as bcrypt from 'bcrypt';
-import { AuthQuery } from 'src/auth/infrastructure/auth.query';
+import { AuthDomain } from 'src/auth/domain/auth.domain';
 import { AuthRepository } from 'src/auth/infrastructure/auth.repository';
+import { SignInResult } from '../query/result/signin.query.result';
 import { SignInQuery } from '../query/signin.query';
 
 @QueryHandler(SignInQuery)
-export class SignInHandler implements IQueryHandler<SignInQuery, any> {
-  @Inject()
-  private readonly authenticationQuery: AuthQuery;
+export class SignInHandler implements IQueryHandler<SignInQuery, SignInResult> {
   @Inject()
   private readonly authenticationRepository: AuthRepository;
+  @Inject()
+  private readonly authenticationDomain: AuthDomain;
 
-  async execute(query: SignInQuery): Promise<any> {
-    const user = await this.authenticationQuery.findUser(query.username);
-    if (!user) {
-      throw new HttpException('Wrong Username', HttpStatus.BAD_REQUEST);
-    }
-    const match = await bcrypt.compare(query.password, user.password);
-    if (!match) {
-      throw new HttpException('Wrong Password', HttpStatus.BAD_REQUEST);
-    }
-    return await this.authenticationRepository.signIn(user);
+  async execute(query: SignInQuery): Promise<SignInResult> {
+    const tenant = await this.authenticationRepository.getTenantByDomain(
+      query.domain,
+    );
+    this.authenticationDomain.checkTenant(tenant);
+    const account = await this.authenticationRepository.getAccount(
+      query.username,
+      tenant.tenantId,
+    );
+    const model = await this.authenticationDomain.signIn(
+      account,
+      query.password,
+    );
+    return await this.authenticationRepository.updateAccount(model, true);
   }
 }

@@ -5,6 +5,7 @@ import { AccountModel, EmployeeType, TenantModel } from '../domain/auth.model';
 type AccountEntity = Prisma.AccountGetPayload<{
   include: {
     employee: true;
+    permissions: true;
   };
 }>;
 

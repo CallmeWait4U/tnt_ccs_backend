@@ -16,7 +16,10 @@ async function bootstrap() {
     }),
   );
 
-  const config = new DocumentBuilder().setTitle('TNT Server API').build();
+  const config = new DocumentBuilder()
+    .addBearerAuth()
+    .setTitle('TNT Server API')
+    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
