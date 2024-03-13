@@ -86,8 +86,8 @@ model Customer {
   individual         Individual?
   tenantId           String?
   tasks              Task[]
-  phase              Phase?                @relation(fields: [phaseUUID], references: [uuid])
-  phaseUUID          String?
+  phase              Phase                 @relation(fields: [phaseUUID], references: [uuid])
+  phaseUUID          String
   priceQuoteRequests PriceQuoteRequest[]
   priceQuotes        PriceQuote[]
   bills              Bill[]
@@ -150,23 +150,23 @@ model PriceQuoteRequest {
   products     ProductPriceQuoteRequest[]
   customer     Customer?                  @relation(fields: [customerUUID], references: [uuid])
   customerUUID String?
-  quote        PriceQuote?                @relation(fields: [quoteUUID], references: [uuid])
-  quoteUUID    String?
+  quote        PriceQuote[]
   tenantId     String?
 }
 
 model PriceQuote {
-  id           Int                 @id @default(autoincrement())
-  uuid         String              @unique @default(uuid())
-  code         String
-  createdDate  DateTime
-  status       StatusPriceQuote
-  sentDate     DateTime?
-  products     ProductPriceQuote[]
-  customer     Customer?           @relation(fields: [customerUUID], references: [uuid])
-  request      PriceQuoteRequest[]
-  customerUUID String?
-  tenantId     String?
+  id                    Int                 @id @default(autoincrement())
+  uuid                  String              @unique @default(uuid())
+  code                  String
+  createdDate           DateTime
+  status                StatusPriceQuote
+  sentDate              DateTime?
+  products              ProductPriceQuote[]
+  customer              Customer?           @relation(fields: [customerUUID], references: [uuid])
+  priceQuoteRequest     PriceQuoteRequest   @relation(fields: [priceQuoteRequestUUID], references: [uuid])
+  priceQuoteRequestUUID String
+  customerUUID          String?
+  tenantId              String?
 }
 
 model Bill {
