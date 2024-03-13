@@ -62,15 +62,15 @@ export class CustomerRespository {
 
   async delete(models: CustomerModel[]): Promise<string[]> {
     const uuids = models.map((model) => model.uuid);
-    models.forEach(async (model) => {
-      if (model.isBusiness) {
-        await this.prisma.business.delete({ where: { id: model.business.id } });
-      } else {
-        await this.prisma.individual.delete({
-          where: { id: model.individual.id },
-        });
-      }
-    });
+    // models.forEach(async (model) => {
+    //   if (model.isBusiness) {
+    //     await this.prisma.business.delete({ where: { id: model.business.id } });
+    //   } else {
+    //     await this.prisma.individual.delete({
+    //       where: { id: model.individual.id },
+    //     });
+    //   }
+    // });
     await this.prisma.customer.deleteMany({ where: { uuid: { in: uuids } } });
     return uuids;
   }

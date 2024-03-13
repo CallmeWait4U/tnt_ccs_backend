@@ -68,7 +68,6 @@ export class CustomerQuery {
       }),
       this.prisma.customer.count({ where: { AND: conditions } }),
     ]);
-
     return {
       items: data.map((i) => {
         const propRelation = {
@@ -135,7 +134,12 @@ export class CustomerQuery {
       } else {
         return plainToClass(
           ReadIndividualResult,
-          { ...res, phaseName: res.phase ? res.phase.name : '' },
+          {
+            ...res,
+            ...res.business,
+            ...res.individual,
+            phaseName: res.phase ? res.phase.name : '',
+          },
           {
             excludeExtraneousValues: true,
           },
