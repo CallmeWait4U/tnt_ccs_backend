@@ -50,6 +50,11 @@ export class CreatePriceQuoteDTO {
   @IsString()
   customerUUID: string;
 
+  @ApiProperty({ example: 'uuid', type: String })
+  @IsNotEmpty()
+  @IsString()
+  priceQuoteRequestUUID: string;
+
   @ApiProperty({
     example: [{ uuid: 'uuid', negotiatedPrice: 1000, quantity: 1 }],
     type: [ProductItem],
