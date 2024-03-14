@@ -7,8 +7,11 @@ import { CreateAccountCommand } from 'src/account/application/command/create.acc
 import { CreateActivityCommand } from 'src/activity/application/activity/command/create.activity.command';
 import { CreateTaskCommand } from 'src/activity/application/task/command/create.task.command';
 import { SignUpCommand } from 'src/auth/application/command/signup.command';
+import { CreateBillCommand } from 'src/bill/application/command/create.bill.command';
 import { CreateCustomerCommand } from 'src/customer/application/command/create.customer.command';
 import { CreatePhaseCommand } from 'src/phase/application/command/create.phase.command';
+import { CreatePriceQuoteCommand } from 'src/priceQuote/application/command/create.priceQuote.command';
+import { CreatePriceQuoteRequestCommand } from 'src/priceQuoteRequest/application/command/create.priceQuoteRequest.command';
 import { CreateProductCommand } from 'src/product/application/command/create.product.command';
 
 @Injectable()
@@ -21,7 +24,7 @@ export class TestService {
     readonly commandBus: CommandBus,
   ) {}
 
-  async mockData(numCus: number) {
+  async mockData() {
     // Tạo Giai đoạn
     const dataPhase: CreatePhaseCommand[] = [];
     const namePhases = [
@@ -77,6 +80,12 @@ export class TestService {
           city: faker.location.city(),
           country: 'Việt Nam',
           domain: faker.word.noun(5),
+          name: faker.person.fullName(),
+          dayOfBirth: faker.date.birthdate({
+            min: 18,
+            max: 65,
+            mode: 'age',
+          }),
           username: `username${i + 1}`,
           password: '123456',
           passwordConfirm: '123456',
@@ -97,6 +106,11 @@ export class TestService {
           name: faker.person.fullName(),
           code: 'NV-' + i.toString().padStart(8, '0'),
           position: faker.person.jobTitle(),
+          dayOfBirth: faker.date.birthdate({
+            min: 18,
+            max: 65,
+            mode: 'age',
+          }),
           gender: faker.helpers.arrayElement([
             Gender.FEMALE,
             Gender.MALE,
@@ -149,6 +163,7 @@ export class TestService {
     const phases = (
       await this.prisma.phase.findMany({ select: { uuid: true } })
     ).map((i) => i.uuid);
+    const numCus = faker.number.int({ min: 50, max: 100 });
     for (let i = 0; i < numCus; i++) {
       dataCustomer.push(
         new CreateCustomerCommand({
@@ -251,7 +266,7 @@ export class TestService {
 
     // Tạo sản phẩm
     const dataProduct: CreateProductCommand[] = [];
-    const productUUID: string[] = [];
+    const products: { uuid: string; quantity: number; price: number }[] = [];
     const numProduct = faker.number.int({ min: 50, max: 80 });
     for (let i = 0; i < numProduct; i++) {
       dataProduct.push(
@@ -267,12 +282,131 @@ export class TestService {
       );
     }
     for (const item of dataProduct) {
-      productUUID.push(await this.commandBus.execute(item));
+      products.push({
+        uuid: await this.commandBus.execute(item),
+        quantity: item.quantity,
+        price: item.price,
+      });
     }
     console.log('Đã tạo Sản phẩm');
 
     // Tạo Yêu cầu báo giá
-    // const dataPriceQuoteRequest: CreatePriceQuoteRequestCommand[] = []
-    // const
+    const dataPriceQuoteRequest: CreatePriceQuoteRequestCommand[] = [];
+    for (const customer of customerUUID) {
+      const num = faker.number.int({ min: 2, max: 5 });
+      const cus = await this.prisma.customer.findUnique({
+        where: { uuid: customer.uuid },
+      });
+      const code = cus.code.split('-')[1];
+      for (let i = 0; i < num; i++) {
+        const createdDate = faker.date.recent({
+          days: 10,
+          refDate: new Date(),
+        });
+        dataPriceQuoteRequest.push(
+          new CreatePriceQuoteRequestCommand({
+            code: 'YCBG-' + i.toString().padStart(8, '0') + '-' + code,
+            createdDate: createdDate,
+            status: faker.helpers.arrayElement(['SENT', 'UNSENT']),
+            sentDate: faker.date.future({ refDate: createdDate }),
+            customerUUID: customer.uuid,
+            products: faker.helpers.arrayElements(products).map((product) => {
+              return {
+                uuid: product.uuid,
+                quantity: faker.number.int({ min: 1, max: product.quantity }),
+              };
+            }),
+          }),
+        );
+      }
+    }
+    for (const item of dataPriceQuoteRequest) {
+      await this.commandBus.execute(item);
+    }
+    console.log('Đã tạo Yêu cầu báo giá');
+
+    // Tạo Báo giá
+    const dataPriceQuote: CreatePriceQuoteCommand[] = [];
+    for (const customer of customerUUID) {
+      const num = faker.number.int({ min: 2, max: 5 });
+      const cus = await this.prisma.customer.findUnique({
+        where: { uuid: customer.uuid },
+      });
+      const code = cus.code.split('-')[1];
+      const priceQuoteRequest = await (
+        await this.prisma.priceQuoteRequest.findMany({
+          where: { customerUUID: customer.uuid },
+          select: { uuid: true },
+        })
+      ).map((item) => item.uuid);
+      for (let i = 0; i < num; i++) {
+        const createdDate = faker.date.recent({
+          days: 10,
+          refDate: new Date(),
+        });
+        dataPriceQuote.push(
+          new CreatePriceQuoteCommand({
+            code: 'BG-' + i.toString().padStart(8, '0') + '-' + code,
+            createdDate: createdDate,
+            status: faker.helpers.arrayElement(['SENT', 'UNSENT']),
+            sentDate: faker.date.future({ refDate: createdDate }),
+            customerUUID: customer.uuid,
+            priceQuoteRequestUUID:
+              faker.helpers.arrayElement(priceQuoteRequest),
+            products: faker.helpers.arrayElements(products).map((product) => {
+              return {
+                uuid: product.uuid,
+                quantity: faker.number.int({ min: 1, max: product.quantity }),
+                negotiatedPrice:
+                  Number(faker.commerce.price({ min: 1000, max: 8739 })) * 1000,
+              };
+            }),
+          }),
+        );
+      }
+    }
+    for (const item of dataPriceQuote) {
+      await this.commandBus.execute(item);
+    }
+    console.log('Đã tạo Báo giá');
+
+    // Tạo Hóa đơn
+    const dataBill: CreateBillCommand[] = [];
+    for (const customer of customerUUID) {
+      const num = faker.number.int({ min: 2, max: 5 });
+      const cus = await this.prisma.customer.findUnique({
+        where: { uuid: customer.uuid },
+      });
+      const code = cus.code.split('-')[1];
+      for (let i = 0; i < num; i++) {
+        const createdDate = faker.date.recent({
+          days: 10,
+          refDate: new Date(),
+        });
+        dataBill.push(
+          new CreateBillCommand({
+            code: 'HD-' + i.toString().padStart(8, '0') + '-' + code,
+            createdDate: createdDate,
+            status: faker.helpers.arrayElement(['PAID', 'UNPAID']),
+            sentDate: faker.date.future({ refDate: createdDate }),
+            customerUUID: customer.uuid,
+            products: faker.helpers.arrayElements(products).map((product) => {
+              return {
+                uuid: product.uuid,
+                quantity: faker.number.int({ min: 1, max: product.quantity }),
+                fixedPrice:
+                  Number(
+                    faker.commerce.price({ min: 1000, max: product.price }),
+                  ) * 1000,
+              };
+            }),
+          }),
+        );
+      }
+    }
+    for (const item of dataPriceQuote) {
+      await this.commandBus.execute(item);
+    }
+    console.log('Đã tạo Hóa đơn');
   }
 }
