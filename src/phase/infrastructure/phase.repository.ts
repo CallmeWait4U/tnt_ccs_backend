@@ -23,31 +23,65 @@ export class PhaseRepository {
       }
     });
     try {
-      let priority = phase.priority;
-      await Promise.all(
-        listPhase.map(async (item) => {
-          if (item.priority === priority) {
-            const newPriority = priority + 1;
-            await this.prisma.phase.update({
-              where: { uuid: item.uuid },
-              data: { priority: newPriority },
-            });
-            priority = newPriority;
-          }
-        }),
-      );
+      this.prisma.$transaction(async (transactionClient) => {
+        let priority = phase.priority;
+        await Promise.all(
+          listPhase.map(async (item) => {
+            if (item.priority === priority) {
+              const newPriority = priority + 1;
+              await transactionClient.phase.update({
+                where: { uuid: item.uuid },
+                data: { priority: newPriority },
+              });
+              priority = newPriority;
+            }
+          }),
+        );
 
-      await this.prisma.phase.create({ data: phase });
-      return { uuid: phase.uuid };
+        await transactionClient.phase.create({ data: phase });
+        return { uuid: phase.uuid };
+      });
     } catch (e) {
-      throw new Error(e.message);
+      throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   async update(phase: PhaseModel): Promise<any> {
     const { uuid, ...data } = phase;
-    await this.prisma.phase.update({ data, where: { uuid } });
-    return uuid;
+    const listPhase = await this.prisma.phase.findMany({
+      orderBy: { priority: 'asc' },
+    });
+
+    listPhase.forEach((item) => {
+      if (item.name.toUpperCase() === phase.name.toUpperCase()) {
+        throw new HttpException(
+          'Phase name already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    });
+    try {
+      this.prisma.$transaction(async (transactionClient) => {
+        let priority = phase.priority;
+        await Promise.all(
+          listPhase.map(async (item) => {
+            if (item.priority === priority) {
+              const newPriority = priority + 1;
+              await transactionClient.phase.update({
+                where: { uuid: item.uuid },
+                data: { priority: newPriority },
+              });
+              priority = newPriority;
+            }
+          }),
+        );
+
+        await transactionClient.phase.update({ data, where: { uuid } });
+        return { uuid: uuid };
+      });
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async delete(models: PhaseModel[]): Promise<string[]> {
