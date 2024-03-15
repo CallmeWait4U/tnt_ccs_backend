@@ -6,6 +6,7 @@ networks:
     
 volumes:
   postgresdb-data:
+  rabbitmq-data:
 
 services:
   local-postgres:
@@ -20,5 +21,22 @@ services:
       - TZ=Asia/Ho_Chi_Minh
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=abc12345
+    networks:
+      - gateway-network
+  
+  local-rabbitmq:
+    image: rabbitmq:3.12.2-management
+    restart: always
+    container_name: local-rabbitmq
+    hostname: local-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes: 
+      - rabbitmq-data:/var/lib/rabbitmq/mnesia
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=abc12345
     networks:
       - gateway-network

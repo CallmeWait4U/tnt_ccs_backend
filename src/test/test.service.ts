@@ -377,6 +377,16 @@ export class TestService {
       const cus = await this.prisma.customer.findUnique({
         where: { uuid: customer.uuid },
       });
+      const priceQuotes = await this.prisma.priceQuote.findMany({
+        where: { customerUUID: customer.uuid },
+        include: {
+          products: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      });
       const code = cus.code.split('-')[1];
       for (let i = 0; i < num; i++) {
         const createdDate = faker.date.recent({
@@ -390,21 +400,26 @@ export class TestService {
             status: faker.helpers.arrayElement(['PAID', 'UNPAID']),
             sentDate: faker.date.future({ refDate: createdDate }),
             customerUUID: customer.uuid,
-            products: faker.helpers.arrayElements(products).map((product) => {
-              return {
-                uuid: product.uuid,
-                quantity: faker.number.int({ min: 1, max: product.quantity }),
-                fixedPrice:
-                  Number(
-                    faker.commerce.price({ min: 1000, max: product.price }),
-                  ) * 1000,
-              };
-            }),
+            products: faker.helpers
+              .arrayElement(priceQuotes)
+              .products.map((product) => {
+                return {
+                  uuid: product.productUUID,
+                  quantity: faker.number.int({ min: 1, max: product.quantity }),
+                  fixedPrice:
+                    Number(
+                      faker.commerce.price({
+                        min: 1000,
+                        max: product.negotiatedPrice / 1000,
+                      }),
+                    ) * 1000,
+                };
+              }),
           }),
         );
       }
     }
-    for (const item of dataPriceQuote) {
+    for (const item of dataBill) {
       await this.commandBus.execute(item);
     }
     console.log('Đã tạo Hóa đơn');
