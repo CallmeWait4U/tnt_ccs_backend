@@ -61,6 +61,11 @@ export class CreateIndividualCustomerDTO {
   @IsString()
   hasAccount: StatusCustomerAccount;
 
+  @ApiProperty({ example: 'phaseUUID', type: String })
+  @IsNotEmpty()
+  @IsString()
+  phaseUUID: string;
+
   @ApiProperty({ example: 'Nguyễn Văn B', type: String })
   @IsNotEmpty()
   @IsString()

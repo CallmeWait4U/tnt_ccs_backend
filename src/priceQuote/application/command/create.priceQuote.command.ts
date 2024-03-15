@@ -11,6 +11,7 @@ export class CreatePriceQuoteCommand implements ICommand {
   status: StatusPriceQuote;
   sentDate: Date;
   customerUUID: string;
+  priceQuoteRequestUUID: string;
   products: ProductItem[];
 
   constructor(data: Partial<CreatePriceQuoteCommand>) {

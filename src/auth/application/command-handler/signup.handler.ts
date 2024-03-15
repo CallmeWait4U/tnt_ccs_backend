@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthDomain } from 'src/auth/domain/auth.domain';
 import { AuthFactory } from 'src/auth/infrastructure/auth.factory';
+import { AuthQuery } from 'src/auth/infrastructure/auth.query';
 import { AuthRepository } from '../../infrastructure/auth.repository';
 import { SignUpCommand } from '../command/signup.command';
 
@@ -13,6 +14,8 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand, any> {
   private readonly authenticationFactory: AuthFactory;
   @Inject()
   private readonly authenticationDomain: AuthDomain;
+  @Inject()
+  private readonly authenticationQuery: AuthQuery;
 
   async execute(command: SignUpCommand): Promise<any> {
     // Create Tenant
@@ -20,7 +23,11 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand, any> {
       ...command,
       name: command.tenantName,
     });
-    const tenant = this.authenticationDomain.createTenant(tenantModel);
+    const domainList = await this.authenticationQuery.getDomainList();
+    const tenant = this.authenticationDomain.createTenant(
+      tenantModel,
+      domainList,
+    );
     const tenantId = await this.authenticationRepository.createTenant(tenant);
 
     // Create Account

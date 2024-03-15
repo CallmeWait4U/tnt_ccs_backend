@@ -40,7 +40,7 @@ export class ReadAccountResult implements IQueryResult {
   district: string;
 
   @Expose()
-  city: number;
+  city: string;
 
   @Expose()
   description: string;
