@@ -121,4 +121,10 @@ export class PhaseQuery {
       total,
     };
   }
+  async getListForCheck(): Promise<any[]> {
+    const entities = await this.prisma.phase.findMany({
+      select: { name: true, uuid: true },
+    });
+    return entities;
+  }
 }

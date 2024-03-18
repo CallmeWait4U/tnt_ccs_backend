@@ -16,7 +16,7 @@ export class CreatePhaseHandler
   @Inject()
   private readonly phaseDomain: PhaseDomain;
 
-  async execute(command: CreatePhaseCommand): Promise<string> {
+  async execute(command: CreatePhaseCommand): Promise<any> {
     const model = this.phaseFactory.createPhaseModel(command);
 
     const phase = await this.phaseDomain.create(model);

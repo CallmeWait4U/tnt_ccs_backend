@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { PrismaService } from 'libs/database.module';
 import { PhaseModel } from '../domain/phase.model';
 import { PhaseFactory } from './phase.factory';
@@ -9,16 +9,63 @@ export class PhaseRepository {
   @Inject()
   private readonly phaseFactory: PhaseFactory;
 
-  async create(phase: PhaseModel): Promise<string> {
-    const { ...data } = phase;
-    await this.prisma.phase.create({ data });
-    return phase.uuid;
+  async create(phase: PhaseModel): Promise<any> {
+    const listPhase = await this.prisma.phase.findMany({
+      orderBy: { priority: 'asc' },
+    });
+
+    try {
+      this.prisma.$transaction(async (transactionClient) => {
+        let priority = phase.priority;
+        await Promise.all(
+          listPhase.map(async (item) => {
+            if (item.priority === priority) {
+              const newPriority = priority + 1;
+              await transactionClient.phase.update({
+                where: { uuid: item.uuid },
+                data: { priority: newPriority },
+              });
+              priority = newPriority;
+            }
+          }),
+        );
+
+        await transactionClient.phase.create({ data: phase });
+        return { uuid: phase.uuid };
+      });
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
-  async update(phase: PhaseModel): Promise<string> {
+  async update(phase: PhaseModel): Promise<any> {
     const { uuid, ...data } = phase;
-    await this.prisma.phase.update({ data, where: { uuid } });
-    return uuid;
+    const listPhase = await this.prisma.phase.findMany({
+      orderBy: { priority: 'asc' },
+    });
+
+    try {
+      this.prisma.$transaction(async (transactionClient) => {
+        let priority = phase.priority;
+        await Promise.all(
+          listPhase.map(async (item) => {
+            if (item.priority === priority) {
+              const newPriority = priority + 1;
+              await transactionClient.phase.update({
+                where: { uuid: item.uuid },
+                data: { priority: newPriority },
+              });
+              priority = newPriority;
+            }
+          }),
+        );
+
+        await transactionClient.phase.update({ data, where: { uuid } });
+        return { uuid: uuid };
+      });
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async delete(models: PhaseModel[]): Promise<string[]> {
