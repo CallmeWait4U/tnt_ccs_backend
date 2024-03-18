@@ -103,6 +103,12 @@ export class PhaseRepository {
     });
     return this.phaseFactory.createPhaseModels(entities);
   }
+  async getListCurrent(): Promise<any[]> {
+    const entities = await this.prisma.phase.findMany({
+      select: { name: true, uuid: true },
+    });
+    return entities;
+  }
 
   async count(): Promise<number> {
     return await this.prisma.phase.count();
