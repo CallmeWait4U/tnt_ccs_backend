@@ -1,6 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PhaseDomain } from 'src/phase/domain/phase.domain';
+import { PhaseQuery } from 'src/phase/infrastructure/phase.query';
 import { PhaseRepository } from 'src/phase/infrastructure/phase.repository';
 import { UpdatePhaseCommand } from '../command/update.phase.command';
 
@@ -12,10 +13,12 @@ export class UpdatePhaseHandler
   private readonly phaseRepository: PhaseRepository;
   @Inject()
   private readonly phaseDomain: PhaseDomain;
+  @Inject()
+  private readonly phaseQuery: PhaseQuery;
 
   async execute(command: UpdatePhaseCommand): Promise<string> {
     const modelCurrent = await this.phaseRepository.getByUUID(command.uuid);
-    const listPhaseCurrent = await this.phaseRepository.getListCurrent();
+    const listPhaseCurrent = await this.phaseQuery.getListForCheck();
     const modelUpdated = this.phaseDomain.update(
       modelCurrent,
       command,

@@ -1,13 +1,15 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException, Inject } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { PhaseRepository } from '../infrastructure/phase.repository';
+import { PhaseQuery } from '../infrastructure/phase.query';
 import { PhaseModel } from './phase.model';
 
 export class PhaseDomain {
-  private readonly phaseRepository: PhaseRepository;
+  @Inject()
+  private readonly phaseQuery: PhaseQuery;
   async create(model: PhaseModel): Promise<PhaseModel> {
-    const listPhaseName = await this.phaseRepository.getListCurrent();
-    if (listPhaseName.map((item) => item.name).includes(model.name)) {
+    const listPhaseName = await this.phaseQuery.getListForCheck();
+    console.log(listPhaseName);
+    if (listPhaseName?.map((item) => item.name).includes(model.name)) {
       throw new HttpException('Phase name already exists', 400);
     }
     const phaseUUID = uuidv4().toString();

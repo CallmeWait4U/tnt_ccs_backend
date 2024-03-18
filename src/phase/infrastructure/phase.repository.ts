@@ -14,14 +14,6 @@ export class PhaseRepository {
       orderBy: { priority: 'asc' },
     });
 
-    listPhase.forEach((item) => {
-      if (item.name.toUpperCase() === phase.name.toUpperCase()) {
-        throw new HttpException(
-          'Phase name already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    });
     try {
       this.prisma.$transaction(async (transactionClient) => {
         let priority = phase.priority;
@@ -52,14 +44,6 @@ export class PhaseRepository {
       orderBy: { priority: 'asc' },
     });
 
-    listPhase.forEach((item) => {
-      if (item.name.toUpperCase() === phase.name.toUpperCase()) {
-        throw new HttpException(
-          'Phase name already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    });
     try {
       this.prisma.$transaction(async (transactionClient) => {
         let priority = phase.priority;
@@ -102,12 +86,6 @@ export class PhaseRepository {
       where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] } },
     });
     return this.phaseFactory.createPhaseModels(entities);
-  }
-  async getListCurrent(): Promise<any[]> {
-    const entities = await this.prisma.phase.findMany({
-      select: { name: true, uuid: true },
-    });
-    return entities;
   }
 
   async count(): Promise<number> {
