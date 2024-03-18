@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
 import { RefreshTokensPairCommand } from '../application/command/refreshTokenPair.command';
 import { SignOutCommand } from '../application/command/signout.command';
@@ -31,19 +32,18 @@ export class AuthController {
   }
 
   @Post('sign-out')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  async signOut(@GetUser() user: any) {
+  async signOut(@GetUser() user: User) {
     const command = new SignOutCommand({ uuid: user.uuid });
     await this.commandBus.execute(command);
   }
 
   @Post('refresh')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt-refresh'))
-  async refreshTokensPair(@GetUser() user: any) {
-    const command = new RefreshTokensPairCommand({
-      uuid: user.uuid,
-      refreshToken: user.refreshToken,
-    });
+  async refreshTokensPair(@GetUser() user: User) {
+    const command = new RefreshTokensPairCommand({ uuid: user.uuid });
     return await this.commandBus.execute(command);
   }
 

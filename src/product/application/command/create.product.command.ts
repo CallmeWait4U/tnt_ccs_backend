@@ -7,7 +7,7 @@ export class CreateProductCommand implements ICommand {
   quantity: number;
   description: string;
   price: number;
-  unite: string;
+  unit: string;
   images: Express.Multer.File[];
 
   constructor(data: Partial<CreateProductCommand>) {

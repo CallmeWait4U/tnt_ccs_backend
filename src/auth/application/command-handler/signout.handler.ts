@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { AuthDomain } from 'src/auth/domain/auth.domain';
 import { AuthRepository } from '../../infrastructure/auth.repository';
 import { SignOutCommand } from '../command/signout.command';
 
@@ -7,8 +8,14 @@ import { SignOutCommand } from '../command/signout.command';
 export class SignOutHandler implements ICommandHandler<SignOutCommand, void> {
   @Inject()
   private readonly authenticationRepository: AuthRepository;
+  @Inject()
+  private readonly authenticationDomain: AuthDomain;
 
   async execute(command: SignOutCommand): Promise<void> {
-    await this.authenticationRepository.signOut(command.data.uuid);
+    const model = await this.authenticationRepository.getAccountUUID(
+      command.uuid,
+    );
+    const account = this.authenticationDomain.signOut(model);
+    await this.authenticationRepository.updateAccount(account);
   }
 }

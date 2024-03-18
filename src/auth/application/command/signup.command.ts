@@ -13,6 +13,9 @@ export class SignUpCommand implements ICommand {
   city: string;
   country: string;
   domain: string;
+  name: string;
+  dayOfBirth: Date;
+  cccd: string;
   username: string;
   password: string;
   passwordConfirm: string;

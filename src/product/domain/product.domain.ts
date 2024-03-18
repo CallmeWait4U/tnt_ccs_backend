@@ -4,9 +4,11 @@ import { ProductModel } from './product.model';
 export class ProductDomain {
   async create(model: ProductModel): Promise<ProductModel> {
     model.uuid = uuidv4().toString();
-    model.images.forEach((image) => {
-      image.uuid = uuidv4().toString();
-    });
+    if (model.images) {
+      model.images.forEach((image) => {
+        image.uuid = uuidv4().toString();
+      });
+    }
     return model;
   }
 

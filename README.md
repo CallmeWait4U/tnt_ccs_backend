@@ -92,3 +92,9 @@ To create tables in database or update tables/fields:
 ```bash
 $ pnpm prisma db push
 ```
+
+To delete and recreate database:
+
+```bash
+$ pnpm prisma migrate reset
+```

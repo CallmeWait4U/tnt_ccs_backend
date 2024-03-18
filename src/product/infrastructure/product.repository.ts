@@ -9,7 +9,7 @@ export class ProductRepository {
   @Inject()
   private readonly productFactory: ProductFactory;
 
-  async create(product: ProductModel): Promise<any> {
+  async create(product: ProductModel): Promise<string> {
     const { images, ...data } = product;
 
     await this.prisma.product.create({ data });
@@ -25,7 +25,7 @@ export class ProductRepository {
         }),
       );
     }
-    return { uuid: product.uuid };
+    return product.uuid;
   }
 
   async update(
