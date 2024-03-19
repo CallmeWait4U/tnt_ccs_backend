@@ -79,7 +79,7 @@ export class TestService {
           district: faker.location.county(),
           city: faker.location.city(),
           country: 'Việt Nam',
-          domain: faker.word.noun(5),
+          domain: i === 1 ? 'cola' : 'cocolala',
           name: faker.person.fullName(),
           dayOfBirth: faker.date.birthdate({
             min: 18,

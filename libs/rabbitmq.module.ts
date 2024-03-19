@@ -18,4 +18,4 @@ import { Module } from '@nestjs/common';
   providers: [],
   exports: [RabbitMQModule],
 })
-export class RabbitMqModule {}
+export class RmqModule {}

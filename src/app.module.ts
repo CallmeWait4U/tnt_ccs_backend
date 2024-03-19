@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { DatabaseModule } from 'libs/database.module';
 import { FirebaseModule } from 'libs/firebase.module';
-import { RabbitMqModule } from 'libs/rabbitmq.module';
+import { RmqModule } from 'libs/rabbitmq.module';
+import { RedisModule } from 'libs/redis.module';
 import { UtilityModule } from 'libs/utility.module';
 import { AccountModule } from './account/account.module';
 import { ActivityModule } from './activity/activity.module';
@@ -12,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { BillModule } from './bill/bill.module';
 import { CompanyModule } from './company/company.module';
 import { CustomerModule } from './customer/customer.module';
+import { NotificationModule } from './notification/notification.module';
 import { PhaseModule } from './phase/phase.module';
 import { PriceQuoteModule } from './priceQuote/priceQuote.module';
 import { PriceQuoteRequestModule } from './priceQuoteRequest/priceQuoteRequest.module';
@@ -23,7 +25,8 @@ import { TestModule } from './test/test.module';
     UtilityModule,
     DatabaseModule,
     FirebaseModule,
-    RabbitMqModule,
+    RmqModule,
+    RedisModule,
     PrismaClient,
     CompanyModule,
     AuthModule,
@@ -36,6 +39,7 @@ import { TestModule } from './test/test.module';
     PriceQuoteModule,
     PriceQuoteRequestModule,
     BillModule,
+    NotificationModule,
     TestModule,
   ],
   controllers: [AppController],

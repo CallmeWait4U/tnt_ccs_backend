@@ -7,6 +7,7 @@ networks:
 volumes:
   postgresdb-data:
   rabbitmq-data:
+  redis-data:
 
 services:
   local-postgres:
@@ -38,5 +39,19 @@ services:
       - TZ=Asia/Ho_Chi_Minh
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=abc12345
+    networks:
+      - gateway-network
+
+  local-redis:
+    image: redis:7.0.12
+    restart: always
+    container_name: local-redis
+    ports:
+      - 6379:6379
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis-data:/data
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
     networks:
       - gateway-network
