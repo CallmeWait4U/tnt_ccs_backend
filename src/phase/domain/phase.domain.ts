@@ -8,7 +8,6 @@ export class PhaseDomain {
   private readonly phaseQuery: PhaseQuery;
   async create(model: PhaseModel): Promise<PhaseModel> {
     const listPhaseName = await this.phaseQuery.getListForCheck();
-    console.log(listPhaseName);
     if (listPhaseName?.map((item) => item.name).includes(model.name)) {
       throw new HttpException('Phase name already exists', 400);
     }
