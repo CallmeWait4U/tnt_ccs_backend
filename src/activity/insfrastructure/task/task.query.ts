@@ -1,7 +1,12 @@
 import { Inject } from '@nestjs/common';
+import { StatusTask } from '@prisma/client';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
+import {
+  GetTasksByCustomerItem,
+  GetTasksByCustomerResult,
+} from 'src/activity/application/task/query/result/get.tasks.by.customer.query.result';
 import {
   GetTasksResult,
   TaskItem,
@@ -41,6 +46,7 @@ export class TaskQuery {
         }
       }
     }
+    conditions.push({ activityUUID });
     const [data, total] = await Promise.all([
       this.prisma.task.findMany({
         skip: Number(offset),
@@ -114,5 +120,44 @@ export class TaskQuery {
       },
       { excludeExtraneousValues: true },
     );
+  }
+
+  async getTasksByCustomer(
+    customerUUID: string,
+    history: boolean,
+  ): Promise<GetTasksByCustomerResult> {
+    const conditions = [];
+    if (history) {
+      conditions.push({ customerUUID }, { status: StatusTask.COMPLETED });
+    } else {
+      conditions.push(
+        { customerUUID },
+        { status: StatusTask.INCOMING || StatusTask.OVERDUE },
+      );
+    }
+    const [data, total] = await Promise.all([
+      this.prisma.task.findMany({
+        where: { AND: conditions },
+        include: {
+          activity: { select: { name: true } },
+          employees: { select: { name: true } },
+        },
+      }),
+      this.prisma.task.count({ where: { customerUUID } }),
+    ]);
+    return {
+      items: data.map((item) => {
+        return plainToClass(
+          GetTasksByCustomerItem,
+          {
+            ...item,
+            activityName: item.activity.name,
+            employeeName: item.employees.map((employee) => employee.name),
+          },
+          { excludeExtraneousValues: true },
+        );
+      }),
+      total,
+    };
   }
 }

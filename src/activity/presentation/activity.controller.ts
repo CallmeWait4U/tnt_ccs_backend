@@ -15,6 +15,7 @@ import { UpdateActivityCommand } from '../application/activity/command/update.ac
 import { GetActivitiesQuery } from '../application/activity/query/get.activities.query';
 import { ReadActivityQuery } from '../application/activity/query/read.activity.query';
 import { CreateTaskCommand } from '../application/task/command/create.task.command';
+import { GetTasksByCustomerQuery } from '../application/task/query/get.tasks.by.customer.query';
 import { GetTasksQuery } from '../application/task/query/get.tasks.query';
 import { ReadTaskQuery } from '../application/task/query/read.task.query';
 import { CreateActivityDTO } from './dto/activity/create.activity.dto';
@@ -24,6 +25,7 @@ import { ReadActivityDTO } from './dto/activity/read.activity.dto';
 import { UpdateActivityDTO } from './dto/activity/update.activity.dto';
 import { CreateTaskDTO } from './dto/task/create.task.dto';
 import { DeleteTaskDTO } from './dto/task/delete.task.dto';
+import { GetTasksByCustomer } from './dto/task/get.tasks.by.customer.dto';
 import { GetTasksDTO } from './dto/task/get.tasks.dto';
 import { ReadTaskDTO } from './dto/task/read.task.dto';
 
@@ -79,8 +81,14 @@ export class ActivityController {
   }
 
   @Get('/tasks/detail')
-  async ReadTask(@Query() q: ReadTaskDTO) {
+  async readTask(@Query() q: ReadTaskDTO) {
     const query = new ReadTaskQuery(q.uuid);
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/tasks/allbycustomer')
+  async getTasksByCustomer(@Query() q: GetTasksByCustomer) {
+    const query = new GetTasksByCustomerQuery(q.customerUUID, q.history);
     return await this.queryBus.execute(query);
   }
 

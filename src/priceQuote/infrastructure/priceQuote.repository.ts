@@ -11,7 +11,8 @@ export class PriceQuoteRepository {
 
   async create(priceQuote: PriceQuoteModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { customerUUID, products, ...data } = priceQuote;
+    const { customerUUID, products, priceQuoteRequestUUID, ...data } =
+      priceQuote;
     await this.prisma.priceQuote.create({
       data: {
         ...data,
@@ -20,12 +21,14 @@ export class PriceQuoteRepository {
             uuid: customerUUID,
           },
         },
+        priceQuoteRequest: { connect: { uuid: priceQuoteRequestUUID } },
       },
     });
 
     if (products.length > 0) {
       await Promise.all(
         products.map(async (item) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { uuid, ...data } = item;
           await this.prisma.productPriceQuote.create({
             data: {
@@ -71,6 +74,7 @@ export class PriceQuoteRepository {
         products.map(async (item) => {
           if (item.uuid)
             if (!listProductCurrentUUIDS.includes(item.uuid)) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { uuid, ...data } = item;
               await this.prisma.productPriceQuote.create({
                 data: {
@@ -96,6 +100,7 @@ export class PriceQuoteRepository {
                   },
                 });
               if (currentProduct?.id) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { uuid, ...dataUpdate } = item;
                 await this.prisma.productPriceQuote.update({
                   data: { ...dataUpdate },

@@ -21,6 +21,8 @@ import { ReadAccountDTO } from './dto/read.account.dto';
 import { UpdateAccountDTO } from './dto/update.account.dto';
 
 @ApiTags('accounts')
+// @ApiBearerAuth()
+// @UseGuards(AuthGuard('jwt'))
 @Controller('accounts')
 export class AccountController {
   constructor(

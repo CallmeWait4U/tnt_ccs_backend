@@ -10,8 +10,11 @@ export class CustomerRespository {
   private readonly customerFactory: CustomerFactory;
 
   async create(customer: CustomerModel): Promise<string> {
-    const { business, individual, ...dataCus } = customer;
-    await this.prisma.customer.create({ data: dataCus });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, business, individual, phaseUUID, ...dataCus } = customer;
+    await this.prisma.customer.create({
+      data: { ...dataCus, phase: { connect: { uuid: customer.phaseUUID } } },
+    });
     if (customer.isBusiness) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...dataBusiness } = business;

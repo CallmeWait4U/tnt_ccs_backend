@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { RmqModule } from 'libs/rabbitmq.module';
 import { CreatePhaseHandler } from './application/command-handler/create.phase.handler';
 import { DeletePhaseHandler } from './application/command-handler/delete.phase.handler';
 import { UpdatePhaseHandler } from './application/command-handler/update.phase.handler';
@@ -26,7 +27,7 @@ const infrastructure = [PhaseRepository, PhaseQuery, PhaseFactory];
 const domain = [PhaseDomain];
 
 @Module({
-  imports: [CqrsModule],
+  imports: [CqrsModule, RmqModule],
   providers: [...application, ...infrastructure, ...domain],
   controllers: [PhaseController],
 })

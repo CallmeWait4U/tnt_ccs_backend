@@ -61,6 +61,11 @@ export class CreateBusinessCustomerDTO {
   @IsString()
   hasAccount: StatusCustomerAccount;
 
+  @ApiProperty({ example: 'phaseUUID', type: String })
+  @IsNotEmpty()
+  @IsString()
+  phaseUUID: string;
+
   @ApiProperty({ example: 'Công ty Bất động sản 1TV', type: String })
   @IsNotEmpty()
   @IsString()

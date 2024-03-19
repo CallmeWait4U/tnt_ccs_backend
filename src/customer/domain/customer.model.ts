@@ -77,6 +77,8 @@ export class CustomerModel {
   @Expose()
   hasAccount: StatusCustomerAccount;
   @Expose()
+  phaseUUID: string;
+  @Expose()
   tenantId: string;
   @Expose()
   business: BusinessType;
