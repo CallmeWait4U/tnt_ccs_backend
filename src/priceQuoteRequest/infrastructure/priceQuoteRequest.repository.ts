@@ -50,7 +50,6 @@ export class PriceQuoteRequestRepository {
 
   async update(priceQuoteRequest: PriceQuoteRequestModel): Promise<any> {
     const { uuid, products, ...data } = priceQuoteRequest;
-    console.log(products);
     await this.prisma.priceQuoteRequest.update({ data, where: { uuid } });
 
     await this.prisma.productPriceQuoteRequest.deleteMany({
@@ -64,7 +63,6 @@ export class PriceQuoteRequestRepository {
           select: { productUUID: true },
           where: { priceQuoteRequestUUID: uuid },
         });
-      console.log(listProductPriceQuoteRequest);
       const listProductCurrentUUIDS = listProductPriceQuoteRequest.map(
         (item) => item.productUUID,
       );
