@@ -9,16 +9,23 @@ export class ActivityRespository {
   @Inject()
   private readonly activityFactory: ActivityFactory;
 
-  async create(activity: ActivityModel): Promise<string> {
+  async create(activity: ActivityModel, phaseUUIDs: string[]): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { tasks, ...data } = activity;
-    await this.prisma.activity.create({ data });
+    const { tasks, phases, ...data } = activity;
+    console.log(activity);
+    console.log(phases);
+    await this.prisma.activity.create({
+      data: {
+        ...data,
+        phases: { connect: phaseUUIDs.map((uuid) => ({ uuid: uuid })) },
+      },
+    });
     return activity.uuid;
   }
 
   async update(activity: ActivityModel) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { uuid, tasks, ...data } = activity;
+    const { uuid, tasks, phases, ...data } = activity;
     await this.prisma.activity.update({
       data,
       where: { uuid },
@@ -35,7 +42,7 @@ export class ActivityRespository {
   async getByUUID(uuid: string): Promise<ActivityModel> {
     const entity = await this.prisma.activity.findUnique({
       where: { uuid },
-      include: { tasks: true },
+      include: { tasks: true, phases: true },
     });
     return this.activityFactory.createActivityModel(entity);
   }

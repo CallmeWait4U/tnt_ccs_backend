@@ -44,6 +44,9 @@ export class ActivityQuery {
         _count: {
           select: { tasks: true },
         },
+        phases: {
+          select: { name: true },
+        },
       },
     });
     if (numOfTasks >= 0) {
@@ -57,7 +60,11 @@ export class ActivityQuery {
         items: res.map((i) => {
           return plainToClass(
             ActivityItem,
-            { ...i, totalTasks: i._count.tasks },
+            {
+              ...i,
+              totalTasks: i._count.tasks,
+              phaseName: i.phases.map((p) => p.name),
+            },
             { excludeExtraneousValues: true },
           );
         }),
@@ -68,7 +75,11 @@ export class ActivityQuery {
       items: data.map((i) => {
         return plainToClass(
           ActivityItem,
-          { ...i, totalTasks: i._count.tasks },
+          {
+            ...i,
+            totalTasks: i._count.tasks,
+            phaseName: i.phases.map((p) => p.name),
+          },
           { excludeExtraneousValues: true },
         );
       }),
@@ -79,12 +90,21 @@ export class ActivityQuery {
   async readActivity(uuid: string): Promise<ReadActivityResult> {
     const res = await this.prisma.activity.findFirst({
       where: { uuid },
+      include: {
+        phases: {
+          select: { name: true },
+        },
+      },
     });
     if (!res) {
       return {} as ReadActivityResult;
     }
-    return plainToClass(ReadActivityResult, res, {
-      excludeExtraneousValues: true,
-    });
+    return plainToClass(
+      ReadActivityResult,
+      { ...res, phaseName: res.phases.map((p) => p.name) },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 }

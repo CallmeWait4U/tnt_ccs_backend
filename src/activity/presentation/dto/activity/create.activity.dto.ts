@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateActivityDTO {
   @ApiProperty({ example: 'String', type: String })
@@ -11,4 +11,10 @@ export class CreateActivityDTO {
   @IsOptional()
   @IsString()
   description: string;
+
+  @ApiProperty({ example: '["uuid1", "uuid2", "uuid3"]', type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  phases?: string[];
 }

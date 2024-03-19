@@ -1,5 +1,11 @@
 import { Expose } from 'class-transformer';
+// import { PhaseModel } from 'src/phase/domain/phase.model';
 import { TaskModel } from '../task/task.model';
+
+export class PhaseType {
+  @Expose()
+  uuid: string;
+}
 
 export class ActivityModel {
   @Expose()
@@ -16,4 +22,7 @@ export class ActivityModel {
 
   @Expose()
   tasks: TaskModel[];
+
+  @Expose()
+  phases: PhaseType[];
 }

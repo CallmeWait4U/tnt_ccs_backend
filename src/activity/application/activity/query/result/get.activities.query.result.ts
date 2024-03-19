@@ -12,6 +12,9 @@ export class ActivityItem {
   description: string;
 
   @Expose()
+  phaseName: string[];
+
+  @Expose()
   totalTasks: number;
 }
 
