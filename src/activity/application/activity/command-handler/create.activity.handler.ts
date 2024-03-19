@@ -19,6 +19,6 @@ export class CreateActivityHandler
   async execute(command: CreateActivityCommand): Promise<string> {
     const model = this.activityFactory.createActivityModel(command);
     const activity = await this.activityDomain.create(model);
-    return await this.activityRespository.create(activity);
+    return await this.activityRespository.create(activity, command.phases);
   }
 }

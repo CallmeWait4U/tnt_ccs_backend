@@ -5,6 +5,7 @@ import { ActivityModel } from '../../domain/activity/activity.model';
 type ActivityEntity = Prisma.ActivityGetPayload<{
   include: {
     tasks: true;
+    phases: true;
   };
 }>;
 

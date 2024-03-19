@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreatePhaseDTO {
   @ApiProperty({ example: 'Nguyễn Văn A', type: String })
@@ -9,7 +9,7 @@ export class CreatePhaseDTO {
 
   @ApiProperty({ example: 1, type: Number })
   @IsNotEmpty()
-  @IsInt()
+  @IsNumber()
   priority: number;
 
   @ApiProperty({

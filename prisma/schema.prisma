@@ -16,7 +16,7 @@ model Tenant {
   name                       String
   taxCode                    String
   businessRegistrationNumber String
-  businessNationality        String
+  businessNationality        String?
   businessIndustry           String
   phoneNumber                String
   email                      String
@@ -138,6 +138,7 @@ model Phase {
   description String?
   tenantId    String?
   customers   Customer[]
+  activities  Activity[]
 }
 
 model PriceQuoteRequest {
@@ -245,6 +246,7 @@ model Activity {
   name        String
   description String?
   tasks       Task[]
+  phases      Phase[]
   tenantId    String?
 }
 
