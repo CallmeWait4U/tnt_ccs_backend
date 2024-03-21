@@ -25,4 +25,5 @@ export class ActivityModel {
 
   @Expose()
   phases: string[];
+  
 }
