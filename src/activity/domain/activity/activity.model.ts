@@ -24,5 +24,6 @@ export class ActivityModel {
   tasks: TaskModel[];
 
   @Expose()
-  phases: PhaseType[];
+  phases: string[];
+  
 }

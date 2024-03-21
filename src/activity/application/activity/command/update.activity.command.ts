@@ -4,6 +4,7 @@ export class UpdateActivityCommand implements ICommand {
   uuid: string;
   name: string;
   description: string;
+  phases: string[];
 
   constructor(readonly data: Partial<UpdateActivityCommand>) {
     Object.assign(this, data);
