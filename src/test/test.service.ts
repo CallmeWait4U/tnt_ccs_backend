@@ -27,6 +27,7 @@ export class TestService {
   async mockData() {
     // Tạo Giai đoạn
     const dataPhase: CreatePhaseCommand[] = [];
+    const phaseUUID: string[] = [];
     const namePhases = [
       'Tiềm năng',
       'Đang liên lạc',
@@ -44,10 +45,9 @@ export class TestService {
       );
     }
     for (const item of dataPhase) {
-      await this.commandBus.execute(item);
+      phaseUUID.push(await this.commandBus.execute(item));
     }
     console.log('Đã tạo Giai đoạn');
-
     // Tạo Tenant
     const dataTenant: SignUpCommand[] = [];
     const businessIndustryList = [
@@ -149,6 +149,7 @@ export class TestService {
         new CreateActivityCommand({
           name,
           description: faker.lorem.sentence(),
+          phases: faker.helpers.arrayElements(phaseUUID),
         }),
       );
     }

@@ -31,8 +31,8 @@ export class PhaseRepository {
         );
 
         await transactionClient.phase.create({ data: phase });
-        return phase.uuid;
       });
+      return phase.uuid;
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
