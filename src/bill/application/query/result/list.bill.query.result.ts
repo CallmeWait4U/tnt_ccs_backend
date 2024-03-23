@@ -20,6 +20,12 @@ export class BillItem {
 
   @Expose()
   customerUUID: string;
+
+  @Expose()
+  name: string;
+
+  @Expose()
+  phoneNumber: string;
 }
 
 export class GetBillsResult implements IQueryResult {

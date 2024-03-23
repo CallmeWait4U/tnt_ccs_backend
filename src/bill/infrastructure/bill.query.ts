@@ -39,17 +39,34 @@ export class BillQuery {
         skip: Number(offset),
         take: Number(limit),
         where: { AND: conditions },
-
+        include: {
+          customer: {
+            include: {
+              business: true,
+              individual: true,
+            },
+          },
+        },
         orderBy: [{ id: 'asc' }],
       }),
       this.prisma.bill.count({ where: { AND: conditions } }),
     ]);
     return {
       items: data.map((i) => {
+        const name =
+          i.customer.isBusiness === true
+            ? i.customer.business.name
+            : i.customer.individual.name;
+        const phoneNumber =
+          i.customer.isBusiness === true
+            ? i.customer.business.representativePhone
+            : i.customer.individual.phoneNumber;
         return plainToClass(
           BillItem,
           {
             ...i,
+            name: name,
+            phoneNumber: phoneNumber,
           },
           { excludeExtraneousValues: true },
         );
