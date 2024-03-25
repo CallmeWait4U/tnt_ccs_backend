@@ -23,9 +23,8 @@ export class BillQuery {
     searchModel?: any,
   ): Promise<GetBillsResult> {
     const conditions = [];
-    const search: { [key: string]: any } = searchModel
-      ? JSON.parse(searchModel)
-      : undefined;
+    const search = JSON.parse(searchModel);
+
     if (search) {
       for (const [prop, item] of Object.entries(search)) {
         const obj = {};
