@@ -23,7 +23,7 @@ export class BillQuery {
     searchModel?: any,
   ): Promise<GetBillsResult> {
     const conditions = [];
-    const search = JSON.parse(searchModel);
+    const search = searchModel ? JSON.parse(searchModel) : undefined;
 
     if (search) {
       for (const [prop, item] of Object.entries(search)) {
