@@ -29,6 +29,7 @@ export class CreatePhaseHandler
     //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMWYwYTVmMzgtNmRiMi00YmI4LTgzZDctZTg5MzI3OTI2OWM1IiwidHlwZSI6IkFETUlOIiwidGVuYW50SWQiOiIyZTdlNGJkMS04OGRhLTQ3ZjctODQzMC1kNmRlNTRkODhlYjgiLCJpYXQiOjE3MTA2MDE1NjQsImV4cCI6MTcxMDY4Nzk2NH0.kA1P9gIhenwzmDjRmrfpnF16efRzLl-MHh5W0DHi0xI',
     // );
 
-    return await this.phaseRepository.create(phase);
+    const uuid = await this.phaseRepository.create(phase);
+    return uuid;
   }
 }
