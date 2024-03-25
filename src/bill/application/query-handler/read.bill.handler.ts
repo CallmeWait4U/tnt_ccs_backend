@@ -10,6 +10,9 @@ export class ReadBillHandler
   constructor(private readonly billQuery: BillQuery) {}
 
   async execute(query: ReadBillQuery): Promise<ReadBillResult> {
-    return await this.billQuery.readBill(query.uuid);
+    if (!query?.searchModel || query?.searchModel === '{}') {
+      return await this.billQuery.readBill(query.uuid);
+    }
+    return await this.billQuery.readBill(query.uuid, query.searchModel);
   }
 }

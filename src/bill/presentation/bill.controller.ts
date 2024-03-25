@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -37,10 +39,11 @@ export class BillController {
 
   @Get('')
   async listBills(@Query() q: GetBillsDTO, @GetUser() user: User) {
-    let searchModel = q.searchModel;
+    let searchModel = q.searchModel || '{}';
+
     if (user.type === 'CUSTOMER') {
       searchModel = JSON.stringify({
-        ...JSON.parse(q.searchModel),
+        ...JSON.parse(searchModel),
         customerUUID: { isCustom: false, value: user.uuid, valueType: 'text' },
       });
     }
@@ -53,25 +56,56 @@ export class BillController {
 
   @Get('/:uuid')
   async readBill(@Param() q: ReadBillDTO, @GetUser() user: User) {
-    console.log(user);
-    const query = new ReadBillQuery(q.uuid);
+    let searchModel;
+    if (user.type === 'CUSTOMER') {
+      searchModel = JSON.stringify({
+        customerUUID: {
+          isCustom: false,
+          value: user.uuid,
+          valueType: 'text',
+        },
+      });
+    }
+    const query = new ReadBillQuery(q.uuid, searchModel);
     return await this.queryBus.execute(query);
   }
 
   @Post('')
-  async createBill(@Body() body: CreateBillDTO) {
+  async createBill(@Body() body: CreateBillDTO, @GetUser() user: User) {
+    if (user.type === 'CUSTOMER') {
+      return new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
     const command = new CreateBillCommand(body);
     return await this.commandBus.execute(command);
   }
 
   @Put('/:uuid')
-  async updateBill(@Param('uuid') uuid: string, @Body() body: UpdateBillDTO) {
+  async updateBill(
+    @Param('uuid') uuid: string,
+    @Body() body: UpdateBillDTO,
+    @GetUser() user: User,
+  ) {
+    if (user.type === 'CUSTOMER') {
+      return new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
     const command = new UpdateBillCommand({ ...body, uuid });
     return await this.commandBus.execute(command);
   }
 
   @Delete('/:uuid')
-  async deleteBill(@Param() body: DeleteBillDTO) {
+  async deleteBill(@Param() body: DeleteBillDTO, @GetUser() user: User) {
+    if (user.type === 'CUSTOMER') {
+      return new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
     const command = new DeleteBillCommand(body);
     return await this.commandBus.execute(command);
   }
