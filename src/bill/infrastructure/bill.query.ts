@@ -23,9 +23,8 @@ export class BillQuery {
     searchModel?: any,
   ): Promise<GetBillsResult> {
     const conditions = [];
-    const search: { [key: string]: any } = searchModel
-      ? JSON.parse(searchModel)
-      : undefined;
+    const search = searchModel ? JSON.parse(searchModel) : undefined;
+
     if (search) {
       for (const [prop, item] of Object.entries(search)) {
         const obj = {};
@@ -51,6 +50,7 @@ export class BillQuery {
       }),
       this.prisma.bill.count({ where: { AND: conditions } }),
     ]);
+
     return {
       items: data.map((i) => {
         const name =
@@ -75,7 +75,18 @@ export class BillQuery {
     };
   }
 
-  async readBill(uuid: string): Promise<ReadBillResult> {
+  async readBill(uuid: string, searchModel?: any): Promise<ReadBillResult> {
+    const conditions = [];
+    const search = searchModel ? JSON.parse(searchModel) : undefined;
+
+    if (search) {
+      for (const [prop, item] of Object.entries(search)) {
+        const obj = {};
+        const { value } = this.util.buildSearch(item);
+        obj[prop] = value;
+        conditions.push(obj);
+      }
+    }
     const bill = await this.prisma.bill.findUnique({
       include: {
         products: {

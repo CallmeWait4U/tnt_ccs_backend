@@ -12,8 +12,6 @@ export class ActivityRespository {
   async create(activity: ActivityModel, phaseUUIDs: string[]): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { tasks, phases, ...data } = activity;
-    console.log(activity);
-    console.log(phases);
     await this.prisma.activity.create({
       data: {
         ...data,
