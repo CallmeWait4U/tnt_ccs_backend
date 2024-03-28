@@ -55,13 +55,11 @@ export class PriceQuoteController {
 
   @Get('/:uuid')
   async readPriceQuote(@Param() q: ReadPriceQuoteDTO, @GetUser() user: User) {
-    let query;
+    let customerUUID = undefined;
     if (user.type === 'CUSTOMER') {
-      query = new ReadPriceQuoteQuery(q.uuid, user.uuid);
-    } else {
-      query = new ReadPriceQuoteQuery(q.uuid);
+      customerUUID = user.uuid;
     }
-
+    const query = new ReadPriceQuoteQuery(q.uuid, customerUUID);
     return await this.queryBus.execute(query);
   }
 
