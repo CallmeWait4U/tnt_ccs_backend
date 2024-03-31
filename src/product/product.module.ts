@@ -4,6 +4,7 @@ import { CreateProductHandler } from './application/command-handler/create.produ
 import { DeleteProductHandler } from './application/command-handler/delete.product.handler';
 import { UpdateProductHandler } from './application/command-handler/update.product.handler';
 import { GetProductsHandler } from './application/query-handler/list.product.handler';
+import { ListProductOptionsHandler } from './application/query-handler/list.product.options.handler';
 import { ReadProductHandler } from './application/query-handler/read.product.handler';
 import { ProductDomain } from './domain/product.domain';
 import { ProductFactory } from './infrastructure/product.factory';
@@ -17,6 +18,7 @@ const application = [
   CreateProductHandler,
   UpdateProductHandler,
   DeleteProductHandler,
+  ListProductOptionsHandler,
 ];
 
 const infrastructure = [ProductRepository, ProductQuery, ProductFactory];
