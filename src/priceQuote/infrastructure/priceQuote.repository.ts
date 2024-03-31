@@ -13,29 +13,21 @@ export class PriceQuoteRepository {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { customerUUID, products, priceQuoteRequestUUID, ...data } =
       priceQuote;
+    const priceQuoteRequestConect = priceQuoteRequestUUID
+      ? { connect: { uuid: priceQuoteRequestUUID } }
+      : undefined;
 
-    const res = priceQuoteRequestUUID
-      ? await this.prisma.priceQuote.create({
-          data: {
-            ...data,
-            customer: {
-              connect: {
-                uuid: customerUUID,
-              },
-            },
-            priceQuoteRequest: { connect: { uuid: priceQuoteRequestUUID } },
+    await this.prisma.priceQuote.create({
+      data: {
+        ...data,
+        customer: {
+          connect: {
+            uuid: customerUUID,
           },
-        })
-      : await this.prisma.priceQuote.create({
-          data: {
-            ...data,
-            customer: {
-              connect: {
-                uuid: customerUUID,
-              },
-            },
-          },
-        });
+        },
+        priceQuoteRequest: priceQuoteRequestConect,
+      },
+    });
 
     if (products.length > 0) {
       await Promise.all(
