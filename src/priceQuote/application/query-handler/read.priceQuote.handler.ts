@@ -10,6 +10,9 @@ export class ReadPriceQuoteHandler
   constructor(private readonly priceQuoteQuery: PriceQuoteQuery) {}
 
   async execute(query: ReadPriceQuoteQuery): Promise<ReadPriceQuoteResult> {
-    return await this.priceQuoteQuery.readPriceQuote(query.uuid);
+    return await this.priceQuoteQuery.readPriceQuote(
+      query.uuid,
+      query.customerUUID,
+    );
   }
 }
