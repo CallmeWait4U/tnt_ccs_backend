@@ -164,8 +164,8 @@ model PriceQuote {
   sentDate              DateTime?
   products              ProductPriceQuote[]
   customer              Customer?           @relation(fields: [customerUUID], references: [uuid])
-  priceQuoteRequest     PriceQuoteRequest   @relation(fields: [priceQuoteRequestUUID], references: [uuid])
-  priceQuoteRequestUUID String
+  priceQuoteRequest     PriceQuoteRequest?   @relation(fields: [priceQuoteRequestUUID], references: [uuid])
+  priceQuoteRequestUUID String?
   customerUUID          String?
   tenantId              String?
 }

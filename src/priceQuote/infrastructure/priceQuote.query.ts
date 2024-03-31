@@ -61,13 +61,16 @@ export class PriceQuoteQuery {
     uuid: string,
     customerUUID?: string,
   ): Promise<ReadPriceQuoteResult> {
+    const conditions =
+      customerUUID && customerUUID !== '' ? { uuid, customerUUID } : { uuid };
+
     const priceQuote = await this.prisma.priceQuote.findUnique({
       include: {
         products: {
           include: { product: true },
         },
       },
-      where: { uuid, customerUUID },
+      where: conditions,
     });
 
     if (priceQuote) {
