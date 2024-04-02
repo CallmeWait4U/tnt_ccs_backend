@@ -15,7 +15,7 @@ export class ActivityRespository {
     await this.prisma.activity.create({
       data: {
         ...data,
-        phases: { connect: phaseUUIDs.map((uuid) => ({ uuid: uuid })) },
+        phases: { connect: phaseUUIDs?.map((uuid) => ({ uuid: uuid })) },
       },
     });
     return activity.uuid;
