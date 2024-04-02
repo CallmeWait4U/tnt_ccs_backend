@@ -1,112 +1,82 @@
-import { HttpException, HttpStatus, Inject } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Account, TypeAccount } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+import { Inject } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
-import { SignUpCommand } from '../application/command/signup.command';
-import { jwtConfig } from '../presentation/jwt/jwt.config';
+import { SignInResult } from '../application/query/result/signin.query.result';
+import { AccountModel, TenantModel } from '../domain/auth.model';
+import { AuthFactory } from './auth.factory';
 
 export class AuthRepository {
   @Inject()
-  private readonly jwtService: JwtService;
-
-  @Inject()
   private readonly prisma: PrismaService;
+  @Inject()
+  private readonly authFactory: AuthFactory;
 
-  async createUser(command: SignUpCommand) {
-    const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(command.password, salt);
-    let type: TypeAccount;
-    switch (command.type) {
-      case 0: {
-        type = 'ADMIN';
-        break;
-      }
-      case 1: {
-        type = 'EMPLOYEE';
-        break;
-      }
-      case 2: {
-        type = 'CUSTOMER';
-        break;
-      }
-      default: {
-        return new HttpException('Wrong Type', HttpStatus.BAD_REQUEST);
-      }
-    }
-    const data = {
-      username: command.username,
-      password: hashPassword,
-      type: type,
-    };
+  async createTenant(tenant: TenantModel): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...data } = tenant;
+    await this.prisma.tenant.create({ data });
+    return tenant.tenantId;
+  }
+
+  async createAccount(account: AccountModel): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, permissions, employee, ...data } = account;
     await this.prisma.account.create({ data });
-  }
-
-  async signIn(
-    account: Account,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const tokens = await this.generateTokenPair(account);
-    const salt = await bcrypt.genSalt();
-    const hashRefreshToken = await bcrypt.hash(tokens.refreshToken, salt);
-    await this.prisma.account.update({
-      data: {
-        accessToken: tokens.accessToken,
-        refreshToken: hashRefreshToken,
-      },
-      where: { uuid: account.uuid },
+    await this.prisma.employee.create({
+      data: { ...employee, account: { connect: { uuid: account.uuid } } },
     });
-    return tokens;
+    return account.uuid;
   }
 
-  async signOut(uuid: string): Promise<void> {
-    await this.prisma.account.update({
-      data: {
-        accessToken: null,
-        refreshToken: null,
-      },
+  async updateAccount(
+    account: AccountModel,
+    signIn?: boolean,
+  ): Promise<SignInResult | { accessToken: string; refreshToken: string }> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { uuid, permissions, employee, ...data } = account;
+    const res = await this.prisma.account.update({
+      data,
       where: { uuid },
-    });
-  }
-
-  async refresh(
-    account: Account,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const tokens = await this.generateTokenPair(account);
-    await this.prisma.account.update({
-      data: {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
+      include: {
+        permissions: true,
       },
-      where: { uuid: account.uuid },
     });
-    return tokens;
+    return signIn
+      ? plainToClass(
+          SignInResult,
+          {
+            ...res,
+            permissions: res.permissions.map(
+              (permission) => permission.namePermission,
+            ),
+          },
+          { excludeExtraneousValues: true },
+        )
+      : {
+          accessToken: account.accessToken,
+          refreshToken: account.refreshToken,
+        };
   }
 
-  async generateTokenPair(
-    account: Account,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          uuid: account.uuid,
-          username: account.username,
-        },
-        {
-          secret: jwtConfig.access,
-          expiresIn: jwtConfig.expiresIn.access,
-        },
-      ),
-      this.jwtService.signAsync(
-        {
-          uuid: account.uuid,
-          username: account.username,
-        },
-        {
-          secret: jwtConfig.refresh,
-          expiresIn: jwtConfig.expiresIn.refresh,
-        },
-      ),
-    ]);
-    return { accessToken, refreshToken };
+  async getTenantByDomain(domain: string): Promise<TenantModel | null> {
+    const entity = await this.prisma.tenant.findUnique({
+      where: { domain },
+    });
+    return this.authFactory.createTenantModel(entity);
+  }
+
+  async getAccount(
+    username: string,
+    tenantId: string,
+  ): Promise<AccountModel | null> {
+    const entity = await this.prisma.account.findUnique({
+      where: { username, tenantId },
+    });
+    return this.authFactory.createAccountModel(entity);
+  }
+
+  async getAccountUUID(uuid: string): Promise<AccountModel | null> {
+    const entity = await this.prisma.account.findUnique({ where: { uuid } });
+    return this.authFactory.createAccountModel(entity);
   }
 }

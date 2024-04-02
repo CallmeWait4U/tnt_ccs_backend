@@ -1,32 +1,29 @@
-import { HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import * as bcrypt from 'bcrypt';
-import { AuthQuery } from '../../infrastructure/auth.query';
+import { AuthDomain } from 'src/auth/domain/auth.domain';
 import { AuthRepository } from '../../infrastructure/auth.repository';
 import { RefreshTokensPairCommand } from '../command/refreshTokenPair.command';
 
 @CommandHandler(RefreshTokensPairCommand)
 export class RefreshTokensPairHandler
-  implements ICommandHandler<RefreshTokensPairCommand, any>
+  implements
+    ICommandHandler<
+      RefreshTokensPairCommand,
+      { accessToken: string; refreshToken: string }
+    >
 {
   @Inject()
   private readonly authenticationRepository: AuthRepository;
   @Inject()
-  private readonly authenticationQuery: AuthQuery;
+  private readonly authenticationDomain: AuthDomain;
 
   async execute(
     command: RefreshTokensPairCommand,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.authenticationQuery.getUserByUUID(
-      command.data.uuid,
+    const model = await this.authenticationRepository.getAccountUUID(
+      command.uuid,
     );
-    if (
-      !user ||
-      !user.refreshToken ||
-      !bcrypt.compareSync(command.data.refreshToken, user.refreshToken)
-    ) {
-      throw new HttpException('Access denied', HttpStatus.FORBIDDEN);
-    }
-    return await this.authenticationRepository.refresh(user);
+    const account = await this.authenticationDomain.refresh(model);
+    return await this.authenticationRepository.updateAccount(account);
   }
 }

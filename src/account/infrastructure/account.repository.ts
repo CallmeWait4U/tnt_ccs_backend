@@ -11,7 +11,7 @@ export class AccountRepository {
 
   async create(account: AccountModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { employee, customer, ...data } = account;
+    const { id, employee, customer, ...data } = account;
     await this.prisma.account.create({ data });
     await this.prisma.employee.create({
       data: { ...employee, account: { connect: { uuid: account.uuid } } },

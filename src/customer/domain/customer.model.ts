@@ -1,4 +1,4 @@
-import { Gender } from '@prisma/client';
+import { Gender, StatusCustomerAccount } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class BusinessType {
@@ -75,7 +75,9 @@ export class CustomerModel {
   @Expose()
   createdDate: Date;
   @Expose()
-  hasAccount: boolean;
+  hasAccount: StatusCustomerAccount;
+  @Expose()
+  phaseUUID: string;
   @Expose()
   tenantId: string;
   @Expose()

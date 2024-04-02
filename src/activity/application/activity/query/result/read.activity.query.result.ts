@@ -10,4 +10,7 @@ export class ReadActivityResult implements IQueryResult {
 
   @Expose()
   description: string;
+
+  @Expose()
+  phaseName: string[];
 }

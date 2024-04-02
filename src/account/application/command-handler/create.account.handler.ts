@@ -17,10 +17,9 @@ export class CreateAccountHandler
   private readonly accountDomain: AccountDomain;
 
   async execute(command: CreateAccountCommand): Promise<string> {
-    const id = (await this.accountRepository.count()) + 1;
     const model = this.accountFactory.createAccountModel(command);
 
-    const account = await this.accountDomain.create(id, model);
+    const account = await this.accountDomain.create(model);
 
     return await this.accountRepository.create(account);
   }

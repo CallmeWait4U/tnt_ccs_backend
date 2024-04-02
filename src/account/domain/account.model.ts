@@ -34,7 +34,7 @@ export class EmployeeType {
   @Expose()
   dayOfBirth: Date;
   @Expose()
-  city: number;
+  city: string;
   @Expose()
   district: string;
   @Expose()
