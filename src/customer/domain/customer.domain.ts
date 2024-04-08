@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { BusinessType, CustomerModel, IndividualType } from './customer.model';
 
@@ -40,5 +41,10 @@ export class CustomerDomain {
       }
     }
     return customerCurrent;
+  }
+
+  checkCustomer(customer: CustomerModel[] | CustomerModel | null) {
+    if (!customer)
+      throw new HttpException('Customers do not exist', HttpStatus.BAD_REQUEST);
   }
 }

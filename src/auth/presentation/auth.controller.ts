@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
+import { CreatePhaseCommand } from 'src/phase/application/command/create.phase.command';
 import { RefreshTokensPairCommand } from '../application/command/refreshTokenPair.command';
 import { SignOutCommand } from '../application/command/signout.command';
 import { SignUpCommand } from '../application/command/signup.command';
@@ -22,7 +23,28 @@ export class AuthController {
   @Post('sign-up')
   async signUp(@Body() body: SignUpDTO) {
     const command = new SignUpCommand(body);
-    await this.commandBus.execute(command);
+    const tenantId = await this.commandBus.execute(command);
+    const dataPhase: CreatePhaseCommand[] = [];
+    const namePhases = [
+      'Tiềm năng',
+      'Đang liên lạc',
+      'Đã báo giá',
+      'Chính thức',
+      'Thân thiết',
+    ];
+    for (let i = 0; i < namePhases.length; i++) {
+      dataPhase.push(
+        new CreatePhaseCommand({
+          name: namePhases[i],
+          priority: i,
+          description: 'Không có mô tả cho giai đoạn này',
+          tenantId,
+        }),
+      );
+    }
+    for (const item of dataPhase) {
+      await this.commandBus.execute(item);
+    }
   }
 
   @Post('sign-in')

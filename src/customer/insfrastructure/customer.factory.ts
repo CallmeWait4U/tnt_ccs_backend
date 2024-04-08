@@ -1,4 +1,4 @@
-import { Customer, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { BaseFactory } from 'libs/base.factory';
 import {
   BusinessType,
@@ -10,12 +10,13 @@ type CustomerEntity = Prisma.CustomerGetPayload<{
   include: {
     business: true;
     individual: true;
+    employees: true;
   };
 }>;
 
 export class CustomerFactory extends BaseFactory {
   createCustomerModel(
-    customer: CustomerEntity | Customer | Partial<Customer> | null,
+    customer: CustomerEntity | Partial<CustomerEntity> | null,
   ) {
     if (!customer) return null;
     let business = {};
@@ -29,15 +30,26 @@ export class CustomerFactory extends BaseFactory {
         ...customer,
       });
     }
+    const employees: { uuid: string }[] = [];
+    if ('employeeUUIDs' in customer && Array.isArray(customer.employeeUUIDs)) {
+      customer.employeeUUIDs.forEach((uuid) => {
+        employees.push({ uuid });
+      });
+    } else {
+      customer.employees.forEach((employee) => {
+        employees.push({ uuid: employee.uuid });
+      });
+    }
     return this.createModel(CustomerModel, {
       ...customer,
+      employees,
       business: 'business' in customer ? customer.business : business,
       individual: 'individual' in customer ? customer.individual : individual,
     });
   }
 
   createCustomerModels(
-    customers: CustomerEntity[] | Customer[] | Partial<Customer>[] | null,
+    customers: CustomerEntity[] | Partial<CustomerEntity>[] | null,
   ) {
     if (!customers) return null;
     return customers.map((customer) => this.createCustomerModel(customer));

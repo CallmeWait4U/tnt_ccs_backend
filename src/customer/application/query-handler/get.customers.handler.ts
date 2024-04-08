@@ -11,6 +11,7 @@ export class GetCustomersHandler
 
   async execute(query: GetCustomersQuery): Promise<GetCustomersResult> {
     return await this.customerQuery.getCustomers(
+      query.tenantId,
       query.offset,
       query.limit,
       query.searchModel,

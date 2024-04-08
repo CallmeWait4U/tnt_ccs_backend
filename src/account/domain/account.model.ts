@@ -51,6 +51,8 @@ export class EmployeeType {
   position: string;
   @Expose()
   nationality: string;
+  @Expose()
+  tenantId: string;
 }
 
 export class AccountModel {

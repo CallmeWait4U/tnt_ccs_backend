@@ -9,7 +9,6 @@ import { CreateTaskCommand } from 'src/activity/application/task/command/create.
 import { SignUpCommand } from 'src/auth/application/command/signup.command';
 import { CreateBillCommand } from 'src/bill/application/command/create.bill.command';
 import { CreateCustomerCommand } from 'src/customer/application/command/create.customer.command';
-import { CreatePhaseCommand } from 'src/phase/application/command/create.phase.command';
 import { CreatePriceQuoteCommand } from 'src/priceQuote/application/command/create.priceQuote.command';
 import { CreatePriceQuoteRequestCommand } from 'src/priceQuoteRequest/application/command/create.priceQuoteRequest.command';
 import { CreateProductCommand } from 'src/product/application/command/create.product.command';
@@ -26,30 +25,31 @@ export class TestService {
 
   async mockData() {
     // Tạo Giai đoạn
-    const dataPhase: CreatePhaseCommand[] = [];
-    const phaseUUID: string[] = [];
-    const namePhases = [
-      'Tiềm năng',
-      'Đang liên lạc',
-      'Đã báo giá',
-      'Chính thức',
-      'Thân thiết',
-    ];
-    for (let i = 0; i < namePhases.length; i++) {
-      dataPhase.push(
-        new CreatePhaseCommand({
-          name: namePhases[i],
-          priority: i,
-          description: 'Không có mô tả cho giai đoạn này',
-        }),
-      );
-    }
-    for (const item of dataPhase) {
-      phaseUUID.push(await this.commandBus.execute(item));
-    }
-    console.log('Đã tạo Giai đoạn');
+    // const dataPhase: CreatePhaseCommand[] = [];
+    // const phaseUUID: string[] = [];
+    // const namePhases = [
+    //   'Tiềm năng',
+    //   'Đang liên lạc',
+    //   'Đã báo giá',
+    //   'Chính thức',
+    //   'Thân thiết',
+    // ];
+    // for (let i = 0; i < namePhases.length; i++) {
+    //   dataPhase.push(
+    //     new CreatePhaseCommand({
+    //       name: namePhases[i],
+    //       priority: i,
+    //       description: 'Không có mô tả cho giai đoạn này',
+    //     }),
+    //   );
+    // }
+    // for (const item of dataPhase) {
+    //   phaseUUID.push(await this.commandBus.execute(item));
+    // }
+    // console.log('Đã tạo Giai đoạn');
     // Tạo Tenant
     const dataTenant: SignUpCommand[] = [];
+    const tenantIds: string[] = [];
     const businessIndustryList = [
       'Bất động sản',
       'Sản xuất',
@@ -93,13 +93,15 @@ export class TestService {
       );
     }
     for (const item of dataTenant) {
-      await this.commandBus.execute(item);
+      const uuid = await this.commandBus.execute(item);
+      tenantIds.push(
+        (await this.prisma.account.findUnique({ where: { uuid } })).tenantId,
+      );
     }
     console.log('Đã tạo Tenant');
 
     // Tạo Account - Employee
     const dataAccount: CreateAccountCommand[] = [];
-    const employeeUUID: string[] = [];
     for (let i = 0; i < 12; i++) {
       dataAccount.push(
         new CreateAccountCommand({
@@ -128,11 +130,12 @@ export class TestService {
           detailAddress: '246 Lý Thường Kiệt',
           description: faker.lorem.sentence(),
           type: faker.helpers.arrayElement(['ADMIN', 'EMPLOYEE']),
+          tenantId: faker.helpers.arrayElement(tenantIds),
         }),
       );
     }
     for (const item of dataAccount) {
-      employeeUUID.push(await this.commandBus.execute(item));
+      await this.commandBus.execute(item);
     }
     console.log('Đã tạo Tài khoản cho Admin/Employee');
 
@@ -144,14 +147,21 @@ export class TestService {
       'Gọi điện lần 1',
       'Gọi điện lần 2',
     ];
-    for (const name of nameActivities) {
-      dataActivity.push(
-        new CreateActivityCommand({
-          name,
-          description: faker.lorem.sentence(),
-          phases: faker.helpers.arrayElements(phaseUUID),
-        }),
-      );
+    for (const tenantId of tenantIds) {
+      const phaseUUID = (
+        await this.prisma.phase.findMany({
+          where: { tenantId },
+        })
+      ).map((phase) => phase.uuid);
+      for (const name of nameActivities) {
+        dataActivity.push(
+          new CreateActivityCommand({
+            name,
+            description: faker.lorem.sentence(),
+            phases: faker.helpers.arrayElements(phaseUUID),
+          }),
+        );
+      }
     }
     for (const item of dataActivity) {
       activityUUID.push(await this.commandBus.execute(item));
@@ -166,6 +176,19 @@ export class TestService {
     ).map((i) => i.uuid);
     const numCus = faker.number.int({ min: 50, max: 100 });
     for (let i = 0; i < numCus; i++) {
+      const employeeBus: string[] = [];
+      const tenantId = faker.helpers.arrayElement(tenantIds);
+      const employees = await this.prisma.employee.findMany({
+        where: { tenantId },
+      });
+      faker.helpers
+        .arrayElements(employees, {
+          min: 2,
+          max: 4,
+        })
+        .map(async (employee) => {
+          employeeBus.push(employee.uuid);
+        });
       dataCustomer.push(
         new CreateCustomerCommand({
           isBusiness: true,
@@ -201,11 +224,22 @@ export class TestService {
           }),
           representativeNationality: 'Việt Nam',
           phaseUUID: faker.helpers.arrayElement(phases),
+          employeeUUIDs: employeeBus,
+          tenantId,
         }),
       );
+      const employeeInd: string[] = [];
+      faker.helpers
+        .arrayElements(employees, {
+          min: 2,
+          max: 4,
+        })
+        .map(async (employee) => {
+          employeeInd.push(employee.uuid);
+        });
       dataCustomer.push(
         new CreateCustomerCommand({
-          isBusiness: true,
+          isBusiness: false,
           source: 1,
           city: 1,
           district: faker.location.county(),
@@ -232,6 +266,8 @@ export class TestService {
           phoneNumber: faker.phone.number(),
           nationality: 'Việt Nam',
           phaseUUID: faker.helpers.arrayElement(phases),
+          employeeUUIDs: employeeInd,
+          tenantId,
         }),
       );
     }

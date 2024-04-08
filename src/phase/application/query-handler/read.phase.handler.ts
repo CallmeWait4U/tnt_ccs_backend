@@ -10,6 +10,6 @@ export class ReadPhaseHandler
   constructor(private readonly phaseQuery: PhaseQuery) {}
 
   async execute(query: ReadPhaseQuery): Promise<ReadPhaseResult> {
-    return await this.phaseQuery.readPhase(query.uuid);
+    return await this.phaseQuery.readPhase(query.tenantId, query.uuid);
   }
 }

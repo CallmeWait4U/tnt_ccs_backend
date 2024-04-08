@@ -16,6 +16,7 @@ export class CreateAccountCommand implements ICommand {
   detailAddress: string;
   description: string;
   type: TypeAccount;
+  tenantId: string;
 
   constructor(data: Partial<CreateAccountCommand>) {
     Object.assign(this, data);

@@ -9,4 +9,6 @@ export class PhaseModel {
   priority: number;
   @Expose()
   description: string;
+  @Expose()
+  tenantId: string;
 }

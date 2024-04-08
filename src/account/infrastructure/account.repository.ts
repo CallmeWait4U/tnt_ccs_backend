@@ -38,9 +38,9 @@ export class AccountRepository {
     return uuids;
   }
 
-  async getByUUID(uuid: string): Promise<AccountModel> {
+  async getByUUID(uuid: string, tenantId: string): Promise<AccountModel> {
     const entity = await this.prisma.account.findUnique({
-      where: { uuid },
+      where: { uuid, tenantId },
       include: { employee: true },
     });
     return this.accountFactory.createAccountModel(entity);

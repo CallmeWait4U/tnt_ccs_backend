@@ -5,6 +5,7 @@ export class UpdatePhaseCommand implements ICommand {
   name: string;
   priority: number;
   description: string;
+  tenantId: string;
 
   constructor(data: Partial<UpdatePhaseCommand>) {
     Object.assign(this, data);

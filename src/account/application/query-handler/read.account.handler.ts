@@ -10,6 +10,6 @@ export class ReadAccountHandler
   constructor(private readonly accountQuery: AccountQuery) {}
 
   async execute(query: ReadAccountQuery): Promise<ReadAccountResult> {
-    return await this.accountQuery.readAccount(query.uuid);
+    return await this.accountQuery.readAccount(query.uuid, query.tenantId);
   }
 }

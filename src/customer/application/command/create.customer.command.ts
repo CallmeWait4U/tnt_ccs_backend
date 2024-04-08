@@ -12,6 +12,8 @@ export class CreateCustomerCommand implements ICommand {
   hasAccount: StatusCustomerAccount;
   name: string;
   phaseUUID: string;
+  employeeUUIDs: string[];
+  tenantId: string;
   // Business
   businessNationality?: string;
   registrationNumber?: string;

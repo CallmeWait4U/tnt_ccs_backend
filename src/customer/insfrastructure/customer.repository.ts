@@ -11,9 +11,16 @@ export class CustomerRespository {
 
   async create(customer: CustomerModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, business, individual, phaseUUID, ...dataCus } = customer;
+    const { id, business, individual, phaseUUID, employees, ...dataCus } =
+      customer;
     await this.prisma.customer.create({
-      data: { ...dataCus, phase: { connect: { uuid: customer.phaseUUID } } },
+      data: {
+        ...dataCus,
+        phase: { connect: { uuid: customer.phaseUUID } },
+        employees: {
+          connect: employees,
+        },
+      },
     });
     if (customer.isBusiness) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,8 +45,11 @@ export class CustomerRespository {
   }
 
   async update(customer: CustomerModel): Promise<string> {
-    const { uuid, business, individual, ...dataCus } = customer;
-    await this.prisma.customer.update({ data: dataCus, where: { uuid } });
+    const { uuid, business, individual, employees, ...dataCus } = customer;
+    await this.prisma.customer.update({
+      data: { ...dataCus, employees: { connect: employees } },
+      where: { uuid },
+    });
     if (customer.isBusiness) {
       const { id, ...dataBusiness } = business;
       await this.prisma.business.update({
@@ -75,17 +85,20 @@ export class CustomerRespository {
     return uuids;
   }
 
-  async getByUUID(uuid: string): Promise<CustomerModel> {
+  async getByUUID(uuid: string, tenantId: string): Promise<CustomerModel> {
     const entity = await this.prisma.customer.findUnique({
-      where: { uuid },
+      where: { uuid, tenantId },
       include: { business: true, individual: true },
     });
     return this.customerFactory.createCustomerModel(entity);
   }
 
-  async getByUUIDs(uuids: string[] | string): Promise<CustomerModel[]> {
+  async getByUUIDs(
+    uuids: string[] | string,
+    tenantId: string,
+  ): Promise<CustomerModel[]> {
     const entities = await this.prisma.customer.findMany({
-      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] } },
+      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] }, tenantId },
       include: { business: true, individual: true },
     });
     return this.customerFactory.createCustomerModels(entities);

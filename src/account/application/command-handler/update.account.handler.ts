@@ -14,7 +14,11 @@ export class UpdateAccountHandler
   private readonly accountDomain: AccountDomain;
 
   async execute(command: UpdateAccountCommand): Promise<string> {
-    const modelCurrent = await this.accountRepository.getByUUID(command.uuid);
+    const modelCurrent = await this.accountRepository.getByUUID(
+      command.uuid,
+      command.tenantId,
+    );
+    this.accountDomain.checkAccount(modelCurrent);
     const modelUpdated = this.accountDomain.update(modelCurrent, command);
     return await this.accountRepository.update(modelUpdated);
   }

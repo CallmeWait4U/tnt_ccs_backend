@@ -1,4 +1,4 @@
-import { HttpException, Inject } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { PhaseQuery } from '../infrastructure/phase.query';
 import { PhaseModel } from './phase.model';
@@ -7,7 +7,7 @@ export class PhaseDomain {
   @Inject()
   private readonly phaseQuery: PhaseQuery;
   async create(model: PhaseModel): Promise<PhaseModel> {
-    const listPhaseName = await this.phaseQuery.getListForCheck();
+    const listPhaseName = await this.phaseQuery.getListForCheck(model.tenantId);
     if (listPhaseName?.map((item) => item.name).includes(model.name)) {
       throw new HttpException('Phase name already exists', 400);
     }
@@ -33,5 +33,10 @@ export class PhaseDomain {
       phaseCurrent[prop] = phaseUpdate[prop] ? phaseUpdate[prop] : value;
     }
     return phaseCurrent;
+  }
+
+  checkPhase(phase: PhaseModel[] | PhaseModel | null) {
+    if (!phase)
+      throw new HttpException('Phases do not exist', HttpStatus.BAD_REQUEST);
   }
 }

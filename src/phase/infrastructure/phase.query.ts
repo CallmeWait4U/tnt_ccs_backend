@@ -19,6 +19,7 @@ export class PhaseQuery {
   private readonly util: UtilityImplement;
 
   async getPhases(
+    tenantId: string,
     offset: number,
     limit: number,
     searchModel?: any,
@@ -48,7 +49,7 @@ export class PhaseQuery {
         }
       }
     }
-
+    conditions.push({ tenantId });
     const [data, total] = await Promise.all([
       this.prisma.phase.findMany({
         skip: Number(offset),
@@ -81,9 +82,9 @@ export class PhaseQuery {
     };
   }
 
-  async readPhase(uuid: string): Promise<ReadPhaseResult> {
+  async readPhase(tenantId: string, uuid: string): Promise<ReadPhaseResult> {
     const res = await this.prisma.phase.findUnique({
-      where: { uuid },
+      where: { uuid, tenantId },
       include: {
         _count: {
           select: { customers: true },
@@ -101,9 +102,10 @@ export class PhaseQuery {
     return null;
   }
 
-  async listPhaseOptions(): Promise<ListPhaseOptionsResult> {
+  async listPhaseOptions(tenantId: string): Promise<ListPhaseOptionsResult> {
     const [data, total] = await Promise.all([
       this.prisma.phase.findMany({
+        where: { tenantId },
         orderBy: [{ id: 'asc' }],
       }),
       this.prisma.phase.count(),
@@ -121,8 +123,9 @@ export class PhaseQuery {
       total,
     };
   }
-  async getListForCheck(): Promise<any[]> {
+  async getListForCheck(tenantId: string): Promise<any[]> {
     const entities = await this.prisma.phase.findMany({
+      where: { tenantId },
       select: { name: true, uuid: true },
     });
     return entities;

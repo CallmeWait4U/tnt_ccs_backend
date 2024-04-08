@@ -164,7 +164,7 @@ model PriceQuote {
   sentDate              DateTime?
   products              ProductPriceQuote[]
   customer              Customer?           @relation(fields: [customerUUID], references: [uuid])
-  priceQuoteRequest     PriceQuoteRequest?   @relation(fields: [priceQuoteRequestUUID], references: [uuid])
+  priceQuoteRequest     PriceQuoteRequest?  @relation(fields: [priceQuoteRequestUUID], references: [uuid])
   priceQuoteRequestUUID String?
   customerUUID          String?
   tenantId              String?
@@ -280,17 +280,17 @@ model TypeComplaint {
 }
 
 model Complaint {
-  id              Int             @id @default(autoincrement())
-  uuid            String          @unique @default(uuid())
-  code            String
-  status          StatusComplaint
-  employees       Employee[]
-  sentDate        DateTime
-  customer        Customer?       @relation(fields: [customerUUID], references: [uuid])
-  customerUUID    String?
-  typeComplaint   TypeComplaint?  @relation(fields: [typeComplaintId], references: [id])
-  typeComplaintId Int?
-  tenantId        String?
+  id                Int             @id @default(autoincrement())
+  uuid              String          @unique @default(uuid())
+  code              String
+  status            StatusComplaint
+  employees         Employee[]
+  sentDate          DateTime
+  customer          Customer?       @relation(fields: [customerUUID], references: [uuid])
+  customerUUID      String?
+  typeComplaint     TypeComplaint?  @relation(fields: [typeComplaintUUID], references: [uuid])
+  typeComplaintUUID String?
+  tenantId          String?
 }
 
 ///////////////////////
@@ -336,8 +336,8 @@ model FieldComplaint {
   maxNumOfFiles     Int? // File
   listOptions       String[] // Other
   value             String[] // All
-  typeComplaint     TypeComplaint? @relation(fields: [typeComplaintId], references: [id])
-  typeComplaintId   Int?
+  typeComplaint     TypeComplaint? @relation(fields: [typeComplaintUUID], references: [uuid])
+  typeComplaintUUID String?
 }
 
 // Enum

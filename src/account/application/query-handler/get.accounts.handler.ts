@@ -11,6 +11,7 @@ export class GetAccountsHandler
 
   async execute(query: GetAccountsQuery): Promise<GetAccountsResult> {
     return await this.accountQuery.getAccounts(
+      query.tenantId,
       query.offset,
       query.limit,
       query.type,

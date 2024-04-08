@@ -25,7 +25,7 @@ export class AuthRepository {
     await this.prisma.employee.create({
       data: { ...employee, account: { connect: { uuid: account.uuid } } },
     });
-    return account.uuid;
+    return account.tenantId;
   }
 
   async updateAccount(

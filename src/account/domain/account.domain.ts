@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { AccountModel, EmployeeType } from './account.model';
@@ -38,5 +39,10 @@ export class AccountDomain {
       }
     }
     return accountCurrent;
+  }
+
+  checkAccount(account: AccountModel[] | AccountModel | null) {
+    if (!account)
+      throw new HttpException('Accounts do not exist', HttpStatus.BAD_REQUEST);
   }
 }

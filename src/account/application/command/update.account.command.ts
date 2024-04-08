@@ -16,6 +16,7 @@ export class UpdateAccountCommand implements ICommand {
   district: string;
   detailAddress: string;
   description: string;
+  tenantId: string;
 
   constructor(data: Partial<UpdateAccountCommand>) {
     Object.assign(this, data);

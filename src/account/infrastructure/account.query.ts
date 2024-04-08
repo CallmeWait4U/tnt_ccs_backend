@@ -16,6 +16,7 @@ export class AccountQuery {
   private readonly util: UtilityImplement;
 
   async getAccounts(
+    tenantId: string,
     offset: number,
     limit: number,
     type: TypeAccount,
@@ -62,6 +63,7 @@ export class AccountQuery {
         }
       }
     }
+    conditions.push({ tenantId });
     const [data, total] = await Promise.all([
       this.prisma.account.findMany({
         skip: Number(offset),
@@ -91,9 +93,12 @@ export class AccountQuery {
     };
   }
 
-  async readAccount(uuid: string): Promise<ReadAccountResult> {
+  async readAccount(
+    uuid: string,
+    tenantId: string,
+  ): Promise<ReadAccountResult> {
     const res = await this.prisma.account.findUnique({
-      where: { uuid },
+      where: { uuid, tenantId },
       include: {
         employee: true,
       },

@@ -9,7 +9,7 @@ export class ListPhaseOptionsHandler
 {
   constructor(private readonly phaseQuery: PhaseQuery) {}
 
-  async execute(): Promise<ListPhaseOptionsResult> {
-    return await this.phaseQuery.listPhaseOptions();
+  async execute(query: ListPhaseOptionsQuery): Promise<ListPhaseOptionsResult> {
+    return await this.phaseQuery.listPhaseOptions(query.tenantId);
   }
 }

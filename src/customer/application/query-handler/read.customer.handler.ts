@@ -16,24 +16,6 @@ export class ReadCustomerHandler
   async execute(
     query: ReadCustomerQuery,
   ): Promise<ReadBusinessResult | ReadIndividualResult> {
-    return await this.customerQuery.readCustomer(query.uuid);
-
-    // if (customer?.isBusiness) {
-    //   const business = await this.customerQuery.readBusiness(query.uuid);
-    //   const res = new GetCustomerResult({
-    //     business,
-    //     individual: null,
-    //     ...customer,
-    //   });
-    //   return res;
-    // } else {
-    //   const individual = await this.customerQuery.readInvididual(query.uuid);
-    //   const res = new GetCustomerResult({
-    //     business: null,
-    //     individual,
-    //     ...customer,
-    //   });
-    //   return res;
-    // }
+    return await this.customerQuery.readCustomer(query.uuid, query.tenantId);
   }
 }

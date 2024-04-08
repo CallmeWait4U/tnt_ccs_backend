@@ -84,4 +84,8 @@ export class CustomerModel {
   business: BusinessType;
   @Expose()
   individual: IndividualType;
+  @Expose()
+  employees: {
+    uuid: string;
+  }[];
 }

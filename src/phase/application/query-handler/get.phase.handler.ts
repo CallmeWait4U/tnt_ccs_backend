@@ -11,6 +11,7 @@ export class GetPhasesHandler
 
   async execute(query: GetPhasesQuery): Promise<GetPhasesResult> {
     return await this.phaseQuery.getPhases(
+      query.tenantId,
       query.offset,
       query.limit,
       query.searchModel,

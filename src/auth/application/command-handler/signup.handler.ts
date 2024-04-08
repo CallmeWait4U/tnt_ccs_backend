@@ -7,7 +7,7 @@ import { AuthRepository } from '../../infrastructure/auth.repository';
 import { SignUpCommand } from '../command/signup.command';
 
 @CommandHandler(SignUpCommand)
-export class SignUpHandler implements ICommandHandler<SignUpCommand, any> {
+export class SignUpHandler implements ICommandHandler<SignUpCommand, string> {
   @Inject()
   private readonly authenticationRepository: AuthRepository;
   @Inject()
@@ -17,7 +17,7 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand, any> {
   @Inject()
   private readonly authenticationQuery: AuthQuery;
 
-  async execute(command: SignUpCommand): Promise<any> {
+  async execute(command: SignUpCommand): Promise<string> {
     // Create Tenant
     const tenantModel = this.authenticationFactory.createTenantModel({
       ...command,

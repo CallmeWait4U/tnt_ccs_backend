@@ -14,11 +14,12 @@ export class UpdateCustomerHandler
   private readonly customerDomain: CustomerDomain;
 
   async execute(command: UpdateCustomerCommand): Promise<string> {
-    const modelCurrent = await this.customerRespository.getByUUID(command.uuid);
+    const modelCurrent = await this.customerRespository.getByUUID(
+      command.uuid,
+      command.tenantId,
+    );
+    this.customerDomain.checkCustomer(modelCurrent);
     const modelUpdated = this.customerDomain.update(modelCurrent, command);
-    // console.log(modelUpdated);
-    // return 'hihi';
-    // if (typeof modelUpdated === 'string') return modelUpdated;
     return await this.customerRespository.update(modelUpdated);
   }
 }

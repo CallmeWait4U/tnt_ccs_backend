@@ -18,7 +18,10 @@ export class UpdatePhaseHandler
 
   async execute(command: UpdatePhaseCommand): Promise<string> {
     const modelCurrent = await this.phaseRepository.getByUUID(command.uuid);
-    const listPhaseCurrent = await this.phaseQuery.getListForCheck();
+    this.phaseDomain.checkPhase(modelCurrent);
+    const listPhaseCurrent = await this.phaseQuery.getListForCheck(
+      command.tenantId,
+    );
     const modelUpdated = this.phaseDomain.update(
       modelCurrent,
       command,

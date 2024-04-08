@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Gender, StatusCustomerAccount } from '@prisma/client';
 import {
+  IsArray,
   IsBoolean,
   IsDateString,
   IsNotEmpty,
@@ -100,4 +101,12 @@ export class CreateIndividualCustomerDTO {
   @IsOptional()
   @IsString()
   nationality: string;
+
+  @ApiProperty({
+    example: ['4s45sd4f562sad54f', '545dsaxcsrg54y1hr87fd'],
+    type: [String],
+  })
+  @IsArray()
+  @IsNotEmpty()
+  employeeUUIDs: string[];
 }
