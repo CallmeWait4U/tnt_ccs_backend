@@ -9,6 +9,7 @@ import { CreateTaskCommand } from 'src/activity/application/task/command/create.
 import { SignUpCommand } from 'src/auth/application/command/signup.command';
 import { CreateBillCommand } from 'src/bill/application/command/create.bill.command';
 import { CreateCustomerCommand } from 'src/customer/application/command/create.customer.command';
+import { CreatePhaseCommand } from 'src/phase/application/command/create.phase.command';
 import { CreatePriceQuoteCommand } from 'src/priceQuote/application/command/create.priceQuote.command';
 import { CreatePriceQuoteRequestCommand } from 'src/priceQuoteRequest/application/command/create.priceQuoteRequest.command';
 import { CreateProductCommand } from 'src/product/application/command/create.product.command';
@@ -93,12 +94,39 @@ export class TestService {
       );
     }
     for (const item of dataTenant) {
-      const uuid = await this.commandBus.execute(item);
-      tenantIds.push(
-        (await this.prisma.account.findUnique({ where: { uuid } })).tenantId,
-      );
+      await this.commandBus.execute(item);
     }
+    const tenants = await this.prisma.account.findMany();
+    tenants.forEach((tenant) => {
+      tenantIds.push(tenant.tenantId);
+    });
     console.log('Đã tạo Tenant');
+
+    // Phase
+    const dataPhase: CreatePhaseCommand[] = [];
+    const namePhases = [
+      'Tiềm năng',
+      'Đang liên lạc',
+      'Đã báo giá',
+      'Chính thức',
+      'Thân thiết',
+    ];
+    for (const tenantId of tenantIds) {
+      for (let i = 0; i < namePhases.length; i++) {
+        dataPhase.push(
+          new CreatePhaseCommand({
+            name: namePhases[i],
+            priority: i,
+            description: 'Không có mô tả cho giai đoạn này',
+            tenantId,
+          }),
+        );
+      }
+    }
+    for (const item of dataPhase) {
+      await this.commandBus.execute(item);
+    }
+    console.log('Đã tạo Giai đoạn');
 
     // Tạo Account - Employee
     const dataAccount: CreateAccountCommand[] = [];
@@ -171,9 +199,6 @@ export class TestService {
     // Tạo Khách hàng
     const dataCustomer: CreateCustomerCommand[] = [];
     const customerUUID: { uuid: string; isBusiness: boolean }[] = [];
-    const phases = (
-      await this.prisma.phase.findMany({ select: { uuid: true } })
-    ).map((i) => i.uuid);
     const numCus = faker.number.int({ min: 50, max: 100 });
     for (let i = 0; i < numCus; i++) {
       const employeeBus: string[] = [];
@@ -181,6 +206,12 @@ export class TestService {
       const employees = await this.prisma.employee.findMany({
         where: { tenantId },
       });
+      const phases = (
+        await this.prisma.phase.findMany({
+          where: { tenantId },
+          select: { uuid: true },
+        })
+      ).map((i) => i.uuid);
       faker.helpers
         .arrayElements(employees, {
           min: 2,

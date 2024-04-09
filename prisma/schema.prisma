@@ -280,17 +280,20 @@ model TypeComplaint {
 }
 
 model Complaint {
-  id                Int             @id @default(autoincrement())
-  uuid              String          @unique @default(uuid())
-  code              String
-  status            StatusComplaint
-  employees         Employee[]
-  sentDate          DateTime
-  customer          Customer?       @relation(fields: [customerUUID], references: [uuid])
-  customerUUID      String?
-  typeComplaint     TypeComplaint?  @relation(fields: [typeComplaintUUID], references: [uuid])
-  typeComplaintUUID String?
-  tenantId          String?
+  id                  Int                   @id @default(autoincrement())
+  uuid                String                @unique @default(uuid())
+  code                String
+  status              StatusComplaint
+  employees           Employee[]
+  createdDate         DateTime
+  sentDate            DateTime
+  value               String[] // All
+  customer            Customer?             @relation(fields: [customerUUID], references: [uuid])
+  customerUUID        String?
+  typeComplaint       TypeComplaint?        @relation(fields: [typeComplaintUUID], references: [uuid])
+  typeComplaintUUID   String?
+  tenantId            String?
+  valueFieldComplaint ValueFieldComplaint[]
 }
 
 ///////////////////////
@@ -335,9 +338,21 @@ model FieldComplaint {
   specificFileTypes String[] // File
   maxNumOfFiles     Int? // File
   listOptions       String[] // Other
-  value             String[] // All
   typeComplaint     TypeComplaint? @relation(fields: [typeComplaintUUID], references: [uuid])
   typeComplaintUUID String?
+}
+
+model ValueFieldComplaint {
+  id                Int        @id @default(autoincrement())
+  name              String
+  isFieldFile       Boolean
+  title             String
+  specificFileTypes String[] // File
+  maxNumOfFiles     Int? // File
+  listOptions       String[] // Other
+  value             String[]
+  complaint         Complaint? @relation(fields: [complaintUUID], references: [uuid])
+  complaintUUID     String?
 }
 
 // Enum
