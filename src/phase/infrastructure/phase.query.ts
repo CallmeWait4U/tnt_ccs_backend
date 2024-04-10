@@ -108,7 +108,9 @@ export class PhaseQuery {
         where: { tenantId },
         orderBy: [{ id: 'asc' }],
       }),
-      this.prisma.phase.count(),
+      this.prisma.phase.count({
+        where: { tenantId },
+      }),
     ]);
     return {
       items: data.map((i) => {
