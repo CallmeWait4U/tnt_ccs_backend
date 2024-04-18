@@ -103,8 +103,4 @@ export class CustomerRespository {
     });
     return this.customerFactory.createCustomerModels(entities);
   }
-
-  async count(): Promise<number> {
-    return await this.prisma.customer.count();
-  }
 }

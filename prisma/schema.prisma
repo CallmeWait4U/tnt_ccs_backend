@@ -179,6 +179,7 @@ model Bill {
   products     ProductBill[]
   customer     Customer?     @relation(fields: [customerUUID], references: [uuid])
   customerUUID String?
+  complaints   Complaint[]
   tenantId     String?
 }
 
@@ -273,7 +274,7 @@ model TypeComplaint {
   id          Int              @id @default(autoincrement())
   uuid        String           @unique @default(uuid())
   name        String
-  description String
+  description String?
   listOfField FieldComplaint[]
   complaints  Complaint[]
   tenantId    String?
@@ -287,11 +288,12 @@ model Complaint {
   employees           Employee[]
   createdDate         DateTime
   sentDate            DateTime
-  value               String[] // All
   customer            Customer?             @relation(fields: [customerUUID], references: [uuid])
   customerUUID        String?
   typeComplaint       TypeComplaint?        @relation(fields: [typeComplaintUUID], references: [uuid])
   typeComplaintUUID   String?
+  bill                Bill?                 @relation(fields: [billUUID], references: [uuid])
+  billUUID            String?
   tenantId            String?
   valueFieldComplaint ValueFieldComplaint[]
 }
@@ -332,27 +334,24 @@ model ImageProduct {
 
 model FieldComplaint {
   id                Int            @id @default(autoincrement())
+  uuid              String         @unique @default(uuid())
   name              String
   isFieldFile       Boolean
   title             String
   specificFileTypes String[] // File
   maxNumOfFiles     Int? // File
   listOptions       String[] // Other
-  typeComplaint     TypeComplaint? @relation(fields: [typeComplaintUUID], references: [uuid])
+  typeComplaint     TypeComplaint? @relation(fields: [typeComplaintUUID], references: [uuid], onDelete: Cascade)
   typeComplaintUUID String?
 }
 
 model ValueFieldComplaint {
-  id                Int        @id @default(autoincrement())
-  name              String
-  isFieldFile       Boolean
-  title             String
-  specificFileTypes String[] // File
-  maxNumOfFiles     Int? // File
-  listOptions       String[] // Other
-  value             String[]
-  complaint         Complaint? @relation(fields: [complaintUUID], references: [uuid])
-  complaintUUID     String?
+  id                 Int        @id @default(autoincrement())
+  fieldComplaintUUID String?
+  value              String[]
+  complaint          Complaint? @relation(fields: [complaintUUID], references: [uuid])
+  complaintUUID      String?
+  tenantId           String?
 }
 
 // Enum

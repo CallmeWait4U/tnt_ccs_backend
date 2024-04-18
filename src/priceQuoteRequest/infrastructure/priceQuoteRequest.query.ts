@@ -39,7 +39,6 @@ export class PriceQuoteRequestQuery {
         skip: Number(offset),
         take: Number(limit),
         where: { AND: conditions },
-
         orderBy: [{ id: 'asc' }],
       }),
       this.prisma.priceQuoteRequest.count({ where: { AND: conditions } }),

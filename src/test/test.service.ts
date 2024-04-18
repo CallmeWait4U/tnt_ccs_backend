@@ -25,29 +25,6 @@ export class TestService {
   ) {}
 
   async mockData() {
-    // Tạo Giai đoạn
-    // const dataPhase: CreatePhaseCommand[] = [];
-    // const phaseUUID: string[] = [];
-    // const namePhases = [
-    //   'Tiềm năng',
-    //   'Đang liên lạc',
-    //   'Đã báo giá',
-    //   'Chính thức',
-    //   'Thân thiết',
-    // ];
-    // for (let i = 0; i < namePhases.length; i++) {
-    //   dataPhase.push(
-    //     new CreatePhaseCommand({
-    //       name: namePhases[i],
-    //       priority: i,
-    //       description: 'Không có mô tả cho giai đoạn này',
-    //     }),
-    //   );
-    // }
-    // for (const item of dataPhase) {
-    //   phaseUUID.push(await this.commandBus.execute(item));
-    // }
-    // console.log('Đã tạo Giai đoạn');
     // Tạo Tenant
     const dataTenant: SignUpCommand[] = [];
     const tenantIds: string[] = [];

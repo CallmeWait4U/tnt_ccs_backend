@@ -3,6 +3,9 @@ import { Expose } from 'class-transformer';
 
 class Employee {
   @Expose()
+  uuid: string;
+
+  @Expose()
   code: string;
 
   @Expose()

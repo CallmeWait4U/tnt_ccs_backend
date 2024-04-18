@@ -12,6 +12,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { BillModule } from './bill/bill.module';
 import { CompanyModule } from './company/company.module';
+import { ComplaintModule } from './complaint/complaint.module';
 import { CustomerModule } from './customer/customer.module';
 import { NotificationModule } from './notification/notification.module';
 import { PhaseModule } from './phase/phase.module';
@@ -40,6 +41,7 @@ import { TestModule } from './test/test.module';
     PriceQuoteRequestModule,
     BillModule,
     NotificationModule,
+    ComplaintModule,
     TestModule,
   ],
   controllers: [AppController],

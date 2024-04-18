@@ -208,6 +208,7 @@ export class CustomerQuery {
       include: {
         employees: {
           select: {
+            uuid: true,
             name: true,
             code: true,
           },
