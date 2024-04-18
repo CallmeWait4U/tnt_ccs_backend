@@ -41,7 +41,24 @@ export class CustomerQuery {
           }
         } else {
           const { value } = this.util.buildSearch(item);
-          obj[prop] = value;
+          if (prop === 'name') {
+            obj['OR'] = [
+              {
+                business: {
+                  name: value,
+                },
+              },
+              {
+                individual: {
+                  name: value,
+                },
+              },
+            ];
+          } else {
+            obj[prop] = {
+              [item.valueType === 'text' ? 'contains' : 'equals']: value,
+            };
+          }
           conditions.push(obj);
         }
       }
