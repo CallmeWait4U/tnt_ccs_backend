@@ -21,6 +21,7 @@ import { UpdateCustomerCommand } from '../application/command/update.customer.co
 import { GetCustomersByEmployeeQuery } from '../application/query/get.customers.by.employee.query';
 import { GetCustomersQuery } from '../application/query/get.customers.query';
 import { ReadCustomerQuery } from '../application/query/read.customer.query';
+import { StatisticCustomerQuery } from '../application/query/statistic.customer.query';
 import { CreateBusinessCustomerDTO } from './dto/create.business.customer.dto';
 import { CreateIndividualCustomerDTO } from './dto/create.individual.customer.dto';
 import { DeleteCustomerDTO } from './dto/delete.customer.dto';
@@ -179,5 +180,16 @@ export class CustomerController {
       tenantId: user.tenantId,
     });
     return await this.commandBus.execute(command);
+  }
+
+  @Get('/statistic')
+  async getStatistic(@GetUser() user: User) {
+    if (user.type === 'CUSTOMER') {
+      return new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    return await this.queryBus.execute(new StatisticCustomerQuery());
   }
 }
