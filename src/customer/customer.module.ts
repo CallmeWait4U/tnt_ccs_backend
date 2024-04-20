@@ -6,6 +6,7 @@ import { UpdateCustomerHandler } from './application/command-handler/update.cust
 import { GetCustomersByEmployeeHandler } from './application/query-handler/get.customers.by.employee.handler';
 import { GetCustomersHandler } from './application/query-handler/get.customers.handler';
 import { ReadCustomerHandler } from './application/query-handler/read.customer.handler';
+import { StatisticCustomerHandler } from './application/query-handler/statistic.customer.handler';
 import { CustomerDomain } from './domain/customer.domain';
 import { CustomerFactory } from './insfrastructure/customer.factory';
 import { CustomerQuery } from './insfrastructure/customer.query';
@@ -19,6 +20,7 @@ const application = [
   CreateCustomerHandler,
   UpdateCustomerHandler,
   DeleteCustomerHandler,
+  StatisticCustomerHandler,
 ];
 
 const infrastructure = [CustomerRespository, CustomerQuery, CustomerFactory];
