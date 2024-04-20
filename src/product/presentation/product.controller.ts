@@ -50,7 +50,10 @@ export class ProductController {
   @Post('')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images'))
-  async createProduct(@Body() body: CreateProductDTO, @UploadedFiles() images) {
+  async createProduct(
+    @Body() body: CreateProductDTO,
+    @UploadedFiles() images: Express.Multer.File[],
+  ) {
     body.price = Number(body.price);
     body.quantity = Number(body.quantity);
     const command = new CreateProductCommand({ ...body, images });
@@ -63,7 +66,7 @@ export class ProductController {
   async updateProduct(
     @Param('uuid') uuid: string,
     @Body() body: UpdateProductDTO,
-    @UploadedFiles() images,
+    @UploadedFiles() images: Express.Multer.File[],
   ) {
     body.price = Number(body.price);
     body.quantity = Number(body.quantity);

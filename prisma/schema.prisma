@@ -262,6 +262,7 @@ model Task {
   note            String?
   autoAnnounceCus Boolean
   autoAnnounceEmp Boolean
+  tenantId        String?
   customer        Customer   @relation(fields: [customerUUID], references: [uuid])
   customerUUID    String
   employees       Employee[]

@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { StatusTask } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import { TaskModel } from './task.model';
@@ -20,5 +21,10 @@ export class TaskDomain {
       taskCurrent[prop] = taskUpdate[prop] ? taskUpdate[prop] : value;
     }
     return taskCurrent;
+  }
+
+  checkTask(task: TaskModel[] | TaskModel | null) {
+    if (!task)
+      throw new HttpException('Tasks do not exist', HttpStatus.BAD_REQUEST);
   }
 }

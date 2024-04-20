@@ -53,3 +53,18 @@ export class TestDTO {
   @Type(() => Boolean)
   createBill: boolean;
 }
+
+export class SendEmailDTO {
+  @ApiProperty({
+    description: 'Attachments',
+    type: 'array',
+    items: {
+      type: 'file',
+      items: {
+        type: 'string',
+        format: 'binary',
+      },
+    },
+  })
+  files: Express.Multer.File[];
+}

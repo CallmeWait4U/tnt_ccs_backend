@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { ActivityModel } from './activity.model';
 
@@ -18,5 +19,13 @@ export class ActivityDomain {
         : value;
     }
     return activityCurrent;
+  }
+
+  checkActivity(activity: ActivityModel[] | ActivityModel | null) {
+    if (!activity)
+      throw new HttpException(
+        'Activities do not exist',
+        HttpStatus.BAD_REQUEST,
+      );
   }
 }

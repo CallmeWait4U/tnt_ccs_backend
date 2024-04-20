@@ -10,7 +10,10 @@ export class ReadActivityHandler
   constructor(private readonly activityQUery: ActivityQuery) {}
 
   async execute(query: ReadActivityQuery): Promise<ReadActivityResult> {
-    const res = await this.activityQUery.readActivity(query.uuid);
+    const res = await this.activityQUery.readActivity(
+      query.uuid,
+      query.tenantId,
+    );
     return res;
   }
 }

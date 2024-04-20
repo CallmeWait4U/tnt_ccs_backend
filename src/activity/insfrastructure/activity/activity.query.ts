@@ -15,6 +15,7 @@ export class ActivityQuery {
   private readonly util: UtilityImplement;
 
   async getActivities(
+    tenantId: string,
     offset: number,
     limit: number,
     searchModel?: any,
@@ -36,6 +37,7 @@ export class ActivityQuery {
         }
       }
     }
+    conditions.push({ tenantId });
     const data = await this.prisma.activity.findMany({
       skip: Number(offset),
       take: Number(limit),
@@ -87,9 +89,12 @@ export class ActivityQuery {
     };
   }
 
-  async readActivity(uuid: string): Promise<ReadActivityResult> {
+  async readActivity(
+    uuid: string,
+    tenantId: string,
+  ): Promise<ReadActivityResult> {
     const res = await this.prisma.activity.findFirst({
-      where: { uuid },
+      where: { uuid, tenantId },
       include: {
         phases: {
           select: { name: true },

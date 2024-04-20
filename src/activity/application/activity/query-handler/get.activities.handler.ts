@@ -10,6 +10,11 @@ export class GetActivitiesHandler
   constructor(private readonly activityQuery: ActivityQuery) {}
 
   async execute(query: GetActivitiesQuery): Promise<GetActivitiesResult> {
-    return await this.activityQuery.getActivities(query.offset, query.limit);
+    return await this.activityQuery.getActivities(
+      query.tenantId,
+      query.offset,
+      query.limit,
+      query.searchModel,
+    );
   }
 }

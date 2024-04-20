@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 import { DatabaseModule } from 'libs/database.module';
+import { EmailModule } from 'libs/email.module';
 import { FirebaseModule } from 'libs/firebase.module';
 import { RmqModule } from 'libs/rabbitmq.module';
 import { RedisModule } from 'libs/redis.module';
@@ -23,12 +25,14 @@ import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     UtilityModule,
     DatabaseModule,
     FirebaseModule,
     RmqModule,
     RedisModule,
     PrismaClient,
+    EmailModule,
     CompanyModule,
     AuthModule,
     CompanyModule,

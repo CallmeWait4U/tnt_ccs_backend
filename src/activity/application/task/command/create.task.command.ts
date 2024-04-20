@@ -9,6 +9,7 @@ export class CreateTaskCommand implements ICommand {
   autoAnnounceEmp: boolean;
   activityUUID: string;
   customerUUID: string;
+  tenantId: string;
 
   constructor(readonly data: Partial<CreateTaskCommand>) {
     Object.assign(this, data);

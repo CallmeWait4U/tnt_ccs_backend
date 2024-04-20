@@ -10,6 +10,6 @@ export class ReadTaskHandler
   constructor(private readonly taskQuery: TaskQuery) {}
 
   async execute(query: ReadTaskQuery): Promise<ReadTaskResult> {
-    return await this.taskQuery.readTask(query.uuid);
+    return await this.taskQuery.readTask(query.tenantId, query.uuid);
   }
 }
