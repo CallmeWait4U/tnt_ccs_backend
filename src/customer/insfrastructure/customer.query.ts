@@ -10,6 +10,7 @@ import {
   ReadBusinessResult,
   ReadIndividualResult,
 } from '../application/query/result/read.customer.query.result';
+import { StatisticCustomerResult } from '../application/query/result/statistic.customer.result';
 
 export class CustomerQuery {
   @Inject()
@@ -269,5 +270,46 @@ export class CustomerQuery {
       }
     }
     return {} as ReadIndividualResult;
+  }
+  async statisticCustomer(): Promise<StatisticCustomerResult> {
+    const res = new StatisticCustomerResult();
+
+    const customersByPhase = await this.prisma.customer.groupBy({
+      by: ['phaseUUID'],
+      _count: true,
+    });
+
+    const customersWithPhaseNames = await Promise.all(
+      customersByPhase.map(async (customer) => {
+        const phaseName = await this.getPhaseName(customer.phaseUUID);
+        return {
+          phaseUUID: customer.phaseUUID,
+          phaseName,
+          count: customer._count,
+        };
+      }),
+    );
+    res.ByPhase = customersWithPhaseNames.map((i) => ({
+      phaseName: i.phaseName,
+      total: i.count,
+    }));
+
+    const customersBySource = await this.prisma.customer.groupBy({
+      by: ['source'],
+      _count: true,
+    });
+    res.BySource = customersBySource.map((i) => ({
+      source: i.source,
+      total: i._count,
+    }));
+
+    return res;
+  }
+  private async getPhaseName(phaseUUID: string): Promise<string> {
+    const phase = await this.prisma.phase.findUnique({
+      where: { uuid: phaseUUID },
+      select: { name: true },
+    });
+    return phase ? phase.name : 'Unknown';
   }
 }
