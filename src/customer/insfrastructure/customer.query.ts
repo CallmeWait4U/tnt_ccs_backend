@@ -54,6 +54,19 @@ export class CustomerQuery {
                 },
               },
             ];
+          } else if (prop === 'email') {
+            obj['OR'] = [
+              {
+                business: {
+                  representativeEmail: value,
+                },
+              },
+              {
+                individual: {
+                  email: value,
+                },
+              },
+            ];
           } else {
             obj[prop] = {
               [item.valueType === 'text' ? 'contains' : 'equals']: value,
