@@ -316,6 +316,39 @@ export class CustomerQuery {
       total: i._count,
     }));
 
+    const customerByCity = await this.prisma.customer.groupBy({
+      by: ['city'],
+      _count: true,
+    });
+    res.ByLocation = customerByCity.map((i) => ({
+      city: i.city,
+      total: i._count,
+    }));
+
+    const customersByAge = await this.prisma.individual.findMany({
+      select: {
+        dayOfBirth: true,
+      },
+    });
+
+    const ageCounts = customersByAge.reduce(
+      (acc, customer) => {
+        const age =
+          new Date().getFullYear() - customer.dayOfBirth.getFullYear();
+        if (!acc[age]) {
+          acc[age] = 1;
+        } else {
+          acc[age]++;
+        }
+        return acc;
+      },
+      {} as Record<number, number>,
+    );
+    res.ByAge = Object.entries(ageCounts).map(([age, total]) => ({
+      age: Number(age),
+      total,
+    }));
+
     return res;
   }
   private async getPhaseName(phaseUUID: string): Promise<string> {

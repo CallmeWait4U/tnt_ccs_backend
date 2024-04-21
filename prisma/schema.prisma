@@ -94,6 +94,8 @@ model Customer {
   complaints         Complaint[]
   account            Account?
   employees          Employee[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Business {
