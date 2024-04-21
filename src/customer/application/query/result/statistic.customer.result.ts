@@ -2,9 +2,10 @@ import { Expose } from 'class-transformer';
 
 export class StatisticCustomerByTimeResult {
   @Expose()
-  startDate: string;
+  monthInYear: Date;
+
   @Expose()
-  endDate: string;
+  groupByPhase: StatisticCustomerByPhaseResult[];
   @Expose()
   total: number;
 }
@@ -15,6 +16,8 @@ export class StatisticCustomerBySourceResult {
   total: number;
 }
 export class StatisticCustomerByPhaseResult {
+  @Expose()
+  phaseUUID: string;
   @Expose()
   phaseName: string;
   @Expose()

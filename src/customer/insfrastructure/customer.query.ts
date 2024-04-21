@@ -10,7 +10,10 @@ import {
   ReadBusinessResult,
   ReadIndividualResult,
 } from '../application/query/result/read.customer.query.result';
-import { StatisticCustomerResult } from '../application/query/result/statistic.customer.result';
+import {
+  StatisticCustomerByTimeResult,
+  StatisticCustomerResult,
+} from '../application/query/result/statistic.customer.result';
 
 export class CustomerQuery {
   @Inject()
@@ -287,6 +290,20 @@ export class CustomerQuery {
   async statisticCustomer(): Promise<StatisticCustomerResult> {
     const res = new StatisticCustomerResult();
 
+    ///////////////////////////////////////////////// statistic by phase
+    const phases = await this.prisma.phase.findMany({
+      select: {
+        uuid: true,
+        name: true,
+      },
+    });
+
+    const individualForStatistic = await this.prisma.individual.findMany({
+      select: {
+        dayOfBirth: true,
+      },
+    });
+    ///////////////////////////////////////////////////// statistic by phase
     const customersByPhase = await this.prisma.customer.groupBy({
       by: ['phaseUUID'],
       _count: true,
@@ -294,7 +311,7 @@ export class CustomerQuery {
 
     const customersWithPhaseNames = await Promise.all(
       customersByPhase.map(async (customer) => {
-        const phaseName = await this.getPhaseName(customer.phaseUUID);
+        const phaseName = this.getPhaseName(customer.phaseUUID, phases);
         return {
           phaseUUID: customer.phaseUUID,
           phaseName,
@@ -304,9 +321,11 @@ export class CustomerQuery {
     );
     res.ByPhase = customersWithPhaseNames.map((i) => ({
       phaseName: i.phaseName,
+      phaseUUID: i.phaseUUID,
       total: i.count,
     }));
 
+    ///////////////////////////////////////////////////// statistic by source
     const customersBySource = await this.prisma.customer.groupBy({
       by: ['source'],
       _count: true,
@@ -316,6 +335,7 @@ export class CustomerQuery {
       total: i._count,
     }));
 
+    ///////////////////////////////////////////////////// statistic by location
     const customerByCity = await this.prisma.customer.groupBy({
       by: ['city'],
       _count: true,
@@ -325,13 +345,8 @@ export class CustomerQuery {
       total: i._count,
     }));
 
-    const customersByAge = await this.prisma.individual.findMany({
-      select: {
-        dayOfBirth: true,
-      },
-    });
-
-    const ageCounts = customersByAge.reduce(
+    ///////////////////////////////////////////////// statistic by age
+    const ageCounts = individualForStatistic.reduce(
       (acc, customer) => {
         const age =
           new Date().getFullYear() - customer.dayOfBirth.getFullYear();
@@ -349,13 +364,54 @@ export class CustomerQuery {
       total,
     }));
 
+    ///////////////////////////////////////////////////// statistic by time and phase
+    const customerForStatistic = await this.prisma.customer.findMany({
+      select: {
+        createdAt: true,
+        phaseUUID: true,
+      },
+    });
+    const customerByTime = customerForStatistic.reduce(
+      (acc, customer) => {
+        const month = new Date(customer.createdAt).getMonth();
+        const phaseUUID = customer.phaseUUID;
+        if (!acc[month]) {
+          acc[month] = {
+            monthInYear: new Date(customer.createdAt),
+            groupByPhase: [],
+            total: 1,
+          };
+        } else {
+          acc[month].total++;
+        }
+        if (
+          acc[month].groupByPhase.findIndex(
+            (i) => i.phaseUUID === phaseUUID,
+          ) === -1
+        ) {
+          const phaseName = this.getPhaseName(customer.phaseUUID, phases);
+          acc[month].groupByPhase.push({
+            phaseUUID,
+            phaseName,
+            total: 1,
+          });
+        } else {
+          acc[month].groupByPhase.find((i) => i.phaseUUID === phaseUUID)
+            .total++;
+        }
+        return acc;
+      },
+      {} as Record<number, StatisticCustomerByTimeResult>,
+    );
+    res.ByTime = Object.values(customerByTime);
+
     return res;
   }
-  private async getPhaseName(phaseUUID: string): Promise<string> {
-    const phase = await this.prisma.phase.findUnique({
-      where: { uuid: phaseUUID },
-      select: { name: true },
-    });
-    return phase ? phase.name : 'Unknown';
+  private getPhaseName(phaseUUID: string, phases: any[]): string {
+    const filterPhase = phases.filter((i) => i.uuid === phaseUUID);
+    if (filterPhase.length === 0) {
+      return 'Unknown';
+    }
+    return filterPhase[0].name;
   }
 }
