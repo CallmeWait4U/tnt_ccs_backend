@@ -20,6 +20,7 @@ export class TaskQuery {
   private readonly util: UtilityImplement;
 
   async getTasks(
+    tenantId: string,
     activityUUID: string,
     offset: number,
     limit: number,
@@ -46,7 +47,7 @@ export class TaskQuery {
         }
       }
     }
-    conditions.push({ activityUUID });
+    conditions.push({ activityUUID }, { tenantId });
     const [data, total] = await Promise.all([
       this.prisma.task.findMany({
         skip: Number(offset),
@@ -88,9 +89,9 @@ export class TaskQuery {
     };
   }
 
-  async readTask(uuid: string): Promise<ReadTaskResult> {
-    const res = await this.prisma.task.findFirst({
-      where: { uuid: uuid },
+  async readTask(tenantId: string, uuid: string): Promise<ReadTaskResult> {
+    const res = await this.prisma.task.findUnique({
+      where: { uuid, tenantId },
       include: {
         customer: {
           select: {
@@ -123,14 +124,20 @@ export class TaskQuery {
   }
 
   async getTasksByCustomer(
+    tenantId: string,
     customerUUID: string,
     history: boolean,
   ): Promise<GetTasksByCustomerResult> {
     const conditions = [];
     if (history) {
-      conditions.push({ customerUUID }, { status: StatusTask.COMPLETED });
+      conditions.push(
+        { tenantId },
+        { customerUUID },
+        { status: StatusTask.COMPLETED },
+      );
     } else {
       conditions.push(
+        { tenantId },
         { customerUUID },
         { status: StatusTask.INCOMING || StatusTask.OVERDUE },
       );

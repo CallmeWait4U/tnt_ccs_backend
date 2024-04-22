@@ -5,6 +5,7 @@ export class UpdateActivityCommand implements ICommand {
   name: string;
   description: string;
   phases: string[];
+  tenantId: string;
 
   constructor(readonly data: Partial<UpdateActivityCommand>) {
     Object.assign(this, data);

@@ -94,6 +94,8 @@ model Customer {
   complaints         Complaint[]
   account            Account?
   employees          Employee[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Business {
@@ -262,6 +264,7 @@ model Task {
   note            String?
   autoAnnounceCus Boolean
   autoAnnounceEmp Boolean
+  tenantId        String?
   customer        Customer   @relation(fields: [customerUUID], references: [uuid])
   customerUUID    String
   employees       Employee[]

@@ -1,0 +1,13 @@
+<p>Kính gửi <%= employeeName %>,</p>
+<p>
+  Trong tuần này, <%= employeeName %> sẽ có các công việc sau cần hoàn thành:
+</p>
+<p>
+  <% for (var i = 0; i < tasks.length ; i++) { %>
+      <p> - <%= tasks[i].activityName %>: từ ngày <%= tasks[i].startDate %> đến ngày <%= tasks[i].endDate %>. </p>
+  <% } %>
+</p>
+
+<p>Email này được gửi từ hệ thống email tự động.</p>
+<p>Xin vui lòng không trả lời email này.</p>
+<p>Trân trọng kính chào!</p>

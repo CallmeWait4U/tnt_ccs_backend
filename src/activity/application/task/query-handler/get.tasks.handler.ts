@@ -11,6 +11,7 @@ export class GetTasksHandler
 
   async execute(query: GetTasksQuery): Promise<GetTasksResult> {
     return await this.taskQuery.getTasks(
+      query.tenantId,
       query.activityUUID,
       query.offset,
       query.limit,

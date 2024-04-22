@@ -14,7 +14,11 @@ export class UpdateActivityHandler
   private readonly activityDomain: ActivityDomain;
 
   async execute(command: UpdateActivityCommand): Promise<string> {
-    const modelCurrent = await this.activityRespository.getByUUID(command.uuid);
+    const modelCurrent = await this.activityRespository.getByUUID(
+      command.uuid,
+      command.tenantId,
+    );
+    this.activityDomain.checkActivity(modelCurrent);
     const modelUpdated = this.activityDomain.update(modelCurrent, command);
     return await this.activityRespository.update(modelUpdated);
   }

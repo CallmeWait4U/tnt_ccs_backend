@@ -37,17 +37,20 @@ export class ActivityRespository {
     return uuids;
   }
 
-  async getByUUID(uuid: string): Promise<ActivityModel> {
+  async getByUUID(uuid: string, tenantId: string): Promise<ActivityModel> {
     const entity = await this.prisma.activity.findUnique({
-      where: { uuid },
+      where: { uuid, tenantId },
       include: { tasks: true, phases: true },
     });
     return this.activityFactory.createActivityModel(entity);
   }
 
-  async getByUUIDs(uuids: string[] | string): Promise<ActivityModel[]> {
+  async getByUUIDs(
+    uuids: string[] | string,
+    tenantId: string,
+  ): Promise<ActivityModel[]> {
     const entities = await this.prisma.activity.findMany({
-      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] } },
+      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] }, tenantId },
       include: { tasks: true },
     });
     return this.activityFactory.createActivityModels(entities);

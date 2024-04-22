@@ -1,0 +1,15 @@
+<p>Kính gửi Quý Khách hàng/Quý Doanh nghiệp,</p>
+<p>
+  Trong tuần này, Công ty chúng tôi - <%= tenantName %> - sẽ có các hoạt động chăm sóc Quý khách hàng/Quý Doanh nghiệp như sau:
+</p>
+<p>
+  <% tasks.forEach(function(task,index){ %>
+      <p> - <%= task.activityName %>: từ ngày <%= task.startDate %> đến ngày <%= task.endDate %>. </p>
+  <% }) %>
+</p>
+
+<p>Thông báo này để Quý Khách hàng/Quý Doanh nghiệp biết và sắp xếp kế hoạch hợp lý trong thời gian sắp tới </p>
+
+<p>Email này được gửi từ hệ thống email tự động.</p>
+<p>Xin vui lòng không trả lời email này.</p>
+<p>Trân trọng kính chào!</p>

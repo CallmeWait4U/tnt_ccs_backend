@@ -12,6 +12,10 @@ export class GetTasksByCustomerHandler
   async execute(
     query: GetTasksByCustomerQuery,
   ): Promise<GetTasksByCustomerResult> {
-    return this.taskQuery.getTasksByCustomer(query.customerUUID, query.history);
+    return this.taskQuery.getTasksByCustomer(
+      query.tenantId,
+      query.customerUUID,
+      query.history,
+    );
   }
 }
