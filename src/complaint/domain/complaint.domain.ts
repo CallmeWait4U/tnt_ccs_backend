@@ -13,6 +13,7 @@ export class ComplaintDomain {
   ): ComplaintModel {
     const complaintUUID = uuidv4().toString();
     model.uuid = complaintUUID;
+    model.code = `KN-` + model.customerUUID;
     model.createdDate = new Date();
     model.valueFieldComplaint = model.valueFieldComplaint.map((i) => ({
       ...i,
