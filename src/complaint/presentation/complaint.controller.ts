@@ -81,15 +81,15 @@ export class ComplaintController {
     @Body() body: CreateComplaintDTO,
     @GetUser() user: User,
   ) {
-    if (user.type !== 'CUSTOMER') {
-      return new HttpException(
-        "You don't have permission to access this resource",
-        HttpStatus.FORBIDDEN,
-      );
-    }
+    // if (user.type !== 'CUSTOMER') {
+    //   return new HttpException(
+    //     "You don't have permission to access this resource",
+    //     HttpStatus.FORBIDDEN,
+    //   );
+    // }
     const command = new CreateComplaintCommand({
       ...body,
-      customerUUID: user.uuid,
+      // customerUUID: user.uuid,
       tenantId: user.tenantId,
     });
     await this.commandBus.execute(command);

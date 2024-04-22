@@ -46,6 +46,11 @@ export class CreateComplaintDTO {
   @IsString()
   billUUID: string;
 
+  @ApiProperty({ example: 'customerUUID', type: String })
+  @IsNotEmpty()
+  @IsString()
+  customerUUID: string;
+
   @ApiProperty({ type: [ValueProperties] })
   @IsArray()
   @IsNotEmpty()
