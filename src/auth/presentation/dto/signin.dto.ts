@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class SignInDTO {
-  @ApiProperty({ example: 'user', type: String })
+  @ApiProperty({ example: 'username1', type: String })
   @IsString()
   @IsNotEmpty()
   username: string;
@@ -12,7 +12,7 @@ export class SignInDTO {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({ example: 'congtya', type: String })
+  @ApiProperty({ example: 'cocolala', type: String })
   @IsString()
   @IsNotEmpty()
   domain: string;

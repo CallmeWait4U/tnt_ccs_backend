@@ -161,12 +161,21 @@ export class ComplaintQuery {
   ): Promise<ReadTypeComplaintResult> {
     const data = await this.prisma.typeComplaint.findUnique({
       where: { uuid, tenantId },
-      include: { listOfField: true },
+      include: {
+        listOfField: true,
+        _count: {
+          select: {
+            complaints: true,
+          },
+        },
+      },
     });
+    console.log(data);
     return plainToClass(
       ReadTypeComplaintResult,
       {
         ...data,
+        numOfComplaints: data._count.complaints,
         listOfField: data.listOfField.map((field) =>
           plainToClass(Field, field, { excludeExtraneousValues: true }),
         ),
