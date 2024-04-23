@@ -190,6 +190,7 @@ export class CustomerController {
         HttpStatus.FORBIDDEN,
       );
     }
-    return await this.queryBus.execute(new StatisticCustomerQuery());
+    const query = new StatisticCustomerQuery(user?.tenantId);
+    return await this.queryBus.execute(query);
   }
 }
