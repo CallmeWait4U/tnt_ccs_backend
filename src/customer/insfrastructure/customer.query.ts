@@ -287,7 +287,7 @@ export class CustomerQuery {
     }
     return {} as ReadIndividualResult;
   }
-  async statisticCustomer(): Promise<StatisticCustomerResult> {
+  async statisticCustomer(tenantId: string): Promise<StatisticCustomerResult> {
     const res = new StatisticCustomerResult();
 
     ///////////////////////////////////////////////// statistic by phase
@@ -296,17 +296,20 @@ export class CustomerQuery {
         uuid: true,
         name: true,
       },
+      where: { tenantId },
     });
 
     const individualForStatistic = await this.prisma.individual.findMany({
       select: {
         dayOfBirth: true,
       },
+      where: { customer: { tenantId: tenantId } },
     });
     ///////////////////////////////////////////////////// statistic by phase
     const customersByPhase = await this.prisma.customer.groupBy({
       by: ['phaseUUID'],
       _count: true,
+      where: { tenantId },
     });
 
     const customersWithPhaseNames = await Promise.all(
@@ -329,6 +332,7 @@ export class CustomerQuery {
     const customersBySource = await this.prisma.customer.groupBy({
       by: ['source'],
       _count: true,
+      where: { tenantId },
     });
     res.BySource = customersBySource.map((i) => ({
       source: i.source,
@@ -339,6 +343,7 @@ export class CustomerQuery {
     const customerByCity = await this.prisma.customer.groupBy({
       by: ['city'],
       _count: true,
+      where: { tenantId },
     });
     res.ByLocation = customerByCity.map((i) => ({
       city: i.city,
@@ -370,6 +375,7 @@ export class CustomerQuery {
         createdAt: true,
         phaseUUID: true,
       },
+      where: { tenantId },
     });
     const customerByTime = customerForStatistic.reduce(
       (acc, customer) => {
