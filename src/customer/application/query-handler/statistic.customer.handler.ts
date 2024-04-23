@@ -9,7 +9,9 @@ export class StatisticCustomerHandler
 {
   constructor(private readonly customerQuery: CustomerQuery) {}
 
-  async execute(): Promise<StatisticCustomerResult> {
-    return await this.customerQuery.statisticCustomer();
+  async execute(
+    query: StatisticCustomerQuery,
+  ): Promise<StatisticCustomerResult> {
+    return await this.customerQuery.statisticCustomer(query.tenantId);
   }
 }
