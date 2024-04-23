@@ -11,6 +11,7 @@ export class ComplaintRepository {
 
   async createComplaint(complaint: ComplaintModel): Promise<string> {
     const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       id,
       customerUUID,
       typeComplaintUUID,

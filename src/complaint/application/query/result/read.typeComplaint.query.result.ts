@@ -35,5 +35,8 @@ export class ReadTypeComplaintResult implements IQueryResult {
   description: string;
 
   @Expose()
+  numOfComplaints: number;
+
+  @Expose()
   listOfField: Field[];
 }
