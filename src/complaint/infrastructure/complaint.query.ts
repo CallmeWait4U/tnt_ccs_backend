@@ -170,7 +170,6 @@ export class ComplaintQuery {
         },
       },
     });
-    console.log(data);
     return plainToClass(
       ReadTypeComplaintResult,
       {

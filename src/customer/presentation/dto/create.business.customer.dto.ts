@@ -136,7 +136,8 @@ export class CreateBusinessCustomerDTO {
     example: ['4s45sd4f562sad54f', '545dsaxcsrg54y1hr87fd'],
     type: [String],
   })
+  @IsOptional()
   @IsArray()
-  @IsNotEmpty()
+  // @IsNotEmpty()
   employeeUUIDs: string[];
 }
