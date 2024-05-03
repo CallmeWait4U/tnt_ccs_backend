@@ -94,8 +94,8 @@ model Customer {
   complaints         Complaint[]
   account            Account?
   employees          Employee[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @default(now()) @updatedAt
 }
 
 model Business {
@@ -218,39 +218,41 @@ model ProductBill {
 ///////////////////////
 
 model Employee {
-  id            Int         @id @default(autoincrement())
-  uuid          String      @unique @default(uuid())
-  name          String
-  code          String?
-  city          String?
-  district      String?
-  detailAddress String?
-  dayOfBirth    DateTime?
-  cccd          String?
-  email         String
-  phoneNumber   String?
-  description   String?
-  gender        Gender?
-  position      String?
-  avatar        Bytes?
-  nationality   String?
-  tasks         Task[]
-  complaints    Complaint[]
-  account       Account?
-  tenantId      String?
-  customers     Customer[]
+  id                Int                 @id @default(autoincrement())
+  uuid              String              @unique @default(uuid())
+  name              String
+  code              String?
+  city              String?
+  district          String?
+  detailAddress     String?
+  dayOfBirth        DateTime?
+  cccd              String?
+  email             String
+  phoneNumber       String?
+  description       String?
+  gender            Gender?
+  position          String?
+  avatar            Bytes?
+  nationality       String?
+  tasks             Task[]
+  complaints        Complaint[]
+  account           Account?
+  tenantId          String?
+  customers         Customer[]
+  activityComplaint ActivityComplaint[]
 }
 
 ///////////////////////
 
 model Activity {
-  id          Int     @id @default(autoincrement())
-  uuid        String  @unique @default(uuid())
-  name        String
-  description String?
-  tasks       Task[]
-  phases      Phase[]
-  tenantId    String?
+  id                Int                 @id @default(autoincrement())
+  uuid              String              @unique @default(uuid())
+  name              String
+  description       String?
+  tasks             Task[]
+  phases            Phase[]
+  tenantId          String?
+  activityComplaint ActivityComplaint[]
 }
 
 model Task {
@@ -299,6 +301,21 @@ model Complaint {
   billUUID            String?
   tenantId            String?
   valueFieldComplaint ValueFieldComplaint[]
+  activityComplaint   ActivityComplaint[]
+}
+
+model ActivityComplaint {
+  id            Int       @id @default(autoincrement())
+  uuid          String    @unique @default(uuid())
+  note          String
+  doneDate      DateTime
+  employee      Employee  @relation(fields: [employeeUUID], references: [uuid])
+  employeeUUID  String
+  activity      Activity  @relation(fields: [activityUUID], references: [uuid])
+  activityUUID  String
+  complaint     Complaint @relation(fields: [complaintUUID], references: [uuid])
+  complaintUUID String
+  tenantId      String
 }
 
 ///////////////////////

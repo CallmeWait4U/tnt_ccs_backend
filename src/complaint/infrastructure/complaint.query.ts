@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
+import { GetActivitiesComplaintItem } from '../application/query/result/get.activities.complaint.query.result';
 import {
   ComplaintItem,
   GetComplaintsResult,
@@ -114,6 +115,13 @@ export class ComplaintQuery {
     };
   }
 
+  async getTypeComplaintListForCheck(tenantId: string): Promise<string[]> {
+    const data = await this.prisma.typeComplaint.findMany({
+      where: { tenantId },
+    });
+    return data ? data.map((i) => i.name) : [];
+  }
+
   async readComplaint(
     uuid: string,
     tenantId: string,
@@ -189,6 +197,29 @@ export class ComplaintQuery {
       where: { uuid: customerUUID },
       include: { employees: true },
     });
-    return data.employees.map((employee) => ({ uuid: employee.uuid }));
+    return data.employees.map((employee) => ({
+      uuid: employee.uuid,
+      name: employee.name,
+      code: employee.code,
+    }));
+  }
+
+  async getActivtiesComplaint(complaintUUID: string, tenantId: string) {
+    const data = await this.prisma.complaint.findUnique({
+      where: { uuid: complaintUUID, tenantId },
+      include: {
+        activityComplaint: { include: { employee: true, activity: true } },
+      },
+    });
+    return {
+      items: data.activityComplaint.map((i) =>
+        plainToClass(GetActivitiesComplaintItem, {
+          ...i,
+          employeeName: i.employee.name,
+          employeeCode: i.employee.code,
+          activityName: i.activity.name,
+        }),
+      ),
+    };
   }
 }

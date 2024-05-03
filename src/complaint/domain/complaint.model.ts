@@ -4,6 +4,17 @@ import { Expose } from 'class-transformer';
 export class EmployeeType {
   @Expose()
   uuid: string;
+  @Expose()
+  name: string;
+  @Expose()
+  code: string;
+}
+
+export class ActivityType {
+  @Expose()
+  uuid: string;
+  @Expose()
+  name: string;
 }
 
 export class FieldComplaintModel {
@@ -80,6 +91,29 @@ export class TypeComplaintModel {
   listOfField: FieldComplaintModel[];
   @Expose()
   complaints?: ComplaintModel[];
+  @Expose()
+  tenantId: string;
+}
+
+export class ActivityComplaintModel {
+  @Expose()
+  id: number;
+  @Expose()
+  uuid: string;
+  @Expose()
+  note: string;
+  @Expose()
+  doneDate: Date;
+  @Expose()
+  employeeUUID: string;
+  @Expose()
+  employee: EmployeeType;
+  @Expose()
+  activityUUID: string;
+  @Expose()
+  complaintUUID: string;
+  @Expose()
+  complaint: ComplaintModel;
   @Expose()
   tenantId: string;
 }

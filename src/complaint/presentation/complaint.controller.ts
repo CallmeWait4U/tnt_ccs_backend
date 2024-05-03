@@ -15,20 +15,25 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
+import { CreateActivityComplaintCommand } from '../application/command/create.activity.complaint.command';
 import { CreateComplaintCommand } from '../application/command/create.complaint.command';
 import { CreateTypeComplaintCommand } from '../application/command/create.typeComplaint.command';
 import { DeleteComplaintCommand } from '../application/command/delete.complaint.command';
 import { DeleteTypeComplaintCommand } from '../application/command/delete.typeComplaint.command';
 import { UpdateStatusComplaintCommand } from '../application/command/update.status.complaint.command';
 import { UpdateTypeComplaintCommand } from '../application/command/update.typeComplaint.command';
+import { GetActivitiesComplaintQuery } from '../application/query/get.activities.complaint.query';
 import { GetComplaintsQuery } from '../application/query/get.complaints.query';
 import { GetSelectorTypeQuery } from '../application/query/get.selector.type.query';
 import { ReadComplaintQuery } from '../application/query/read.complaint.query';
 import { ReadTypeComplaintQuery } from '../application/query/read.typeComplaint.query';
+import { CreateActivityComplaintDTO } from './dto/create.activity.complaint.dto';
 import { CreateComplaintDTO } from './dto/create.complaint.dto';
 import { CreateTypeComplaintDTO } from './dto/create.typeComplaint.dto';
+import { DeleteActivityComplaintDTO } from './dto/delete.activity.complaint.dto';
 import { DeleteComplaintDTO } from './dto/delete.complaint.dto';
 import { DeleteTypeComplaintDTO } from './dto/delete.typeComplaint.dto';
+import { GetActivitiesComplaintDTO } from './dto/get.activities.complaint.dto';
 import { GetComplaintsDTO } from './dto/get.complaint.dto';
 import { ReadComplaintDTO } from './dto/read.complaint.dto';
 import { ReadTypeComplaintDTO } from './dto/read.typeComplaint.dto';
@@ -192,5 +197,43 @@ export class ComplaintController {
       tenantId: user.tenantId,
     });
     await this.commandBus.execute(command);
+  }
+
+  @Get('/activity/all')
+  async getActivitiesComplaint(
+    @Query() q: GetActivitiesComplaintDTO,
+    @GetUser() user: User,
+  ) {
+    const query = new GetActivitiesComplaintQuery(
+      user.tenantId,
+      q.complaintUUID,
+    );
+    return await this.queryBus.execute(query);
+  }
+
+  @Post('/activity/create')
+  async createActivityComplaint(
+    @Body() body: CreateActivityComplaintDTO,
+    @GetUser() user: User,
+  ) {
+    const command = new CreateActivityComplaintCommand({
+      ...body,
+      tenantId: user.tenantId,
+    });
+    await this.commandBus.execute(command);
+    return { message: 'SUCCESS' };
+  }
+
+  @Post('/activity/delete')
+  async deleteActivityComplaint(
+    @Body() body: DeleteActivityComplaintDTO,
+    @GetUser() user: User,
+  ) {
+    const command = new CreateActivityComplaintCommand({
+      ...body,
+      tenantId: user.tenantId,
+    });
+    await this.commandBus.execute(command);
+    return { message: 'SUCCESS' };
   }
 }

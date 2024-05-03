@@ -1,6 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { PrismaService } from 'libs/database.module';
-import { ComplaintModel, TypeComplaintModel } from '../domain/complaint.model';
+import {
+  ActivityComplaintModel,
+  ComplaintModel,
+  TypeComplaintModel,
+} from '../domain/complaint.model';
 import { ComplaintFactory } from './complaint.factory';
 
 export class ComplaintRepository {
@@ -45,6 +49,27 @@ export class ComplaintRepository {
       },
     });
     return newTypeComplaint.uuid;
+  }
+
+  async createActivityComplaint(
+    activityComplaint: ActivityComplaintModel,
+  ): Promise<string> {
+    const {
+      id,
+      employeeUUID,
+      activityUUID,
+      complaintUUID,
+      ...dataActivityComplaint
+    } = activityComplaint;
+    const newActivityComplaint = await this.prisma.activityComplaint.create({
+      data: {
+        ...dataActivityComplaint,
+        employee: { connect: { uuid: employeeUUID } },
+        activity: { connect: { uuid: activityUUID } },
+        complaint: { connect: { uuid: complaintUUID } },
+      },
+    });
+    return newActivityComplaint.uuid;
   }
 
   async updateStatusComplaint(model: ComplaintModel): Promise<string> {
@@ -93,6 +118,16 @@ export class ComplaintRepository {
     return uuids;
   }
 
+  async deleteActivityComplaint(
+    models: ActivityComplaintModel[],
+  ): Promise<string[]> {
+    const uuids = models.map((model) => model.uuid);
+    await this.prisma.activityComplaint.deleteMany({
+      where: { uuid: { in: uuids } },
+    });
+    return uuids;
+  }
+
   async getComplaintByUUIDs(
     uuids: string[] | string,
     tenantId: string,
@@ -113,5 +148,16 @@ export class ComplaintRepository {
       include: { complaints: true, listOfField: true },
     });
     return this.complaintFactory.createTypeComplaintModels(entities);
+  }
+
+  async getActivityComplaintUUIDs(
+    uuids: string[] | string,
+    tenantId: string,
+  ): Promise<ActivityComplaintModel[]> {
+    const entities = await this.prisma.activityComplaint.findMany({
+      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] }, tenantId },
+      include: { employee: true, activity: true, complaint: true },
+    });
+    return this.complaintFactory.createActivityComplaintModels(entities);
   }
 }
