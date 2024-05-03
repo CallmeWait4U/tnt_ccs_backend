@@ -32,11 +32,11 @@ export class CustomerFactory extends BaseFactory {
     }
     const employees: { uuid: string }[] = [];
     if ('employeeUUIDs' in customer && Array.isArray(customer.employeeUUIDs)) {
-      customer.employeeUUIDs.forEach((uuid) => {
+      customer.employeeUUIDs?.forEach((uuid) => {
         employees.push({ uuid });
       });
     } else {
-      customer.employees.forEach((employee) => {
+      customer.employees?.forEach((employee) => {
         employees.push({ uuid: employee.uuid });
       });
     }
