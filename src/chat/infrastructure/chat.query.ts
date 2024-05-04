@@ -1,62 +1,123 @@
 import { Inject } from '@nestjs/common';
-import { Prisma, Tenant } from '@prisma/client';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
+import {
+  ChatCustomerResult,
+  ListChatCustomerResult,
+} from '../application/query/result/list.chatCustomer.result';
+import {
+  ChatEmployeeResult,
+  ListChatEmployeeResult,
+} from '../application/query/result/list.chatEmployee.result';
 
-export class NotificationQuery {
+export class ChatQuery {
   @Inject()
   private readonly prisma: PrismaService;
   @Inject()
   private readonly util: UtilityImplement;
 
-  async getTasksByCustomer(): Promise<{
-    customers: Prisma.CustomerGetPayload<{
-      include: {
-        tasks: { include: { activity: true } };
-        business: true;
-        individual: true;
-      };
-    }>[];
-    tenants: Tenant[];
-  }> {
-    const nextWeek = Date.now() + 24 * 60 * 60 * 1000;
-    const nextWeekDate = new Date(nextWeek).toISOString();
-    const customers = await this.prisma.customer.findMany({
+  async listChatEmployee(
+    tenantId: string,
+    accountUUID: string,
+    receiverUUID: string,
+
+    limit: number,
+  ): Promise<ListChatEmployeeResult> {
+    const data = await this.prisma.chat.findMany({
       where: {
-        tasks: {
-          some: {
-            startDate: {
-              lte: nextWeekDate,
-            },
+        sender: {
+          tenantId,
+        },
+        receiver: {
+          tenantId,
+        },
+        senderUUID: accountUUID,
+        receiverUUID,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+
+      take: limit,
+    });
+
+    const items: ChatEmployeeResult[] = data.map((item) => {
+      let isSender = false;
+      if (item.senderUUID === accountUUID) {
+        isSender = true;
+      }
+
+      return {
+        isSender,
+        content: item.content,
+        createdAt: item.createdAt,
+      };
+    });
+    const result: ListChatEmployeeResult = {
+      items,
+      total: items.length,
+    };
+    return result;
+  }
+  async listChatCustomer(
+    tenantId: string,
+    customerUUID: string,
+    limit: number,
+  ): Promise<ListChatCustomerResult> {
+    const data = await this.prisma.chat.findMany({
+      where: {
+        sender: {
+          tenantId,
+        },
+        receiver: {
+          tenantId,
+        },
+        OR: [
+          {
+            senderUUID: customerUUID,
+          },
+          {
+            receiverUUID: customerUUID,
+          },
+        ],
+      },
+      include: {
+        sender: {
+          select: {
+            username: true,
+          },
+        },
+        receiver: {
+          select: {
+            username: true,
           },
         },
       },
-      take: 1,
-      include: {
-        tasks: { include: { activity: true } },
-        business: true,
-        individual: true,
+      orderBy: {
+        createdAt: 'desc',
       },
+      take: limit,
     });
-    const tenants = await this.prisma.tenant.findMany();
-    return { customers, tenants };
-  }
 
-  async getTasksByEmployee(): Promise<{
-    employees: Prisma.EmployeeGetPayload<{
-      include: {
-        tasks: { include: { activity: true } };
+    console.log(data);
+    const items: ChatCustomerResult[] = data.map((item) => {
+      let isSender = false;
+      if (item.receiverUUID === customerUUID) {
+        isSender = true;
+      }
+
+      return {
+        isSender,
+        content: item.content,
+        createdAt: item.createdAt,
+        senderUsername: item?.sender?.username,
+        receiverUsername: item?.receiver?.username,
       };
-    }>[];
-    tenants: Tenant[];
-  }> {
-    const employees = await this.prisma.employee.findMany({
-      take: 1,
-      include: {
-        tasks: { include: { activity: true } },
-      },
     });
-    const tenants = await this.prisma.tenant.findMany();
-    return { employees, tenants };
+    const result: ListChatCustomerResult = {
+      items,
+      total: items.length,
+    };
+    return result;
   }
 }

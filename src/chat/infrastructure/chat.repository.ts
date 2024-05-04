@@ -9,7 +9,7 @@ export class ChatRepository {
     receiverUUID: string,
     content: string,
   ) {
-    return await this.prisma.chatToEmployee.create({
+    return await this.prisma.chat.create({
       data: {
         senderUUID,
         receiverUUID,
