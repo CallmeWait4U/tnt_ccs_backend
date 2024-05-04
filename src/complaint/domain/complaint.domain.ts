@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { ActivityComplaint } from '@prisma/client';
+import { FirebaseService } from 'libs/firebase.module';
 import { v4 as uuidv4 } from 'uuid';
 import { ComplaintQuery } from '../infrastructure/complaint.query';
 import {
@@ -12,11 +13,57 @@ import {
 export class ComplaintDomain {
   @Inject()
   private readonly complaintQuery: ComplaintQuery;
+  @Inject()
+  private readonly firebase: FirebaseService;
 
-  createComplaint(
+  async createComplaint(
     model: ComplaintModel,
     listEmployees: EmployeeType[],
-  ): ComplaintModel {
+    typeComplaint: TypeComplaintModel,
+    images: Express.Multer.File[],
+  ): Promise<ComplaintModel> {
+    const fieldComplaintUUIDs = typeComplaint.listOfField.map(
+      (field) => field.uuid,
+    );
+    for (const field of model.valueFieldComplaint) {
+      const index = fieldComplaintUUIDs.indexOf(field.fieldComplaintUUID);
+      if (index === -1) {
+        throw new HttpException(
+          'Field does not exist in Type Complaint',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const fieldComplaint = typeComplaint.listOfField[index];
+      if (fieldComplaint.isFieldFile) {
+        if (fieldComplaint.maxNumOfFiles < field.value.length) {
+          throw new HttpException(
+            'Vuot qua so tep quy dinh',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        if (fieldComplaint.specificFileTypes.length !== 0) {
+          for (const i of field.value) {
+            const index = Number(i);
+            if (
+              !fieldComplaint.specificFileTypes.includes(
+                images[index].originalname.split('.')[1],
+              )
+            ) {
+              throw new HttpException(
+                'Dinh dang tep khong phu hop',
+                HttpStatus.BAD_REQUEST,
+              );
+            }
+          }
+        }
+        const urls: string[] = [];
+        for (const i of field.value) {
+          const index = Number(i);
+          urls.push(await this.firebase.uploadImage(images[index]));
+        }
+        field.value = urls;
+      }
+    }
     const complaintUUID = uuidv4().toString();
     model.uuid = complaintUUID;
     model.code = `KN-` + model.customerUUID;

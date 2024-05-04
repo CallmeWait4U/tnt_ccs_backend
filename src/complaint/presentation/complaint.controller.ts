@@ -8,11 +8,12 @@ import {
   Post,
   Put,
   Query,
+  UploadedFiles,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
 import { CreateActivityComplaintCommand } from '../application/command/create.activity.complaint.command';
@@ -82,8 +83,10 @@ export class ComplaintController {
   }
 
   @Post('/create')
+  @ApiConsumes('multipart/form-data')
   async createComplaint(
     @Body() body: CreateComplaintDTO,
+    @UploadedFiles() images: Express.Multer.File[],
     @GetUser() user: User,
   ) {
     // if (user.type !== 'CUSTOMER') {
@@ -94,6 +97,7 @@ export class ComplaintController {
     // }
     const command = new CreateComplaintCommand({
       ...body,
+      images,
       // customerUUID: user.uuid,
       tenantId: user.tenantId,
     });

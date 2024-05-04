@@ -24,9 +24,15 @@ export class CreateComplaintHandler
     const listEmployees = await this.complaintQuery.getListEmployees(
       command.customerUUID,
     );
-    const complaint = this.complaintDomain.createComplaint(
+    const typeComplaint = await this.complaintQuery.getTypeComplaint(
+      command.typeComplaintUUID,
+      command.tenantId,
+    );
+    const complaint = await this.complaintDomain.createComplaint(
       model,
       listEmployees,
+      typeComplaint,
+      command.images,
     );
     return await this.complaintRepository.createComplaint(complaint);
   }

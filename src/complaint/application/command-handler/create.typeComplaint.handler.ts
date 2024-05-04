@@ -18,7 +18,7 @@ export class CreateTypeComplaintHandler
 
   async execute(command: CreateTypeComplaintCommand): Promise<string> {
     const model = this.complaintFactory.createTypeComplaintModel(command);
-    const typeComplaint = this.complaintDomain.createTypeComplaint(model);
+    const typeComplaint = await this.complaintDomain.createTypeComplaint(model);
     return await this.complaintRepository.createTypeComplaint(typeComplaint);
   }
 }
