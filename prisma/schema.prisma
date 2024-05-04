@@ -218,28 +218,30 @@ model ProductBill {
 ///////////////////////
 
 model Employee {
-  id                Int                 @id @default(autoincrement())
-  uuid              String              @unique @default(uuid())
-  name              String
-  code              String?
-  city              String?
-  district          String?
-  detailAddress     String?
-  dayOfBirth        DateTime?
-  cccd              String?
-  email             String
-  phoneNumber       String?
-  description       String?
-  gender            Gender?
-  position          String?
-  avatar            Bytes?
-  nationality       String?
-  tasks             Task[]
-  complaints        Complaint[]
-  account           Account?
-  tenantId          String?
-  customers         Customer[]
-  activityComplaint ActivityComplaint[]
+  id                      Int                 @id @default(autoincrement())
+  uuid                    String              @unique @default(uuid())
+  name                    String
+  code                    String?
+  city                    String?
+  district                String?
+  detailAddress           String?
+  dayOfBirth              DateTime?
+  cccd                    String?
+  email                   String
+  phoneNumber             String?
+  description             String?
+  gender                  Gender?
+  position                String?
+  avatar                  Bytes?
+  nationality             String?
+  tasks                   Task[]
+  complaints              Complaint[]
+  account                 Account?
+  tenantId                String?
+  customers               Customer[]
+  activiyComplaint        ActivityComplaint[]
+  chatToEmployee_sender   ChatToEmployee[]    @relation("Sender")
+  chatToEmployee_receiver ChatToEmployee[]    @relation("Receiver")
 }
 
 ///////////////////////
@@ -372,6 +374,16 @@ model ValueFieldComplaint {
   complaint          Complaint? @relation(fields: [complaintUUID], references: [uuid])
   complaintUUID      String?
   tenantId           String?
+}
+
+/////////////////////////    chat
+model ChatToEmployee {
+  id           Int      @id @default(autoincrement())
+  content      String
+  senderUUID   String
+  receiverUUID String
+  sender       Employee @relation("Sender", fields: [senderUUID], references: [uuid])
+  receiver     Employee @relation("Receiver", fields: [receiverUUID], references: [uuid])
 }
 
 // Enum
