@@ -13,6 +13,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { BillModule } from './bill/bill.module';
+import { ChatModule } from './chat/chat.module';
 import { CompanyModule } from './company/company.module';
 import { ComplaintModule } from './complaint/complaint.module';
 import { CustomerModule } from './customer/customer.module';
@@ -46,6 +47,7 @@ import { TestModule } from './test/test.module';
     BillModule,
     NotificationModule,
     ComplaintModule,
+    ChatModule,
     TestModule,
   ],
   controllers: [AppController],
