@@ -1,6 +1,11 @@
 import { StatusTask } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
+export class EmployeeType {
+  @Expose()
+  uuid: string;
+}
+
 export class TaskModel {
   @Expose()
   id: number;
@@ -37,4 +42,10 @@ export class TaskModel {
 
   @Expose()
   activityUUID: string;
+
+  @Expose()
+  employees: EmployeeType[];
+
+  @Expose()
+  tenantId: string;
 }

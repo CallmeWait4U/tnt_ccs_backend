@@ -1,16 +1,17 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { StatusTask } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
-import { TaskModel } from './task.model';
+import { EmployeeType, TaskModel } from './task.model';
 
 export class TaskDomain {
-  create(model: TaskModel): TaskModel | string {
+  create(model: TaskModel, employees: EmployeeType[]): TaskModel | string {
     const taskUUID = uuidv4().toString();
     model.uuid = taskUUID;
     model.status =
       new Date() > new Date(model.endDate)
         ? StatusTask.INCOMING
         : StatusTask.OVERDUE;
+    model.employees = employees;
     if (!model.customerUUID) return 'Không có UUID của khách hàng';
     if (!model.activityUUID) return 'Không có UUID của loại hoạt động';
     return model;

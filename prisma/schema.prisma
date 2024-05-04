@@ -240,6 +240,7 @@ model Employee {
   tenantId          String?
   customers         Customer[]
   activityComplaint ActivityComplaint[]
+  emailTask         EmailTask[]
 }
 
 ///////////////////////
@@ -256,8 +257,8 @@ model Activity {
 }
 
 model Task {
-  id              Int        @id @default(autoincrement())
-  uuid            String     @unique @default(uuid())
+  id              Int         @id @default(autoincrement())
+  uuid            String      @unique @default(uuid())
   startDate       DateTime
   endDate         DateTime
   createDate      DateTime
@@ -267,11 +268,24 @@ model Task {
   autoAnnounceCus Boolean
   autoAnnounceEmp Boolean
   tenantId        String?
-  customer        Customer   @relation(fields: [customerUUID], references: [uuid])
+  customer        Customer    @relation(fields: [customerUUID], references: [uuid])
   customerUUID    String
   employees       Employee[]
-  activity        Activity   @relation(fields: [activityUUID], references: [uuid])
+  activity        Activity    @relation(fields: [activityUUID], references: [uuid])
   activityUUID    String
+  emailTask       EmailTask[]
+}
+
+model EmailTask {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @unique @default(uuid())
+  sentDate     DateTime
+  subject      String
+  content      String
+  from         Employee @relation(fields: [employeeUUID], references: [uuid])
+  employeeUUID String
+  task         Task     @relation(fields: [taskUUID], references: [uuid])
+  taskUUID     String
 }
 
 ///////////////////////
