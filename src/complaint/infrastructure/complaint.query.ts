@@ -17,6 +17,7 @@ import {
   ValueField,
 } from '../application/query/result/read.complaint.query.result';
 import { ReadTypeComplaintResult } from '../application/query/result/read.typeComplaint.query.result';
+import { TypeComplaintModel } from '../domain/complaint.model';
 
 export class ComplaintQuery {
   @Inject()
@@ -201,6 +202,19 @@ export class ComplaintQuery {
       name: employee.name,
       code: employee.code,
     }));
+  }
+
+  async getTypeComplaint(
+    uuid: string,
+    tenantId: string,
+  ): Promise<TypeComplaintModel> {
+    const data = await this.prisma.typeComplaint.findUnique({
+      where: { uuid, tenantId },
+      include: { listOfField: true },
+    });
+    return plainToClass(TypeComplaintModel, data, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async getActivtiesComplaint(complaintUUID: string, tenantId: string) {

@@ -8,6 +8,7 @@ import { CreateActivityCommand } from 'src/activity/application/activity/command
 import { CreateTaskCommand } from 'src/activity/application/task/command/create.task.command';
 import { SignUpCommand } from 'src/auth/application/command/signup.command';
 import { CreateBillCommand } from 'src/bill/application/command/create.bill.command';
+import { CreateTypeComplaintCommand } from 'src/complaint/application/command/create.typeComplaint.command';
 import { CreateCustomerCommand } from 'src/customer/application/command/create.customer.command';
 import { CreatePhaseCommand } from 'src/phase/application/command/create.phase.command';
 import { CreatePriceQuoteCommand } from 'src/priceQuote/application/command/create.priceQuote.command';
@@ -164,6 +165,7 @@ export class TestService {
             name,
             description: faker.lorem.sentence(),
             phases: faker.helpers.arrayElements(phaseUUID),
+            tenantId,
           }),
         );
       }
@@ -306,6 +308,9 @@ export class TestService {
           }),
         );
       }
+    }
+    for (const item of dataTask) {
+      await this.commandBus.execute(item);
     }
     console.log('Đã tạo Công việc');
 
@@ -468,5 +473,85 @@ export class TestService {
       await this.commandBus.execute(item);
     }
     console.log('Đã tạo Hóa đơn');
+
+    // Tạo Loại Khiếu nại
+    const dataTypeComplaint: CreateTypeComplaintCommand[] = [];
+    const typeComplaints: { name: string; listOfField: any }[] = [
+      {
+        name: 'Vận chuyển',
+        listOfField: [
+          {
+            name: 'Trắc nghiệm',
+            isFieldFile: false,
+            title: 'Vấn đề bạn gặp với việc giao hàng?',
+            specificFileTypes: [],
+            maxNumOfFiles: 0,
+            listOptions: [
+              'Shipper không thân thiện',
+              'Giao hàng quá chậm',
+              'Không có free ship',
+            ],
+          },
+          {
+            name: 'Tải tệp lên',
+            isFieldFile: false,
+            title: 'Hình ảnh minh họa',
+            specificFileTypes: [],
+            maxNumOfFiles: 2,
+            listOptions: [],
+          },
+          {
+            name: 'Trả lời dài',
+            isFieldFile: false,
+            title: 'Mô tả chi tiết',
+            specificFileTypes: [],
+            maxNumOfFiles: 0,
+            listOptions: [],
+          },
+        ],
+      },
+      {
+        name: 'Nhân viên',
+        listOfField: [
+          {
+            name: 'Trắc nghiệm',
+            isFieldFile: false,
+            title: 'Vấn đề bạn gặp phải với nhân viên chúng tôi?',
+            specificFileTypes: [],
+            maxNumOfFiles: 0,
+            listOptions: [
+              'Tư vấn không đúng',
+              'Thái độ không tích cực',
+              'Phản hồi chậm',
+            ],
+          },
+          {
+            name: 'Trả lời dài',
+            isFieldFile: false,
+            title: 'Mô tả chi tiết',
+            specificFileTypes: [],
+            maxNumOfFiles: 0,
+            listOptions: [],
+          },
+        ],
+      },
+    ];
+    for (const tenantId of tenantIds) {
+      for (const typeComplaint of typeComplaints) {
+        dataTypeComplaint.push({
+          name: typeComplaint.name,
+          description: 'Không có mô tả cho loại khiếu nại này',
+          listOfField: typeComplaint.listOfField,
+          tenantId,
+        });
+      }
+    }
+    for (const item of dataTypeComplaint) {
+      await this.commandBus.execute(item);
+    }
+    console.log('Đã tạo Loại khiếu nại');
+
+    // Tạo khiếu nại
+    // const
   }
 }

@@ -15,7 +15,14 @@ class ValueProperties {
   @IsString()
   fieldComplaintUUID: string;
 
-  @ApiProperty({ type: [String] })
+  @ApiProperty({
+    example: [
+      'Nếu là trường Tải tệp lên, giá trị của mảng là vị trí của các hình tương ứng với trường này trong field images',
+    ],
+    type: [String],
+    description:
+      'Nếu là trường Tải tệp lên, giá trị của mảng là vị trí của các hình tương ứng với trường này trong field images',
+  })
   @IsArray()
   @IsNotEmpty({ each: true })
   @IsString({ each: true })
@@ -57,4 +64,16 @@ export class CreateComplaintDTO {
   @ValidateNested({ each: true })
   @Type(() => ValueProperties)
   valueFieldComplaint: ValueProperties[];
+
+  @ApiProperty({
+    type: 'array',
+    items: {
+      type: 'file',
+      items: {
+        type: 'string',
+        format: 'binary',
+      },
+    },
+  })
+  images: Express.Multer.File[];
 }

@@ -13,6 +13,7 @@ export class CreateComplaintCommand implements ICommand {
   typeComplaintUUID: string;
   billUUID: string;
   valueFieldComplaint: ValueProperties[];
+  images: Express.Multer.File[];
   tenantId: string;
 
   constructor(data: Partial<CreateComplaintCommand>) {
