@@ -25,5 +25,7 @@ export class ActivityModel {
 
   @Expose()
   phases: string[];
-  
+
+  @Expose()
+  tenantId: string;
 }

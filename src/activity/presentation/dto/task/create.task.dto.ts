@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateTaskDTO {
   @ApiProperty({ example: new Date(), type: Date })
@@ -29,10 +35,11 @@ export class CreateTaskDTO {
   @IsBoolean()
   autoAnnounceEmp: boolean;
 
-  //   @ApiProperty({ example: ['String'], type: [String] })
-  //   @IsNotEmpty({ each: true })
-  //   @IsArray()
-  //   employeeUUID: string[];
+  @ApiProperty({ example: ['String'], type: [String] })
+  @IsArray()
+  @IsNotEmpty({ each: true })
+  @IsString({ each: true })
+  employees: string[];
 
   @ApiProperty({ example: 'String', type: String })
   @IsNotEmpty()

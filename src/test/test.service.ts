@@ -291,22 +291,41 @@ export class TestService {
 
     // Tạo Task
     const dataTask: CreateTaskCommand[] = [];
-    for (const uuid of activityUUID) {
-      const num = faker.number.int({ min: 30, max: 50 });
-      for (let i = 0; i < num; i++) {
-        const startDate = faker.date.recent();
-        dataTask.push(
-          new CreateTaskCommand({
-            startDate,
-            endDate: faker.date.future(),
-            createDate: faker.date.recent({ days: 10, refDate: startDate }),
-            note: faker.lorem.sentence(),
-            autoAnnounceEmp: false,
-            autoAnnounceCus: false,
-            activityUUID: uuid,
-            customerUUID: faker.helpers.arrayElement(customerUUID).uuid,
-          }),
-        );
+    for (const tenantId of tenantIds) {
+      const activities = await this.prisma.activity.findMany({
+        where: { tenantId },
+      });
+      const customers = await this.prisma.customer.findMany({
+        where: { tenantId },
+      });
+      const employees = await this.prisma.employee.findMany({
+        where: { tenantId },
+      });
+      const activityUUIDs = activities.map((activity) => activity.uuid);
+      const customerUUIDs = customers.map((customer) => customer.uuid);
+      const employeeUUIDs = employees.map((employee) => employee.uuid);
+      for (const uuid of activityUUIDs) {
+        const num = faker.number.int({ min: 30, max: 50 });
+        for (let i = 0; i < num; i++) {
+          const startDate = faker.date.recent();
+          dataTask.push(
+            new CreateTaskCommand({
+              startDate,
+              endDate: faker.date.future(),
+              createDate: faker.date.recent({ days: 10, refDate: startDate }),
+              note: faker.lorem.sentence(),
+              autoAnnounceEmp: false,
+              autoAnnounceCus: false,
+              employees: faker.helpers.arrayElements(employeeUUIDs, {
+                min: 1,
+                max: 3,
+              }),
+              activityUUID: uuid,
+              customerUUID: faker.helpers.arrayElement(customerUUIDs),
+              tenantId,
+            }),
+          );
+        }
       }
     }
     for (const item of dataTask) {
@@ -538,12 +557,14 @@ export class TestService {
     ];
     for (const tenantId of tenantIds) {
       for (const typeComplaint of typeComplaints) {
-        dataTypeComplaint.push({
-          name: typeComplaint.name,
-          description: 'Không có mô tả cho loại khiếu nại này',
-          listOfField: typeComplaint.listOfField,
-          tenantId,
-        });
+        dataTypeComplaint.push(
+          new CreateTypeComplaintCommand({
+            name: typeComplaint.name,
+            description: 'Không có mô tả cho loại khiếu nại này',
+            listOfField: typeComplaint.listOfField,
+            tenantId,
+          }),
+        );
       }
     }
     for (const item of dataTypeComplaint) {

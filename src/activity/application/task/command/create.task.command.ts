@@ -10,6 +10,7 @@ export class CreateTaskCommand implements ICommand {
   activityUUID: string;
   customerUUID: string;
   tenantId: string;
+  employees: string[];
 
   constructor(readonly data: Partial<CreateTaskCommand>) {
     Object.assign(this, data);

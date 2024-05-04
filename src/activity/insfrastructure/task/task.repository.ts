@@ -11,12 +11,13 @@ export class TaskRepository {
 
   async create(task: TaskModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { customerUUID, activityUUID, id, ...data } = task;
+    const { customerUUID, activityUUID, id, employees, ...data } = task;
     await this.prisma.task.create({
       data: {
         ...data,
         customer: { connect: { uuid: customerUUID } },
         activity: { connect: { uuid: activityUUID } },
+        employees: { connect: employees },
       },
     });
     return data.uuid;
