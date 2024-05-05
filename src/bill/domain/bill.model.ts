@@ -28,5 +28,8 @@ export class BillModel {
   customerUUID: string;
 
   @Expose()
+  priceQuoteUUID: string;
+
+  @Expose()
   products: ProductItemOfBillModel[];
 }

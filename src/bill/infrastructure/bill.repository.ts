@@ -11,17 +11,31 @@ export class BillRepository {
 
   async create(bill: BillModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { customerUUID, products, ...data } = bill;
-    await this.prisma.bill.create({
-      data: {
-        ...data,
-        customer: {
-          connect: {
-            uuid: customerUUID,
+    const { customerUUID, products, priceQuoteUUID, ...data } = bill;
+    if (priceQuoteUUID) {
+      await this.prisma.bill.create({
+        data: {
+          ...data,
+          customer: {
+            connect: { uuid: customerUUID },
+          },
+          priceQuote: {
+            connect: { uuid: priceQuoteUUID },
           },
         },
-      },
-    });
+      });
+    } else {
+      await this.prisma.bill.create({
+        data: {
+          ...data,
+          customer: {
+            connect: {
+              uuid: customerUUID,
+            },
+          },
+        },
+      });
+    }
 
     if (products.length > 0) {
       await Promise.all(

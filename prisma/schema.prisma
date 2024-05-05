@@ -96,6 +96,7 @@ model Customer {
   employees          Employee[]
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @default(now()) @updatedAt
+  EmailTask          EmailTask[]
 }
 
 model Business {
@@ -170,19 +171,22 @@ model PriceQuote {
   priceQuoteRequestUUID String?
   customerUUID          String?
   tenantId              String?
+  bill                  Bill[]
 }
 
 model Bill {
-  id           Int           @id @default(autoincrement())
-  uuid         String        @unique @default(uuid())
-  code         String
-  status       StatusBill
-  createdDate  DateTime
-  products     ProductBill[]
-  customer     Customer?     @relation(fields: [customerUUID], references: [uuid])
-  customerUUID String?
-  complaints   Complaint[]
-  tenantId     String?
+  id             Int           @id @default(autoincrement())
+  uuid           String        @unique @default(uuid())
+  code           String
+  status         StatusBill
+  createdDate    DateTime
+  products       ProductBill[]
+  customer       Customer?     @relation(fields: [customerUUID], references: [uuid])
+  customerUUID   String?
+  priceQuote     PriceQuote?   @relation(fields: [priceQuoteUUID], references: [uuid])
+  priceQuoteUUID String?
+  complaints     Complaint[]
+  tenantId       String?
 }
 
 // Các Model đặc biệt
@@ -280,12 +284,15 @@ model EmailTask {
   id           Int      @id @default(autoincrement())
   uuid         String   @unique @default(uuid())
   sentDate     DateTime
-  subject      String
+  subject      String?
   content      String
   from         Employee @relation(fields: [employeeUUID], references: [uuid])
   employeeUUID String
+  recipient    Customer @relation(fields: [customerUUID], references: [uuid])
+  customerUUID String
   task         Task     @relation(fields: [taskUUID], references: [uuid])
   taskUUID     String
+  tenantId     String
 }
 
 ///////////////////////

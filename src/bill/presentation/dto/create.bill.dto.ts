@@ -4,6 +4,7 @@ import {
   IsDateString,
   IsNotEmpty,
   IsNumberString,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -43,6 +44,11 @@ export class CreateBillDTO {
   @IsNotEmpty()
   @IsString()
   customerUUID: string;
+
+  @ApiProperty({ required: false, example: 'uuid', type: String })
+  @IsOptional()
+  @IsString()
+  priceQuoteUUID?: string;
 
   @ApiProperty({
     example: [{ uuid: 'uuid', fixedPrice: 1000, quantity: 1 }],

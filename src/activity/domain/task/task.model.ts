@@ -49,3 +49,38 @@ export class TaskModel {
   @Expose()
   tenantId: string;
 }
+
+export class EmailTaskModel {
+  @Expose()
+  id: number;
+
+  @Expose()
+  uuid: string;
+
+  @Expose()
+  sentDate: Date;
+
+  @Expose()
+  subject: string;
+
+  @Expose()
+  content: string;
+
+  @Expose()
+  from: EmployeeType;
+
+  @Expose()
+  employeeUUID: string;
+
+  @Expose()
+  customerUUID: string;
+
+  @Expose()
+  task: TaskModel;
+
+  @Expose()
+  taskUUID: string;
+
+  @Expose()
+  tenantId: string;
+}

@@ -3,13 +3,18 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Post,
   Put,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
@@ -20,6 +25,8 @@ import { GetActivitiesQuery } from '../application/activity/query/get.activities
 import { ReadActivityQuery } from '../application/activity/query/read.activity.query';
 import { CreateTaskCommand } from '../application/task/command/create.task.command';
 import { DeleteTaskCommand } from '../application/task/command/delete.task.command';
+import { SendEmailTaskCommand } from '../application/task/command/send.email.task.command';
+import { UpdateStatusTaskCommand } from '../application/task/command/update.status.task.command';
 import { GetTasksByCustomerQuery } from '../application/task/query/get.tasks.by.customer.query';
 import { GetTasksQuery } from '../application/task/query/get.tasks.query';
 import { ReadTaskQuery } from '../application/task/query/read.task.query';
@@ -33,6 +40,8 @@ import { DeleteTaskDTO } from './dto/task/delete.task.dto';
 import { GetTasksByCustomer } from './dto/task/get.tasks.by.customer.dto';
 import { GetTasksDTO } from './dto/task/get.tasks.dto';
 import { ReadTaskDTO } from './dto/task/read.task.dto';
+import { SendEmailTaskDTO } from './dto/task/send.email.task.dto';
+import { UpdateStatusTaskDTO } from './dto/task/update.status.task.dto';
 
 @ApiTags('activities')
 @Controller('activities')
@@ -127,11 +136,43 @@ export class ActivityController {
     return await this.commandBus.execute(command);
   }
 
-  // API Update doneDate
+  @Post('/tasks/update')
+  async updateStatusTask(
+    @Body() body: UpdateStatusTaskDTO,
+    @GetUser() user: User,
+  ) {
+    const command = new UpdateStatusTaskCommand({
+      ...body,
+      tenantId: user.tenantId,
+    });
+    await this.commandBus.execute(command);
+  }
 
   @Delete('/tasks/delete')
   async deleteTask(@Body() body: DeleteTaskDTO, @GetUser() user: User) {
     const command = new DeleteTaskCommand({ ...body, tenantId: user.tenantId });
     return await this.commandBus.execute(command);
+  }
+
+  @Post('/tasks/sendEmail')
+  @UseInterceptors(FilesInterceptor('files'))
+  async sendEmailTask(
+    @Body() body: SendEmailTaskDTO,
+    @UploadedFiles() files: Express.Multer.File[],
+    @GetUser() user: User,
+  ) {
+    if (user.type === 'CUSTOMER') {
+      return new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    const command = new SendEmailTaskCommand({
+      ...body,
+      files,
+      employeeUUID: user.uuid,
+      tenantId: user.tenantId,
+    });
+    await this.commandBus.execute(command);
   }
 }

@@ -133,6 +133,7 @@ export class CreateBusinessCustomerDTO {
   representativeNationality: string;
 
   @ApiProperty({
+    required: false,
     example: ['4s45sd4f562sad54f', '545dsaxcsrg54y1hr87fd'],
     type: [String],
   })

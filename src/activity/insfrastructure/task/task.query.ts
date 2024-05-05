@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { StatusTask } from '@prisma/client';
+import { Employee, Prisma, StatusTask } from '@prisma/client';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
@@ -121,6 +121,29 @@ export class TaskQuery {
       },
       { excludeExtraneousValues: true },
     );
+  }
+
+  async getInfoEmployee(
+    employeeUUID: string,
+    tenantId: string,
+  ): Promise<Employee> {
+    const employee = await this.prisma.employee.findUnique({
+      where: { uuid: employeeUUID, tenantId },
+    });
+    return employee;
+  }
+
+  async getInfoCustomer(
+    taskUUID: string,
+    tenantId: string,
+  ): Promise<
+    Prisma.CustomerGetPayload<{ include: { individual: true; business: true } }>
+  > {
+    const task = await this.prisma.task.findUnique({
+      where: { uuid: taskUUID, tenantId },
+      include: { customer: { include: { individual: true, business: true } } },
+    });
+    return task.customer;
   }
 
   async getTasksByCustomer(

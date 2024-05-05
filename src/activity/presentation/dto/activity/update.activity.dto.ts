@@ -23,7 +23,11 @@ export class UpdateActivityDTO {
   @IsString()
   description: string | null;
 
-  @ApiProperty({ example: '["uuid1", "uuid2", "uuid3"]', type: [String] })
+  @ApiProperty({
+    required: false,
+    example: ['uuid1', 'uuid2', 'uuid3'],
+    type: [String],
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

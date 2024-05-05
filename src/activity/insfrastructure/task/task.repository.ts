@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { PrismaService } from 'libs/database.module';
-import { TaskModel } from 'src/activity/domain/task/task.model';
+import { EmailTaskModel, TaskModel } from 'src/activity/domain/task/task.model';
 import { TaskFactory } from './task.factory';
 
 export class TaskRepository {
@@ -23,23 +23,48 @@ export class TaskRepository {
     return data.uuid;
   }
 
+  async createEmailTask(emailTask: EmailTaskModel): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, employeeUUID, customerUUID, taskUUID, from, ...dataEmailTask } =
+      emailTask;
+    await this.prisma.emailTask.create({
+      data: {
+        ...dataEmailTask,
+        from: { connect: { uuid: employeeUUID } },
+        recipient: { connect: { uuid: customerUUID } },
+        task: { connect: { uuid: taskUUID } },
+      },
+    });
+    return emailTask.uuid;
+  }
+
+  async updateStatus(task: TaskModel): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { customerUUID, activityUUID, id, employees, uuid, ...data } = task;
+    await this.prisma.task.update({ data, where: { uuid } });
+    return uuid;
+  }
+
   async delete(models: TaskModel[]): Promise<string[]> {
     const uuids = models.map((model) => model.uuid);
     await this.prisma.task.deleteMany({ where: { uuid: { in: uuids } } });
     return uuids;
   }
 
-  async getByUUID(uuid: string): Promise<TaskModel> {
+  async getByUUID(uuid: string, tenantId: string): Promise<TaskModel> {
     const entity = await this.prisma.customer.findUnique({
-      where: { uuid },
+      where: { uuid, tenantId },
       include: { business: true, individual: true },
     });
     return this.taskFactory.createTaskModel(entity);
   }
 
-  async getByUUIDs(uuids: string[] | string): Promise<TaskModel[]> {
+  async getByUUIDs(
+    uuids: string[] | string,
+    tenantId: string,
+  ): Promise<TaskModel[]> {
     const entities = await this.prisma.task.findMany({
-      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] } },
+      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] }, tenantId },
     });
     return this.taskFactory.createTaskModels(entities);
   }

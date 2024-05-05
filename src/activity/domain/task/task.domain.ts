@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { StatusTask } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
-import { EmployeeType, TaskModel } from './task.model';
+import { EmailTaskModel, EmployeeType, TaskModel } from './task.model';
 
 export class TaskDomain {
   create(model: TaskModel, employees: EmployeeType[]): TaskModel | string {
@@ -17,10 +17,22 @@ export class TaskDomain {
     return model;
   }
 
+  createEmailTask(model: EmailTaskModel) {
+    const emailTaskUUID = uuidv4().toString();
+    model.uuid = emailTaskUUID;
+    model.sentDate = new Date();
+    return model;
+  }
+
   update(taskCurrent: TaskModel, taskUpdate: Partial<TaskModel>): TaskModel {
     for (const [prop, value] of Object.entries(taskCurrent)) {
       taskCurrent[prop] = taskUpdate[prop] ? taskUpdate[prop] : value;
     }
+    return taskCurrent;
+  }
+
+  updateStatus(taskCurrent: TaskModel): TaskModel {
+    taskCurrent.status = StatusTask.COMPLETED;
     return taskCurrent;
   }
 

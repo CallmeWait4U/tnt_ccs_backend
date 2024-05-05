@@ -11,6 +11,7 @@ export class CreateBillCommand implements ICommand {
   status: StatusBill;
   sentDate: Date;
   customerUUID: string;
+  priceQuoteUUID: string;
   products: ProductItem[];
 
   constructor(data: Partial<CreateBillCommand>) {

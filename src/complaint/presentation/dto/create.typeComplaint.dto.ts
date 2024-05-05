@@ -25,18 +25,22 @@ class FieldComplaintProperties {
   @IsString()
   title: string;
 
-  @ApiProperty({ example: ['.pdf', '.doc', '.docx'], type: [String] })
+  @ApiProperty({
+    required: false,
+    example: ['.pdf', '.doc', '.docx'],
+    type: [String],
+  })
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
   specificFileTypes?: string[];
 
-  @ApiProperty({ example: 2, type: Number })
+  @ApiProperty({ required: false, example: 2, type: Number })
   @IsNotEmpty()
   @IsOptional()
   maxNumOfFiles?: number;
 
-  @ApiProperty({ example: [], type: [String] })
+  @ApiProperty({ required: false, example: [], type: [String] })
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
@@ -49,7 +53,7 @@ export class CreateTypeComplaintDTO {
   @IsString()
   name: string;
 
-  @ApiProperty({ example: 'Vận chuyển', type: String })
+  @ApiProperty({ required: false, example: 'Vận chuyển', type: String })
   @IsOptional()
   @IsString()
   description?: string;

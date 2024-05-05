@@ -14,7 +14,10 @@ export class DeleteTaskHandler
   private readonly taskDomain: TaskDomain;
 
   async execute(command: DeleteTaskCommand): Promise<string[]> {
-    const models = await this.taskRespository.getByUUIDs(command.uuid);
+    const models = await this.taskRespository.getByUUIDs(
+      command.uuid,
+      command.tenantId,
+    );
     this.taskDomain.checkTask(models);
     return await this.taskRespository.delete(models);
   }
