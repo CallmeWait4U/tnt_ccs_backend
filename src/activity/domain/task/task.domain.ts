@@ -9,7 +9,7 @@ export class TaskDomain {
     model.uuid = taskUUID;
     model.status =
       new Date() > new Date(model.endDate)
-        ? StatusTask.INCOMING
+        ? StatusTask.INPROGRESS
         : StatusTask.OVERDUE;
     model.employees = employees;
     if (!model.customerUUID) return 'Không có UUID của khách hàng';

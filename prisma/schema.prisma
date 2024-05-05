@@ -431,9 +431,9 @@ enum StatusBill {
 }
 
 enum StatusTask {
-  INCOMING  @map("Sắp diễn ra")
-  OVERDUE   @map("Đã trễ")
-  COMPLETED @map("Hoàn thành")
+  INPROGRESS @map("Đang diễn ra")
+  OVERDUE    @map("Đã trễ")
+  COMPLETED  @map("Hoàn thành")
 }
 
 enum StatusComplaint {

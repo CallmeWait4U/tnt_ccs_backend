@@ -139,7 +139,7 @@ export class TaskQuery {
       conditions.push(
         { tenantId },
         { customerUUID },
-        { status: StatusTask.INCOMING || StatusTask.OVERDUE },
+        { status: StatusTask.INPROGRESS || StatusTask.OVERDUE },
       );
     }
     const [data, total] = await Promise.all([

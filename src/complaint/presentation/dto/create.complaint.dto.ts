@@ -1,13 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { StatusComplaint } from '@prisma/client';
 import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsDateString,
-  IsNotEmpty,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsArray, IsDateString, IsNotEmpty, IsString } from 'class-validator';
 
 class ValueProperties {
   @ApiProperty({ example: 'fieldUUID', type: String })
@@ -59,9 +53,9 @@ export class CreateComplaintDTO {
   customerUUID: string;
 
   @ApiProperty({ type: [ValueProperties] })
-  @IsArray()
+  // @IsArray()
   @IsNotEmpty()
-  @ValidateNested({ each: true })
+  // @ValidateNested({ each: true })
   @Type(() => ValueProperties)
   valueFieldComplaint: ValueProperties[];
 
