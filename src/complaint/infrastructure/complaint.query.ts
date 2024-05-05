@@ -1,6 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
+import { FirebaseService } from 'libs/firebase.module';
 import { UtilityImplement } from 'libs/utility.module';
 import { GetActivitiesComplaintItem } from '../application/query/result/get.activities.complaint.query.result';
 import {
@@ -24,6 +25,8 @@ export class ComplaintQuery {
   private readonly prisma: PrismaService;
   @Inject()
   private readonly util: UtilityImplement;
+  @Inject()
+  private readonly firebase: FirebaseService;
 
   async getComplaints(
     tenantId: string,
@@ -135,6 +138,29 @@ export class ComplaintQuery {
         valueFieldComplaint: true,
       },
     });
+    const fieldComplaintUUIDs = data.typeComplaint.listOfField.map(
+      (field) => field.uuid,
+    );
+    const valueFieldComplaint: ValueField[] = [];
+    for (const field of data.valueFieldComplaint) {
+      const index = fieldComplaintUUIDs.indexOf(field.fieldComplaintUUID);
+      const fieldComplaint = data.typeComplaint.listOfField[index];
+      if (fieldComplaint.isFieldFile) {
+        const urls: string[] = [];
+        for (const i of field.value) {
+          urls.push(await this.firebase.getAuthenticatedFileUrl(i));
+        }
+        valueFieldComplaint.push({
+          fieldComplaintUUID: field.complaintUUID,
+          value: urls,
+        });
+      } else {
+        valueFieldComplaint.push({
+          fieldComplaintUUID: field.complaintUUID,
+          value: field.value,
+        });
+      }
+    }
     return plainToClass(
       ReadComplaintResult,
       {
@@ -142,11 +168,9 @@ export class ComplaintQuery {
         listOfField: data.typeComplaint.listOfField.map((field) =>
           plainToClass(Field, field, { excludeExtraneousValues: true }),
         ),
-        valueFieldComplaint: data.valueFieldComplaint.map((valueField) =>
-          plainToClass(ValueField, valueField, {
-            excludeExtraneousValues: true,
-          }),
-        ),
+        valueFieldComplaint,
+        customerUUID: data.customer.uuid,
+        isBusiness: data.customer.isBusiness,
         customerName: data.customer.isBusiness
           ? data.customer.business.name
           : data.customer.individual.name,

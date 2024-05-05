@@ -10,9 +10,11 @@ import {
   Query,
   UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
@@ -29,7 +31,6 @@ import { GetSelectorTypeQuery } from '../application/query/get.selector.type.que
 import { ReadComplaintQuery } from '../application/query/read.complaint.query';
 import { ReadTypeComplaintQuery } from '../application/query/read.typeComplaint.query';
 import { CreateActivityComplaintDTO } from './dto/create.activity.complaint.dto';
-import { CreateComplaintDTO } from './dto/create.complaint.dto';
 import { CreateTypeComplaintDTO } from './dto/create.typeComplaint.dto';
 import { DeleteActivityComplaintDTO } from './dto/delete.activity.complaint.dto';
 import { DeleteComplaintDTO } from './dto/delete.complaint.dto';
@@ -84,8 +85,9 @@ export class ComplaintController {
 
   @Post('/create')
   @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('images'))
   async createComplaint(
-    @Body() body: CreateComplaintDTO,
+    @Body() body: any,
     @UploadedFiles() images: Express.Multer.File[],
     @GetUser() user: User,
   ) {
@@ -95,8 +97,16 @@ export class ComplaintController {
     //     HttpStatus.FORBIDDEN,
     //   );
     // }
+    const dataComplaint = {} as any;
+    for (const i in body) {
+      if (i === 'valueFieldComplaint') {
+        dataComplaint[i] = JSON.parse(body[i]);
+      } else {
+        dataComplaint[i] = body[i];
+      }
+    }
     const command = new CreateComplaintCommand({
-      ...body,
+      ...dataComplaint,
       images,
       // customerUUID: user.uuid,
       tenantId: user.tenantId,
