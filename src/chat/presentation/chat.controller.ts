@@ -76,7 +76,7 @@ export class ChatController {
       user.uuid,
       employeeUUID,
       0,
-      10,
+      100,
     );
     return await this.queryBus.execute(query);
   }
@@ -85,7 +85,26 @@ export class ChatController {
     @Param('customerUUID') customerUUID: string,
     @GetUser() user: User,
   ) {
-    const query = new ListChatCustomerQuery(user.tenantId, customerUUID, 0, 10);
+    const isCustomer = false;
+    const query = new ListChatCustomerQuery(
+      user.tenantId,
+      customerUUID,
+      isCustomer,
+      0,
+      100,
+    );
+    return await this.queryBus.execute(query);
+  }
+  @Get('/chatCustomerForCustomer')
+  async listChatCustomerForCustomer(@GetUser() user: User) {
+    const isCustomer = true;
+    const query = new ListChatCustomerQuery(
+      user.tenantId,
+      user.uuid,
+      isCustomer,
+      0,
+      100,
+    );
     return await this.queryBus.execute(query);
   }
 }

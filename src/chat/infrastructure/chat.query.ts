@@ -62,6 +62,7 @@ export class ChatQuery {
   async listChatCustomer(
     tenantId: string,
     customerUUID: string,
+    isCustomer: boolean,
     limit: number,
   ): Promise<ListChatCustomerResult> {
     const data = await this.prisma.chat.findMany({
@@ -102,8 +103,14 @@ export class ChatQuery {
     console.log(data);
     const items: ChatCustomerResult[] = data.map((item) => {
       let isSender = false;
-      if (item.receiverUUID === customerUUID) {
-        isSender = true;
+      if (isCustomer) {
+        if (item.senderUUID === customerUUID) {
+          isSender = true;
+        }
+      } else {
+        if (item.receiverUUID === customerUUID) {
+          isSender = true;
+        }
       }
 
       return {

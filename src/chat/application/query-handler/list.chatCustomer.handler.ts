@@ -13,6 +13,7 @@ export class ListChatCustomerHandler
     return await this.chatQuery.listChatCustomer(
       query.tenantId,
       query.customerUUID,
+      query.isCustomer,
       query.limit,
     );
   }
