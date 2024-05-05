@@ -25,6 +25,7 @@ import { DeleteProductDTO } from './dto/delete.product.dto';
 import { ListProductDTO } from './dto/list.product.dto';
 import { ReadProductDTO } from './dto/read.product.dto';
 import { UpdateProductDTO } from './dto/update.product.dto';
+
 @ApiTags('products')
 @Controller('products')
 export class ProductController {
