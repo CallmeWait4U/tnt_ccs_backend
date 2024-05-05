@@ -45,6 +45,8 @@ model Account {
   customerUUID  String?        @unique
   employee      Employee?      @relation(fields: [employeeUUID], references: [uuid])
   employeeUUID  String?        @unique
+  chat_sender   Chat[]    @relation("Sender")
+  chat_receiver Chat[]    @relation("Receiver")
 }
 
 model Permission {
@@ -393,6 +395,17 @@ model ValueFieldComplaint {
   complaint          Complaint? @relation(fields: [complaintUUID], references: [uuid])
   complaintUUID      String?
   tenantId           String?
+}
+
+/////////////////////////    chat
+model Chat {
+  id           Int      @id @default(autoincrement())
+  content      String
+  senderUUID   String
+  receiverUUID String
+  sender       Account @relation("Sender", fields: [senderUUID], references: [uuid])
+  receiver     Account @relation("Receiver", fields: [receiverUUID], references: [uuid])
+  createdAt    DateTime @default(now())
 }
 
 // Enum
