@@ -513,7 +513,7 @@ export class TestService {
           },
           {
             name: 'Tải tệp lên',
-            isFieldFile: false,
+            isFieldFile: true,
             title: 'Hình ảnh minh họa',
             specificFileTypes: [],
             maxNumOfFiles: 2,

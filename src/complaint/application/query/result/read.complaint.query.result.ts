@@ -49,6 +49,9 @@ export class ReadComplaintResult implements IQueryResult {
   billUUID: string;
 
   @Expose()
+  customerUUID: string;
+
+  @Expose()
   customerName: string;
 
   @Expose()
@@ -59,6 +62,9 @@ export class ReadComplaintResult implements IQueryResult {
 
   @Expose()
   customerEmail: string;
+
+  @Expose()
+  isBusiness: boolean;
 
   @Expose()
   listOfField: Field[];

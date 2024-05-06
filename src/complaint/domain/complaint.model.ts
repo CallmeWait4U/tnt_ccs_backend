@@ -48,6 +48,8 @@ export class ValueFieldComplaintModel {
   @Expose()
   complaintUUID: string;
   @Expose()
+  isFieldFile: boolean;
+  @Expose()
   tenantId: string;
 }
 
