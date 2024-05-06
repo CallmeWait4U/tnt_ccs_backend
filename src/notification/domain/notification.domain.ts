@@ -1,7 +1,15 @@
 import { Prisma, Tenant } from '@prisma/client';
 import { AutoMailDTO } from 'interfaces/mailer.dto';
+import { v4 as uuidv4 } from 'uuid';
+import { NotificationModel } from './notification.model';
 
 export class NotificationDomain {
+  createNotificationComplaint(model: NotificationModel): NotificationModel {
+    const notificationUUID = uuidv4().toString();
+    model.uuid = notificationUUID;
+    return model;
+  }
+
   handlerAutoNotifyTask(
     customers: Prisma.CustomerGetPayload<{
       include: {

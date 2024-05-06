@@ -3,7 +3,9 @@ import { Controller, Inject } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Cron } from '@nestjs/schedule';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateNotificationCommand } from '../application/command/create.notification.command';
 import { NotifyViaMailCommand } from '../application/command/notify.via.mail.command';
+import { CreateNotificationDTO } from './dto/create.notification.dto';
 import { NotificationGateway } from './notification.gateway';
 
 @ApiTags('notifications')
@@ -25,6 +27,18 @@ export class NotificationController {
   async sendNotification(token: string) {
     console.log(token);
     await this.notificationGateway.handleNotification(token, 'hello');
+  }
+
+  @RabbitRPC({
+    exchange: 'exchange1',
+    routingKey: 'notify.conplaint',
+    queue: 'tnt.ccs-notify.conplaint',
+  })
+  async notifyComplaint(payload: CreateNotificationDTO) {
+    console.log(payload);
+    const command = new CreateNotificationCommand(payload);
+    await this.commandBus.execute(command);
+    await this.notificationGateway.notifyComplaint(payload);
   }
 
   @Cron('0 0 7 * * *')

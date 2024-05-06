@@ -7,6 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { RedisImplement } from 'libs/redis.module';
 import { Server, Socket } from 'socket.io';
+import { CreateNotificationDTO } from './dto/create.notification.dto';
 
 @WebSocketGateway(4001, {
   cors: {
@@ -43,5 +44,22 @@ export class NotificationGateway {
       const user = this.userOnline.filter((user) => user.id === sid)[0];
       user.send(message);
     });
+  }
+
+  public async notifyComplaint(payload: CreateNotificationDTO) {
+    for (const token of payload.tokens) {
+      const sids = await this.redisImplement.getClients(token);
+      if (sids.length !== 0) {
+        sids.forEach((sid) => {
+          const user = this.userOnline.filter((user) => user.id === sid)[0];
+          console.log(user);
+          user.send({
+            title: payload.title,
+            content: payload.content,
+            second: (new Date().getTime() - payload.time.getTime()) / 1000,
+          });
+        });
+      }
+    }
   }
 }

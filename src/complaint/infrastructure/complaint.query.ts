@@ -259,4 +259,23 @@ export class ComplaintQuery {
       ),
     };
   }
+
+  async getAccountForEmployee(
+    employeeUUIDs: string[],
+  ): Promise<{ accountUUID: string; token: string }[]> {
+    const data = await this.prisma.employee.findMany({
+      where: { uuid: { in: employeeUUIDs } },
+      include: { account: true },
+    });
+    const result: { accountUUID: string; token: string }[] = [];
+    data.map((i) => {
+      if (i.account.accessToken) {
+        result.push({
+          accountUUID: i.account.uuid,
+          token: i.account.accessToken,
+        });
+      }
+    });
+    return result;
+  }
 }
