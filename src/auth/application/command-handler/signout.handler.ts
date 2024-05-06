@@ -14,6 +14,7 @@ export class SignOutHandler implements ICommandHandler<SignOutCommand, void> {
   async execute(command: SignOutCommand): Promise<void> {
     const model = await this.authenticationRepository.getAccountUUID(
       command.uuid,
+      command.tenantId,
     );
     const account = this.authenticationDomain.signOut(model);
     await this.authenticationRepository.updateAccount(account);

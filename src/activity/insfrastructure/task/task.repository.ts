@@ -23,6 +23,19 @@ export class TaskRepository {
     return data.uuid;
   }
 
+  async createAutoTask(task: TaskModel): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { customerUUID, activityUUID, id, employees, ...data } = task;
+    await this.prisma.task.create({
+      data: {
+        ...data,
+        customer: { connect: { uuid: customerUUID } },
+        employees: { connect: employees },
+      },
+    });
+    return data.uuid;
+  }
+
   async createEmailTask(emailTask: EmailTaskModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, employeeUUID, customerUUID, taskUUID, from, ...dataEmailTask } =
@@ -67,5 +80,15 @@ export class TaskRepository {
       where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] }, tenantId },
     });
     return this.taskFactory.createTaskModels(entities);
+  }
+
+  async getActivityName(
+    activityUUID: string,
+    tenantId: string,
+  ): Promise<string> {
+    const activity = await this.prisma.activity.findUnique({
+      where: { uuid: activityUUID, tenantId },
+    });
+    return activity.name;
   }
 }

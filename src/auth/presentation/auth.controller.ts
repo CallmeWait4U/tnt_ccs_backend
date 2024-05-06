@@ -5,10 +5,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
 import { CreatePhaseCommand } from 'src/phase/application/command/create.phase.command';
+import { ChangePasswordCommand } from '../application/command/change.password.command';
 import { RefreshTokensPairCommand } from '../application/command/refreshTokenPair.command';
 import { SignOutCommand } from '../application/command/signout.command';
 import { SignUpCommand } from '../application/command/signup.command';
 import { SignInQuery } from '../application/query/signin.query';
+import { ChangePasswordDTO } from './dto/change.password.dto';
 import { SignInDTO } from './dto/signin.dto';
 import { SignUpDTO } from './dto/signup.dto';
 
@@ -57,7 +59,22 @@ export class AuthController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   async signOut(@GetUser() user: User) {
-    const command = new SignOutCommand({ uuid: user.uuid });
+    const command = new SignOutCommand({
+      uuid: user.uuid,
+      tenantId: user.tenantId,
+    });
+    await this.commandBus.execute(command);
+  }
+
+  @Post('changePassword')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  async changePassword(@Body() body: ChangePasswordDTO, @GetUser() user: User) {
+    const command = new ChangePasswordCommand({
+      ...body,
+      uuid: user.uuid,
+      tenantId: user.tenantId,
+    });
     await this.commandBus.execute(command);
   }
 
@@ -65,7 +82,10 @@ export class AuthController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt-refresh'))
   async refreshTokensPair(@GetUser() user: User) {
-    const command = new RefreshTokensPairCommand({ uuid: user.uuid });
+    const command = new RefreshTokensPairCommand({
+      uuid: user.uuid,
+      tenantId: user.tenantId,
+    });
     return await this.commandBus.execute(command);
   }
 

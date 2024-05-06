@@ -18,8 +18,13 @@ export class CreateTaskHandler
 
   async execute(command: CreateTaskCommand): Promise<string> {
     const model = this.taskFactory.createTaskModel(command);
+    const activityName = await this.taskRespository.getActivityName(
+      command.activityUUID,
+      command.tenantId,
+    );
     const task = this.taskDomain.create(
       model,
+      activityName,
       command.employees.map((employee) => ({
         uuid: employee,
       })),

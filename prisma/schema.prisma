@@ -265,6 +265,7 @@ model Activity {
 model Task {
   id              Int         @id @default(autoincrement())
   uuid            String      @unique @default(uuid())
+  title           String
   startDate       DateTime
   endDate         DateTime
   createDate      DateTime
@@ -277,8 +278,8 @@ model Task {
   customer        Customer    @relation(fields: [customerUUID], references: [uuid])
   customerUUID    String
   employees       Employee[]
-  activity        Activity    @relation(fields: [activityUUID], references: [uuid])
-  activityUUID    String
+  activity        Activity?   @relation(fields: [activityUUID], references: [uuid])
+  activityUUID    String?
   emailTask       EmailTask[]
 }
 

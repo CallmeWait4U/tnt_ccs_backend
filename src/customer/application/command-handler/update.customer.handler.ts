@@ -6,20 +6,27 @@ import { UpdateCustomerCommand } from '../command/update.customer.command';
 
 @CommandHandler(UpdateCustomerCommand)
 export class UpdateCustomerHandler
-  implements ICommandHandler<UpdateCustomerCommand, string>
+  implements
+    ICommandHandler<UpdateCustomerCommand, { uuid: string; note: string }>
 {
   @Inject()
   private readonly customerRespository: CustomerRespository;
   @Inject()
   private readonly customerDomain: CustomerDomain;
 
-  async execute(command: UpdateCustomerCommand): Promise<string> {
+  async execute(
+    command: UpdateCustomerCommand,
+  ): Promise<{ uuid: string; note: string }> {
     const modelCurrent = await this.customerRespository.getByUUID(
       command.uuid,
       command.tenantId,
     );
     this.customerDomain.checkCustomer(modelCurrent);
-    const modelUpdated = this.customerDomain.update(modelCurrent, command);
-    return await this.customerRespository.update(modelUpdated);
+    const { modelUpdated, note } = this.customerDomain.update(
+      modelCurrent,
+      command,
+    );
+    const uuid = await this.customerRespository.update(modelUpdated);
+    return { uuid, note };
   }
 }
