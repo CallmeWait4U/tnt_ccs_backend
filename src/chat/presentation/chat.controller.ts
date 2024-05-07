@@ -6,7 +6,6 @@ import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
 import { SendMessageToEmployeeCommand } from '../application/command/send.messageToEmployee.comand';
 import { ListChatCustomerQuery } from '../application/query/list.chatCustomer.query';
-import { ListChatEmployeeQuery } from '../application/query/list.chatEmployee.query';
 import { SendChatForEmployeeDTO } from './dto/send.messageToEmployee.dto';
 
 @ApiTags('chats')
@@ -54,33 +53,24 @@ export class ChatController {
   //   const query = new ReadChatForEmployeeQuery(q.uuid);
   //   return await this.queryBus.execute(query);
   // }
-  @Post('/sendMessageToEmployee')
+  @Post('/sendMessage')
   async sendMessageToEmployee(
     @Body() body: SendChatForEmployeeDTO,
     @GetUser() user: User,
   ) {
+    let receiverUUID = body.receiverUUID;
+    if (user.type === 'CUSTOMER') {
+      receiverUUID = user.uuid;
+    }
     const command = new SendMessageToEmployeeCommand(
       user.uuid,
-      body.receiverUUID,
+      receiverUUID,
       body.content,
     );
     return await this.commandBus.execute(command);
   }
-  @Get('/chatEmployee/:employeeUUID')
-  async listChatEmployee(
-    @Param('employeeUUID') employeeUUID: string,
-    @GetUser() user: User,
-  ) {
-    const query = new ListChatEmployeeQuery(
-      user.tenantId,
-      user.uuid,
-      employeeUUID,
-      0,
-      100,
-    );
-    return await this.queryBus.execute(query);
-  }
-  @Get('/chatCustomer/:customerUUID')
+
+  @Get('/getChatForEmployee/:customerUUID')
   async listChatCustomer(
     @Param('customerUUID') customerUUID: string,
     @GetUser() user: User,
@@ -95,7 +85,7 @@ export class ChatController {
     );
     return await this.queryBus.execute(query);
   }
-  @Get('/chatCustomerForCustomer')
+  @Get('/getChatForCustomer')
   async listChatCustomerForCustomer(@GetUser() user: User) {
     const isCustomer = true;
     const query = new ListChatCustomerQuery(

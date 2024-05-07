@@ -31,7 +31,16 @@ export class ChatQuery {
         receiver: {
           tenantId,
         },
-        senderUUID: accountUUID,
+        OR: [
+          {
+            senderUUID: accountUUID,
+            receiverUUID: receiverUUID,
+          },
+          {
+            receiverUUID: accountUUID,
+            senderUUID: receiverUUID,
+          },
+        ],
         receiverUUID,
       },
       orderBy: {
@@ -100,7 +109,6 @@ export class ChatQuery {
       take: limit,
     });
 
-    console.log(data);
     const items: ChatCustomerResult[] = data.map((item) => {
       let isSender = false;
       if (isCustomer) {
@@ -109,6 +117,7 @@ export class ChatQuery {
         }
       } else {
         if (item.receiverUUID === customerUUID) {
+          // sender is customer
           isSender = true;
         }
       }
