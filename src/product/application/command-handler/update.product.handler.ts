@@ -20,7 +20,11 @@ export class UpdateProductHandler
   private readonly firebase: FirebaseService;
 
   async execute(command: UpdateProductCommand): Promise<string> {
-    const modelCurrent = await this.productRepository.getByUUID(command.uuid);
+    const modelCurrent = await this.productRepository.getByUUID(
+      command.uuid,
+      command.tenantId,
+    );
+    this.productDomain.checkProduct(modelCurrent);
     const modelUpdated = this.productDomain.update(modelCurrent, command);
     let listImageProduct;
     if (command.isChangeImage && command.images)

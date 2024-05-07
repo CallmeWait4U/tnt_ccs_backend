@@ -347,6 +347,7 @@ export class TestService {
           description: faker.commerce.productDescription(),
           price: Number(faker.commerce.price({ min: 1000, max: 8739 })) * 1000,
           unit: 'Cái',
+          tenantId: faker.helpers.arrayElement(tenantIds),
         }),
       );
     }

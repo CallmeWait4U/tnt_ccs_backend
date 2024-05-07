@@ -8,11 +8,15 @@ import {
   Put,
   Query,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { User } from 'interfaces/user';
+import { GetUser } from 'libs/getuser.decorator';
 import { CreateProductCommand } from '../application/command/create.product.command';
 import { DeleteProductCommand } from '../application/command/delete.product.command';
 import { UpdateProductCommand } from '../application/command/update.product.command';
@@ -28,6 +32,8 @@ import { UpdateProductDTO } from './dto/update.product.dto';
 
 @ApiTags('products')
 @Controller('products')
+@UseGuards(AuthGuard('jwt'))
+@Controller('phases')
 export class ProductController {
   constructor(
     readonly commandBus: CommandBus,
@@ -35,16 +41,21 @@ export class ProductController {
   ) {}
 
   @Get('')
-  async listProduct(@Query() q: ListProductDTO) {
+  async listProduct(@Query() q: ListProductDTO, @GetUser() user: User) {
     const offset = !q.offset || q.offset < 0 ? 0 : q.offset;
     const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
-    const query = new ListProductQuery(offset, limit, q.searchModel);
+    const query = new ListProductQuery(
+      user.tenantId,
+      offset,
+      limit,
+      q.searchModel,
+    );
     return await this.queryBus.execute(query);
   }
 
   @Get('/:uuid')
-  async readProduct(@Query() q: ReadProductDTO) {
-    const query = new ReadProductQuery(q.uuid);
+  async readProduct(@Query() q: ReadProductDTO, @GetUser() user: User) {
+    const query = new ReadProductQuery(q.uuid, user.tenantId);
     return await this.queryBus.execute(query);
   }
 
@@ -54,10 +65,15 @@ export class ProductController {
   async createProduct(
     @Body() body: CreateProductDTO,
     @UploadedFiles() images: Express.Multer.File[],
+    @GetUser() user: User,
   ) {
     body.price = Number(body.price);
     body.quantity = Number(body.quantity);
-    const command = new CreateProductCommand({ ...body, images });
+    const command = new CreateProductCommand({
+      ...body,
+      images,
+      tenantId: user.tenantId,
+    });
     return await this.commandBus.execute(command);
   }
 
@@ -68,22 +84,33 @@ export class ProductController {
     @Param('uuid') uuid: string,
     @Body() body: UpdateProductDTO,
     @UploadedFiles() images: Express.Multer.File[],
+    @GetUser() user: User,
   ) {
     body.price = Number(body.price);
     body.quantity = Number(body.quantity);
-    const command = new UpdateProductCommand({ ...body, uuid, images });
+    const command = new UpdateProductCommand({
+      ...body,
+      uuid,
+      images,
+      tenantId: user.tenantId,
+    });
     return await this.commandBus.execute(command);
   }
 
   @Delete('/:uuid')
-  async DeleteCustomerCommand(@Param() q: DeleteProductDTO) {
-    const command = new DeleteProductCommand(q.uuid);
+  async DeleteCustomerCommand(
+    @Param() q: DeleteProductDTO,
+    @GetUser() user: User,
+  ) {
+    const command = new DeleteProductCommand(q.uuid, user.tenantId);
     return await this.commandBus.execute(command);
   }
 
   @Get('/list-product-options/all')
-  async listProductOption(): Promise<ListProductOptionsResult> {
-    const query = new ListProductOptionsQuery();
+  async listProductOption(
+    @GetUser() user: User,
+  ): Promise<ListProductOptionsResult> {
+    const query = new ListProductOptionsQuery(user.tenantId);
     return await this.queryBus.execute(query);
   }
 }

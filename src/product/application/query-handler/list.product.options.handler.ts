@@ -9,7 +9,9 @@ export class ListProductOptionsHandler
 {
   constructor(private readonly productQuery: ProductQuery) {}
 
-  async execute(): Promise<ListProductOptionsResult> {
-    return await this.productQuery.listProductOptions();
+  async execute(
+    query: ListProductOptionsQuery,
+  ): Promise<ListProductOptionsResult> {
+    return await this.productQuery.listProductOptions(query.tenantId);
   }
 }

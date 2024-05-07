@@ -2,7 +2,7 @@ import { Prisma, Product } from '@prisma/client';
 import { BaseFactory } from 'libs/base.factory';
 import { ImageProductModel, ProductModel } from '../domain/product.model';
 
-type ProductEntity = Prisma.ProductGetPayload<{}>;
+type ProductEntity = Prisma.ProductGetPayload<{ include: { images: true } }>;
 
 export class ProductFactory extends BaseFactory {
   createProductModel(

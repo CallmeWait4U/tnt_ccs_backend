@@ -19,6 +19,7 @@ export class ProductQuery {
   private readonly util: UtilityImplement;
 
   async listProduct(
+    tenantId: string,
     offset: number,
     limit: number,
     searchModel?: any,
@@ -27,6 +28,7 @@ export class ProductQuery {
     const search: { [key: string]: any } = searchModel
       ? JSON.parse(searchModel)
       : undefined;
+    conditions.push({ tenantId });
     if (search) {
       for (const [prop, item] of Object.entries(search)) {
         const { value } = this.util.buildSearch(item);
@@ -80,9 +82,12 @@ export class ProductQuery {
     };
   }
 
-  async readProduct(uuid: string): Promise<ReadProductResult> {
+  async readProduct(
+    uuid: string,
+    tenantId: string,
+  ): Promise<ReadProductResult> {
     const res = await this.prisma.product.findUnique({
-      where: { uuid },
+      where: { uuid, tenantId },
       include: { images: true },
     });
     if (res) {
@@ -94,9 +99,13 @@ export class ProductQuery {
     }
     return {} as ReadProductResult;
   }
-  async listProductOptions(): Promise<ListProductOptionsResult> {
+
+  async listProductOptions(
+    tenantId: string,
+  ): Promise<ListProductOptionsResult> {
     const [data, total] = await Promise.all([
       this.prisma.product.findMany({
+        where: { tenantId },
         orderBy: [{ id: 'asc' }],
       }),
       this.prisma.product.count(),
@@ -114,6 +123,7 @@ export class ProductQuery {
       total,
     };
   }
+
   async getListForCheck(): Promise<any[]> {
     const entities = await this.prisma.phase.findMany({
       select: { name: true, uuid: true },

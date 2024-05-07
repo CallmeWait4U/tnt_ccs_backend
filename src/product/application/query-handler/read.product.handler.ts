@@ -15,7 +15,10 @@ export class ReadProductHandler
   constructor(private readonly productQuery: ProductQuery) {}
 
   async execute(query: ReadProductQuery): Promise<ReadProductResult> {
-    const result = await this.productQuery.readProduct(query.uuid);
+    const result = await this.productQuery.readProduct(
+      query.uuid,
+      query.tenantId,
+    );
     if (result?.images) {
       result.images = await Promise.all(
         result.images.map(async (image) => {
