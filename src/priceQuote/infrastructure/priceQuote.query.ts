@@ -10,6 +10,7 @@ import {
   ProductItemOfPriceQuote,
   ReadPriceQuoteResult,
 } from '../application/query/result/read.priceQuote.query.result';
+import { StatisticPriceQuoteQueryResult } from '../application/query/result/statistic.priceQuote.query,result';
 
 export class PriceQuoteQuery {
   @Inject()
@@ -102,5 +103,38 @@ export class PriceQuoteQuery {
       return res;
     }
     return {} as ReadPriceQuoteResult;
+  }
+  async getStatisticPriceQuote(
+    tenantId: string,
+  ): Promise<StatisticPriceQuoteQueryResult> {
+    const dataBill = await this.prisma.bill.findMany({
+      select: {
+        uuid: true,
+        priceQuoteUUID: true,
+      },
+
+      where: { tenantId, priceQuoteUUID: { not: null } },
+    });
+
+    const uniquePriceQuoteUUIDs = new Set();
+
+    // Lọc và đếm số lượng priceQuoteUUID khác nhau
+    dataBill.forEach((bill) => {
+      uniquePriceQuoteUUIDs.add(bill.priceQuoteUUID);
+    });
+
+    // Số lượng bill có priceQuoteUUID khác nhau
+    const numberOfUniquePriceQuoteUUIDs = uniquePriceQuoteUUIDs.size;
+
+    const countPriceQuote = await this.prisma.priceQuote.count({
+      where: { tenantId },
+    });
+
+    const result = new StatisticPriceQuoteQueryResult();
+    result.percerChangeToBill =
+      countPriceQuote === 0
+        ? 0
+        : (numberOfUniquePriceQuoteUUIDs / countPriceQuote) * 100;
+    return result;
   }
 }
