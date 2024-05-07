@@ -1,5 +1,5 @@
 import { IQuery } from '@nestjs/cqrs';
 
 export class ListProductOptionsQuery implements IQuery {
-  constructor() {}
+  constructor(readonly tenantId: string) {}
 }

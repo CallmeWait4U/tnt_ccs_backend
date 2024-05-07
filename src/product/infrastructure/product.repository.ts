@@ -66,16 +66,22 @@ export class ProductRepository {
     return uuids;
   }
 
-  async getByUUID(uuid: string): Promise<ProductModel> {
+  async getByUUID(uuid: string, tenantId: string): Promise<ProductModel> {
     const entity = await this.prisma.product.findUnique({
-      where: { uuid },
+      where: { uuid, tenantId },
     });
     return this.productFactory.createProductModel(entity);
   }
 
-  async getByUUIDs(uuids: string[] | string): Promise<ProductModel[]> {
+  async getByUUIDs(
+    uuids: string[] | string,
+    tenantId: string,
+  ): Promise<ProductModel[]> {
     const entities = await this.prisma.product.findMany({
-      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] } },
+      where: {
+        uuid: { in: Array.isArray(uuids) ? uuids : [uuids] },
+        tenantId,
+      },
     });
     return this.productFactory.createProductModels(entities);
   }

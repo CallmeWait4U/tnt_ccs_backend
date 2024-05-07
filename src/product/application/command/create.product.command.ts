@@ -9,6 +9,7 @@ export class CreateProductCommand implements ICommand {
   price: number;
   unit: string;
   images: Express.Multer.File[];
+  tenantId: string;
 
   constructor(data: Partial<CreateProductCommand>) {
     Object.assign(this, data);

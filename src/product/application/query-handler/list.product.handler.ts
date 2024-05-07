@@ -16,6 +16,7 @@ export class GetProductsHandler
 
   async execute(query: ListProductQuery): Promise<ListProductResult> {
     const result = await this.productQuery.listProduct(
+      query.tenantId,
       query.offset,
       query.limit,
       query.searchModel,
