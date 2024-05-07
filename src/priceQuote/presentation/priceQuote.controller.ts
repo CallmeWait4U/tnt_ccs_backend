@@ -21,6 +21,7 @@ import { DeletePriceQuoteCommand } from '../application/command/delete.priceQuot
 import { UpdatePriceQuoteCommand } from '../application/command/update.priceQuote.command';
 import { GetPriceQuotesQuery } from '../application/query/list.priceQuote.query';
 import { ReadPriceQuoteQuery } from '../application/query/read.priceQuote.query';
+import { StatisticPriceQuoteQuery } from '../application/query/statistic.priceQuote.query';
 import { CreatePriceQuoteDTO } from './dto/create.priceQuote.dto';
 import { DeletePriceQuoteDTO } from './dto/delete.priceQuote.dto';
 import { GetPriceQuotesDTO } from './dto/list.priceQuote.dto';
@@ -107,5 +108,17 @@ export class PriceQuoteController {
     }
     const command = new DeletePriceQuoteCommand(body);
     return await this.commandBus.execute(command);
+  }
+  @Get('/statistic/get')
+  async statistic(@GetUser() user: User) {
+    if (user.type === 'CUSTOMER') {
+      throw new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const query = new StatisticPriceQuoteQuery(user?.tenantId);
+    return await this.queryBus.execute(query);
   }
 }
