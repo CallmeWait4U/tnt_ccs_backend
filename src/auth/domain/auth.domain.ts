@@ -65,6 +65,24 @@ export class AuthDomain {
     return model;
   }
 
+  async changePassword(
+    model: AccountModel,
+    oldPassword: string,
+    newPassword: string,
+    confirmPassword: string,
+  ): Promise<AccountModel> {
+    const match = await bcrypt.compare(oldPassword, model.password);
+    if (!match) {
+      throw new HttpException('Old password wrong', HttpStatus.BAD_REQUEST);
+    }
+    if (newPassword !== confirmPassword) {
+      throw new HttpException('Wrong Comfirm', HttpStatus.BAD_REQUEST);
+    }
+    const salt = await bcrypt.genSalt();
+    model.password = await bcrypt.hash(newPassword, salt);
+    return model;
+  }
+
   signOut(model: AccountModel): AccountModel {
     model.accessToken = null;
     model.refreshToken = null;

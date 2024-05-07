@@ -45,8 +45,8 @@ model Account {
   customerUUID  String?        @unique
   employee      Employee?      @relation(fields: [employeeUUID], references: [uuid])
   employeeUUID  String?        @unique
-  chat_sender   Chat[]    @relation("Sender")
-  chat_receiver Chat[]    @relation("Receiver")
+  chat_sender   Chat[]         @relation("Sender")
+  chat_receiver Chat[]         @relation("Receiver")
 }
 
 model Permission {
@@ -265,6 +265,7 @@ model Activity {
 model Task {
   id              Int         @id @default(autoincrement())
   uuid            String      @unique @default(uuid())
+  title           String
   startDate       DateTime
   endDate         DateTime
   createDate      DateTime
@@ -277,8 +278,8 @@ model Task {
   customer        Customer    @relation(fields: [customerUUID], references: [uuid])
   customerUUID    String
   employees       Employee[]
-  activity        Activity    @relation(fields: [activityUUID], references: [uuid])
-  activityUUID    String
+  activity        Activity?   @relation(fields: [activityUUID], references: [uuid])
+  activityUUID    String?
   emailTask       EmailTask[]
 }
 
@@ -403,8 +404,8 @@ model Chat {
   content      String
   senderUUID   String
   receiverUUID String
-  sender       Account @relation("Sender", fields: [senderUUID], references: [uuid])
-  receiver     Account @relation("Receiver", fields: [receiverUUID], references: [uuid])
+  sender       Account  @relation("Sender", fields: [senderUUID], references: [uuid])
+  receiver     Account  @relation("Receiver", fields: [receiverUUID], references: [uuid])
   createdAt    DateTime @default(now())
 }
 
@@ -438,9 +439,9 @@ enum StatusBill {
 }
 
 enum StatusTask {
-  INCOMING  @map("Sắp diễn ra")
-  OVERDUE   @map("Đã trễ")
-  COMPLETED @map("Hoàn thành")
+  INPROGRESS @map("Đang diễn ra")
+  OVERDUE    @map("Đã trễ")
+  COMPLETED  @map("Hoàn thành")
 }
 
 enum StatusComplaint {

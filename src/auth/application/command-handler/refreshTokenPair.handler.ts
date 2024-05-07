@@ -22,6 +22,7 @@ export class RefreshTokensPairHandler
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const model = await this.authenticationRepository.getAccountUUID(
       command.uuid,
+      command.tenantId,
     );
     const account = await this.authenticationDomain.refresh(model);
     return await this.authenticationRepository.updateAccount(account);

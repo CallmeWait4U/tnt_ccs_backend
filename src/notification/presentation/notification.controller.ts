@@ -1,8 +1,11 @@
 import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { Cron } from '@nestjs/schedule';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateNotificationCommand } from '../application/command/create.notification.command';
 import { NotifyViaMailCommand } from '../application/command/notify.via.mail.command';
+import { CreateNotificationDTO } from './dto/create.notification.dto';
 import { NotificationGateway } from './notification.gateway';
 
 @ApiTags('notifications')
@@ -26,8 +29,20 @@ export class NotificationController {
     await this.notificationGateway.handleNotification(token, 'hello');
   }
 
-  // @Cron('0 0 7 * * *')
-  @Get('/autoSendMail')
+  @RabbitRPC({
+    exchange: 'exchange1',
+    routingKey: 'notify.conplaint',
+    queue: 'tnt.ccs-notify.conplaint',
+  })
+  async notifyComplaint(payload: CreateNotificationDTO) {
+    console.log(payload);
+    const command = new CreateNotificationCommand(payload);
+    await this.commandBus.execute(command);
+    await this.notificationGateway.notifyComplaint(payload);
+  }
+
+  @Cron('0 0 7 * * *')
+  //@Get('/autoSendMail')
   async notifyViaMail() {
     const command = new NotifyViaMailCommand();
     await this.commandBus.execute(command);

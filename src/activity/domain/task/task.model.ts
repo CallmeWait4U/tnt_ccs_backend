@@ -14,6 +14,9 @@ export class TaskModel {
   uuid: string;
 
   @Expose()
+  title: string;
+
+  @Expose()
   startDate: Date;
 
   @Expose()

@@ -4,7 +4,8 @@ import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
 import {
-  AccountItem,
+  AccountCustomerItem,
+  AccountEmployeeItem,
   GetAccountsResult,
 } from '../application/query/result/get.accounts.query.result';
 import { ReadAccountResult } from '../application/query/result/read.account.query.result';
@@ -26,9 +27,53 @@ export class AccountQuery {
     const search: { [key: string]: any } = searchModel
       ? JSON.parse(searchModel)
       : undefined;
+    conditions.push({ tenantId });
     if (search) {
       if (type === TypeAccount.CUSTOMER) {
-        //
+        for (const [prop, item] of Object.entries(search)) {
+          const obj = {};
+          if (item.isCustom) {
+            if (prop === 'phaseName') {
+              const { value } = this.util.buildSearch(item);
+              conditions.push({ phase: { name: value } });
+            }
+          } else {
+            const { value } = this.util.buildSearch(item);
+            if (prop === 'name') {
+              obj['OR'] = [
+                {
+                  business: {
+                    name: value,
+                  },
+                },
+                {
+                  individual: {
+                    name: value,
+                  },
+                },
+              ];
+            } else if (prop === 'email') {
+              obj['OR'] = [
+                {
+                  business: {
+                    representativeEmail: value,
+                  },
+                },
+                {
+                  individual: {
+                    email: value,
+                  },
+                },
+              ];
+            } else {
+              obj[prop] = {
+                [item.valueType === 'text' ? 'contains' : 'equals']: value,
+              };
+            }
+            conditions.push(obj);
+          }
+        }
+        conditions.push({ hasAccount: true });
       } else {
         for (const [prop, item] of Object.entries(search)) {
           const obj = {};
@@ -61,9 +106,52 @@ export class AccountQuery {
             conditions.push(obj);
           }
         }
+        conditions.push({ OR: [{ type: 'ADMIN' }, { type: 'EMPLOYEE' }] });
       }
     }
-    conditions.push({ tenantId });
+    if (type === TypeAccount.CUSTOMER) {
+      const [data, total] = await Promise.all([
+        this.prisma.customer.findMany({
+          skip: Number(offset),
+          take: Number(limit),
+          where: { AND: conditions },
+          include: {
+            phase: {
+              select: {
+                name: true,
+              },
+            },
+            business: true,
+            individual: true,
+          },
+          orderBy: [{ id: 'asc' }],
+        }),
+        this.prisma.customer.count({ where: { AND: conditions } }),
+      ]);
+      return {
+        items: data.map((i) => {
+          const propRelation = {
+            name: i.isBusiness ? i.business.name : i.individual.name,
+            email: i.isBusiness
+              ? i.business.representativeEmail
+              : i.individual.email,
+            phoneNumber: i.isBusiness
+              ? i.business.representativePhone
+              : i.individual.phoneNumber,
+          };
+          return plainToClass(
+            AccountCustomerItem,
+            {
+              ...i,
+              ...propRelation,
+              phaseName: i.phase.name,
+            },
+            { excludeExtraneousValues: true },
+          );
+        }),
+        total,
+      };
+    }
     const [data, total] = await Promise.all([
       this.prisma.account.findMany({
         skip: Number(offset),
@@ -80,7 +168,7 @@ export class AccountQuery {
     return {
       items: data.map((i) => {
         return plainToClass(
-          AccountItem,
+          AccountEmployeeItem,
           {
             ...i.employee,
             ...i.customer,

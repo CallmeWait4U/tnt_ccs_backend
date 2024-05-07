@@ -1,7 +1,31 @@
 import { IQueryResult } from '@nestjs/cqrs';
 import { Expose } from 'class-transformer';
 
-export class AccountItem {
+export class AccountCustomerItem {
+  // Mã kh, tên kh, loại kh, email, sdt, giai doan
+  @Expose()
+  uuid: string;
+
+  @Expose()
+  name: string;
+
+  @Expose()
+  code: string;
+
+  @Expose()
+  isBusiness: boolean;
+
+  @Expose()
+  email: string;
+
+  @Expose()
+  phoneNumber: string;
+
+  @Expose()
+  phaseName: string;
+}
+
+export class AccountEmployeeItem {
   @Expose()
   uuid: string;
 
@@ -29,7 +53,7 @@ export class AccountItem {
 
 export class GetAccountsResult implements IQueryResult {
   @Expose()
-  items: AccountItem[];
+  items: AccountCustomerItem[] | AccountEmployeeItem[];
 
   @Expose()
   total: number;

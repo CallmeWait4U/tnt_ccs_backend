@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { RmqModule } from 'libs/rabbitmq.module';
 import { CreateActivityComplaintHandler } from './application/command-handler/create.activity,complaint.handler';
 import { CreateComplaintHandler } from './application/command-handler/create.complaint.handler';
 import { CreateTypeComplaintHandler } from './application/command-handler/create.typeComplaint.handler';
@@ -40,7 +41,7 @@ const infrastructure = [ComplaintRepository, ComplaintQuery, ComplaintFactory];
 const domain = [ComplaintDomain];
 
 @Module({
-  imports: [CqrsModule],
+  imports: [CqrsModule, RmqModule],
   providers: [...application, ...infrastructure, ...domain],
   controllers: [ComplaintController],
 })

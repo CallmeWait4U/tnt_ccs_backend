@@ -11,6 +11,7 @@ import {
   ProductItem,
 } from '../application/query/result/list.product.query.result';
 import { ReadProductResult } from '../application/query/result/read.product.query.result';
+
 export class ProductQuery {
   @Inject()
   private readonly prisma: PrismaService;

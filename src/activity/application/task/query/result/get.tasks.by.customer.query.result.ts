@@ -19,7 +19,7 @@ export class GetTasksByCustomerItem {
   note: string;
 
   @Expose()
-  activityName: string;
+  title: string;
 
   @Expose()
   employeeName: string[];

@@ -27,6 +27,7 @@ export class CreateProductHandler
         const images = await Promise.all(
           command.images.map(async (image) => {
             const url = await this.firebase.uploadImage(image);
+            console.log('url', url);
             return this.productFactory.createImageProductModel(url);
           }),
         );

@@ -58,6 +58,16 @@ export class AuthRepository {
         };
   }
 
+  async updatePassword(account: AccountModel): Promise<string> {
+    const updated = await this.prisma.account.update({
+      data: {
+        password: account.password,
+      },
+      where: { uuid: account.uuid },
+    });
+    return updated.uuid;
+  }
+
   async getTenantByDomain(domain: string): Promise<TenantModel | null> {
     const entity = await this.prisma.tenant.findUnique({
       where: { domain },
@@ -75,8 +85,13 @@ export class AuthRepository {
     return this.authFactory.createAccountModel(entity);
   }
 
-  async getAccountUUID(uuid: string): Promise<AccountModel | null> {
-    const entity = await this.prisma.account.findUnique({ where: { uuid } });
+  async getAccountUUID(
+    uuid: string,
+    tenantId: string,
+  ): Promise<AccountModel | null> {
+    const entity = await this.prisma.account.findUnique({
+      where: { uuid, tenantId },
+    });
     return this.authFactory.createAccountModel(entity);
   }
 }

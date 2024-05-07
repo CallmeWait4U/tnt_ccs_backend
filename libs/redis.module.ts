@@ -1,11 +1,5 @@
 import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  Module,
-} from '@nestjs/common';
+import { Inject, Injectable, Module } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 
@@ -31,7 +25,8 @@ export class RedisImplement {
   async getClients(token: string): Promise<string[]> {
     const existing = await this.redis.get(token);
     if (!existing) {
-      throw new HttpException('User is not online', HttpStatus.GATEWAY_TIMEOUT);
+      //throw new HttpException('User is not online', HttpStatus.GATEWAY_TIMEOUT);
+      return [];
     }
     return JSON.parse(existing as string) as string[];
   }

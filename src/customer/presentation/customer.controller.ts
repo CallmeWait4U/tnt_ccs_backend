@@ -15,6 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
+import { CreateAutoTaskCommand } from 'src/activity/application/task/command/create.auto.task.command';
 import { CreateCustomerCommand } from '../application/command/create.customer.command';
 import { DeleteCustomerCommand } from '../application/command/delete.command';
 import { UpdateCustomerCommand } from '../application/command/update.customer.command';
@@ -146,7 +147,15 @@ export class CustomerController {
       ...body,
       tenantId: user.tenantId,
     });
-    return await this.commandBus.execute(command);
+    const data = await this.commandBus.execute(command);
+    const commandCreateAutoTask = new CreateAutoTaskCommand({
+      title: 'Thay đổi thông tin khách hàng',
+      note: data.note,
+      customerUUID: body.uuid,
+      tenantId: user.tenantId,
+      employees: [user.uuid],
+    });
+    await this.commandBus.execute(commandCreateAutoTask);
   }
 
   @Put('/update/individual')

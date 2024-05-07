@@ -23,6 +23,7 @@ import { PriceQuoteModule } from './priceQuote/priceQuote.module';
 import { PriceQuoteRequestModule } from './priceQuoteRequest/priceQuoteRequest.module';
 import { ProductModule } from './product/product.module';
 import { TestModule } from './test/test.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { TestModule } from './test/test.module';
     NotificationModule,
     ComplaintModule,
     ChatModule,
+    UserModule,
     TestModule,
   ],
   controllers: [AppController],
