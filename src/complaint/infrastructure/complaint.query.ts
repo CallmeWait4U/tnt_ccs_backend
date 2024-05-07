@@ -151,12 +151,12 @@ export class ComplaintQuery {
           urls.push(await this.firebase.getAuthenticatedFileUrl(i));
         }
         valueFieldComplaint.push({
-          fieldComplaintUUID: field.complaintUUID,
+          fieldComplaintUUID: field.fieldComplaintUUID,
           value: urls,
         });
       } else {
         valueFieldComplaint.push({
-          fieldComplaintUUID: field.complaintUUID,
+          fieldComplaintUUID: field.fieldComplaintUUID,
           value: field.value,
         });
       }
