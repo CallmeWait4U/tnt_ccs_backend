@@ -60,7 +60,7 @@ export class PhaseQuery {
             select: { customers: true },
           },
         },
-        orderBy: [{ id: 'asc' }],
+        orderBy: { priority: 'asc' },
       }),
       this.prisma.phase.count({ where: { AND: conditions } }),
     ]);

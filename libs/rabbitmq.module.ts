@@ -10,7 +10,7 @@ import { Module } from '@nestjs/common';
           type: 'topic',
         },
       ],
-      uri: `amqp://admin:abc12345@localhost:5672`,
+      uri: `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@${process.env.RMQ_URL}`,
       connectionInitOptions: { wait: false },
       enableControllerDiscovery: true,
     }),
