@@ -113,14 +113,16 @@ export class PriceQuoteQuery {
         priceQuoteUUID: true,
       },
 
-      where: { tenantId, priceQuoteUUID: { not: null } },
+      where: { tenantId },
     });
 
     const uniquePriceQuoteUUIDs = new Set();
 
     // Lọc và đếm số lượng priceQuoteUUID khác nhau
     dataBill.forEach((bill) => {
-      uniquePriceQuoteUUIDs.add(bill.priceQuoteUUID);
+      if (bill.priceQuoteUUID) {
+        uniquePriceQuoteUUIDs.add(bill.priceQuoteUUID);
+      }
     });
 
     // Số lượng bill có priceQuoteUUID khác nhau
@@ -130,11 +132,30 @@ export class PriceQuoteQuery {
       where: { tenantId },
     });
 
+    const billQuantity = dataBill.length;
+
+    const dataComplaint = await this.prisma.complaint.findMany({
+      where: { tenantId },
+    });
+    const complaintQuantity = dataComplaint.length;
+
+    const complaintStatistic = [
+      ...new Set(dataComplaint.map((item) => item.status)),
+    ].map((status) => {
+      return {
+        status,
+        quantity: dataComplaint.filter((item) => item.status === status).length,
+      };
+    });
+
     const result = new StatisticPriceQuoteQueryResult();
     result.percerChangeToBill =
       countPriceQuote === 0
         ? 0
         : (numberOfUniquePriceQuoteUUIDs / countPriceQuote) * 100;
+    result.billQuantity = billQuantity;
+    result.complaintQuantity = complaintQuantity;
+    result.complaintStatistic = complaintStatistic;
     return result;
   }
 }
