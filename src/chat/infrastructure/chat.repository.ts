@@ -17,7 +17,7 @@ export class ChatRepository {
           customerUUID: receiverUUID,
         },
       });
-      receiverUUID1 = customer?.employeeUUID || undefined;
+      receiverUUID1 = customer?.uuid || undefined;
     }
 
     if (receiverUUID1)
