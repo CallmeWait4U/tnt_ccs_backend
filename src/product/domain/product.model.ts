@@ -27,6 +27,9 @@ export class ProductModel {
 
   @Expose()
   images: ImageProductModel[];
+
+  @Expose()
+  tenantId: string;
 }
 export class ImageProductModel {
   @Expose()

@@ -26,7 +26,7 @@ export class CreatePhaseHandler
     // this.amqpService.publish(
     //   'exchange1',
     //   'notification.auto.sending',
-    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMWYwYTVmMzgtNmRiMi00YmI4LTgzZDctZTg5MzI3OTI2OWM1IiwidHlwZSI6IkFETUlOIiwidGVuYW50SWQiOiIyZTdlNGJkMS04OGRhLTQ3ZjctODQzMC1kNmRlNTRkODhlYjgiLCJpYXQiOjE3MTA2MDE1NjQsImV4cCI6MTcxMDY4Nzk2NH0.kA1P9gIhenwzmDjRmrfpnF16efRzLl-MHh5W0DHi0xI',
+    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNTc0M2VmNTYtZWI0OS00ZWE3LWI5YjItOTJlMzYxYzM5MmQ5IiwidHlwZSI6IkFETUlOIiwidGVuYW50SWQiOiI4ODQyOTc2OS0xZDNkLTQ0YjUtODk2ZC1iNDdiMWM0MzQ3YmIiLCJpYXQiOjE3MTUxMTMzMDgsImV4cCI6MTcxNTE5OTcwOH0.MdSztIg-VWnuMAFS5fXesojXQSEqBN4--RwZFSMzqqg',
     // );
 
     return await this.phaseRepository.create(phase);

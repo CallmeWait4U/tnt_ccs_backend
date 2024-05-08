@@ -11,21 +11,22 @@ export class PhaseRepository {
 
   async create(phase: PhaseModel): Promise<any> {
     const listPhase = await this.prisma.phase.findMany({
+      where: { tenantId: phase.tenantId },
       orderBy: { priority: 'asc' },
     });
 
     try {
       this.prisma.$transaction(async (transactionClient) => {
-        let priority = phase.priority;
+        let priority = phase.priority - 1;
         await Promise.all(
           listPhase.map(async (item) => {
             if (item.priority === priority) {
               const newPriority = priority + 1;
+              priority = newPriority;
               await transactionClient.phase.update({
                 where: { uuid: item.uuid },
                 data: { priority: newPriority },
               });
-              priority = newPriority;
             }
           }),
         );
