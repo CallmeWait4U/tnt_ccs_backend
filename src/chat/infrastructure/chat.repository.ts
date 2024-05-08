@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { HttpException, Inject } from '@nestjs/common';
 import { PrismaService } from 'libs/database.module';
 
 export class ChatRepository {
@@ -9,12 +9,25 @@ export class ChatRepository {
     receiverUUID: string,
     content: string,
   ) {
-    return await this.prisma.chat.create({
-      data: {
-        senderUUID,
-        receiverUUID,
-        content,
-      },
-    });
+    let receiverUUID1 = receiverUUID;
+    if (receiverUUID !== senderUUID) {
+      ///// emp to customer
+      const customer = await this.prisma.account.findUnique({
+        where: {
+          customerUUID: receiverUUID,
+        },
+      });
+      receiverUUID1 = customer?.employeeUUID || undefined;
+    }
+
+    if (receiverUUID1)
+      return await this.prisma.chat.create({
+        data: {
+          senderUUID,
+          receiverUUID: receiverUUID1,
+          content,
+        },
+      });
+    throw new HttpException('Receiver not found', 404);
   }
 }
