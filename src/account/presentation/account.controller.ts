@@ -16,11 +16,13 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
 import { CreateAccountCommand } from '../application/command/create.account.command';
+import { CreateAccountForCustomerCommand } from '../application/command/create.account.for.customer.command';
 import { DeleteAccountCommand } from '../application/command/delete.account.command';
 import { UpdateAccountCommand } from '../application/command/update.account.command';
 import { GetAccountsQuery } from '../application/query/get.accounts.query';
 import { ReadAccountQuery } from '../application/query/read.account.query';
 import { CreateAccountDTO } from './dto/create.account.dto';
+import { CreateAccountForCustomerDTO } from './dto/create.account.for.customer.dto';
 import { DeleteAccountDTO } from './dto/delete.account.dto';
 import { GetAccountsDTO } from './dto/get.accounts.dto';
 import { ReadAccountDTO } from './dto/read.account.dto';
@@ -71,6 +73,24 @@ export class AccountController {
       );
     }
     const command = new CreateAccountCommand({
+      ...body,
+      tenantId: user.tenantId,
+    });
+    return await this.commandBus.execute(command);
+  }
+
+  @Post('/createForCustomer')
+  async createAccountForCustomer(
+    @Body() body: CreateAccountForCustomerDTO,
+    @GetUser() user: User,
+  ) {
+    if (user.type === 'CUSTOMER') {
+      return new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    const command = new CreateAccountForCustomerCommand({
       ...body,
       tenantId: user.tenantId,
     });

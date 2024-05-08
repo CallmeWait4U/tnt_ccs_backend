@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { CreateAccountForCustomerHandler } from './application/command-handler/create.account.for.customer.handler';
 import { CreateAccountHandler } from './application/command-handler/create.account.handler';
 import { DeleteAccountHandler } from './application/command-handler/delete.account.handler';
 import { UpdateAccountHandler } from './application/command-handler/update.account.handler';
@@ -15,6 +16,7 @@ const application = [
   GetAccountsHandler,
   ReadAccountHandler,
   CreateAccountHandler,
+  CreateAccountForCustomerHandler,
   UpdateAccountHandler,
   DeleteAccountHandler,
 ];
