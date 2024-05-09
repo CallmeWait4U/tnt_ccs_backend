@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { Prisma, TypeAccount } from '@prisma/client';
 import { PrismaService } from 'libs/database.module';
 import { AccountModel } from '../domain/account.model';
 import { AccountFactory } from './account.factory';
@@ -11,11 +12,21 @@ export class AccountRepository {
 
   async create(account: AccountModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, employee, customer, ...data } = account;
-    await this.prisma.account.create({ data });
-    await this.prisma.employee.create({
-      data: { ...employee, account: { connect: { uuid: account.uuid } } },
-    });
+    const { id, employee, customer, customerUUID, employeeUUID, ...data } =
+      account;
+    if (account.type !== TypeAccount.CUSTOMER) {
+      await this.prisma.account.create({ data });
+      await this.prisma.employee.create({
+        data: { ...employee, account: { connect: { uuid: account.uuid } } },
+      });
+    } else {
+      await this.prisma.account.create({
+        data: {
+          ...data,
+          customer: { connect: { uuid: account.customerUUID } },
+        },
+      });
+    }
     return account.uuid;
   }
 
@@ -52,6 +63,19 @@ export class AccountRepository {
       include: { employee: true },
     });
     return this.accountFactory.createAccountModels(entities);
+  }
+
+  async getCustomerByUUID(
+    uuid: string,
+    tenantId: string,
+  ): Promise<
+    Prisma.CustomerGetPayload<{ include: { individual: true; business: true } }>
+  > {
+    const entity = await this.prisma.customer.findUnique({
+      where: { uuid, tenantId },
+      include: { individual: true, business: true },
+    });
+    return entity;
   }
 
   async count(): Promise<number> {

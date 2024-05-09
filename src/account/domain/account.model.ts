@@ -75,5 +75,9 @@ export class AccountModel {
   @Expose()
   customer: CustomerType;
   @Expose()
+  customerUUID: string;
+  @Expose()
   employee: EmployeeType;
+  @Expose()
+  employeeUUID: string;
 }
