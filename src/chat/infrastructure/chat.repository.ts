@@ -11,8 +11,8 @@ export class ChatRepository {
   ) {
     return await this.prisma.chat.create({
       data: {
-        senderUUID,
-        receiverUUID,
+        sender: { connect: { uuid: senderUUID } },
+        receiver: { connect: { uuid: receiverUUID } },
         content,
       },
     });

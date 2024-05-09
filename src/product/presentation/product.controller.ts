@@ -14,7 +14,7 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
 import { CreateProductCommand } from '../application/command/create.product.command';
@@ -33,7 +33,7 @@ import { UpdateProductDTO } from './dto/update.product.dto';
 @ApiTags('products')
 @Controller('products')
 @UseGuards(AuthGuard('jwt'))
-@Controller('phases')
+@ApiBearerAuth()
 export class ProductController {
   constructor(
     readonly commandBus: CommandBus,
