@@ -10,16 +10,24 @@ export class CustomerRespository {
   private readonly customerFactory: CustomerFactory;
 
   async create(customer: CustomerModel): Promise<string> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, business, individual, phaseUUID, employees, ...dataCus } =
-      customer;
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      id,
+      business,
+      individual,
+      phaseUUID,
+      employees,
+      phasesCustomer,
+      ...dataCus
+    } = customer;
     await this.prisma.customer.create({
       data: {
         ...dataCus,
-        phase: { connect: { uuid: customer.phaseUUID } },
+        phase: { connect: { uuid: phaseUUID } },
         employees: {
           connect: employees,
         },
+        phasesCustomer: { create: phasesCustomer },
       },
     });
     if (customer.isBusiness) {
@@ -44,8 +52,33 @@ export class CustomerRespository {
     return customer.uuid;
   }
 
-  async update(customer: CustomerModel): Promise<string> {
-    const { uuid, business, individual, employees, ...dataCus } = customer;
+  async update(customer: CustomerModel, updatePhase: boolean): Promise<string> {
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      id,
+      uuid,
+      business,
+      individual,
+      employees,
+      phaseUUID,
+      phasesCustomer,
+      ...dataCus
+    } = customer;
+    if (updatePhase) {
+      await this.prisma.customer.update({
+        data: {
+          ...dataCus,
+          employees: { connect: employees },
+          phase: { connect: { uuid: phaseUUID } },
+        },
+        where: { uuid },
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, customerUUID, ...dataPhasesCustomer } = phasesCustomer[-1];
+      await this.prisma.phasesCustomer.create({
+        data: { ...dataPhasesCustomer, customer: { connect: { uuid } } },
+      });
+    }
     await this.prisma.customer.update({
       data: { ...dataCus, employees: { connect: employees } },
       where: { uuid },

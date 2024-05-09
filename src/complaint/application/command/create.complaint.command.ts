@@ -1,5 +1,4 @@
 import { ICommand } from '@nestjs/cqrs';
-import { StatusComplaint } from '@prisma/client';
 
 class ValueProperties {
   fieldComplaintUUID: string;
@@ -7,7 +6,6 @@ class ValueProperties {
 }
 
 export class CreateComplaintCommand implements ICommand {
-  status: StatusComplaint;
   sentDate: Date;
   customerUUID: string;
   typeComplaintUUID: string;

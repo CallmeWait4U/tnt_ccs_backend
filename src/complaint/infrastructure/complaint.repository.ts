@@ -3,6 +3,7 @@ import { PrismaService } from 'libs/database.module';
 import {
   ActivityComplaintModel,
   ComplaintModel,
+  HistoryStatusComplaintType,
   TypeComplaintModel,
 } from '../domain/complaint.model';
 import { ComplaintFactory } from './complaint.factory';
@@ -22,6 +23,7 @@ export class ComplaintRepository {
       employees,
       valueFieldComplaint,
       billUUID,
+      listStatus,
       ...dataComplaint
     } = complaint;
     const newComplaint = await this.prisma.complaint.create({
@@ -32,6 +34,7 @@ export class ComplaintRepository {
         employees: { connect: employees },
         valueFieldComplaint: { createMany: { data: valueFieldComplaint } },
         bill: { connect: { uuid: billUUID } },
+        listStatus: { createMany: { data: listStatus } },
       },
     });
     return newComplaint.uuid;
@@ -55,6 +58,7 @@ export class ComplaintRepository {
     activityComplaint: ActivityComplaintModel,
   ): Promise<string> {
     const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       id,
       employeeUUID,
       activityUUID,
@@ -72,12 +76,17 @@ export class ComplaintRepository {
     return newActivityComplaint.uuid;
   }
 
-  async updateStatusComplaint(model: ComplaintModel): Promise<string> {
-    await this.prisma.complaint.update({
+  async updateStatusComplaint(
+    model: ComplaintModel,
+    historyStatusComplaint: HistoryStatusComplaintType,
+  ): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, complaintUUID, ...dataStatus } = historyStatusComplaint;
+    await this.prisma.historyStatusComplaint.create({
       data: {
-        status: model.status,
+        ...dataStatus,
+        complaint: { connect: { uuid: model.uuid } },
       },
-      where: { uuid: model.uuid, tenantId: model.tenantId },
     });
     return model.uuid;
   }

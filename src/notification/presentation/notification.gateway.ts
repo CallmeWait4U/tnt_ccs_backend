@@ -9,7 +9,9 @@ import { RedisImplement } from 'libs/redis.module';
 import { Server, Socket } from 'socket.io';
 import { CreateNotificationDTO } from './dto/create.notification.dto';
 
-@WebSocketGateway(4001, {
+const port = Number(process.env.SOCKET_PORT);
+
+@WebSocketGateway(port, {
   cors: {
     origin: '*',
   },

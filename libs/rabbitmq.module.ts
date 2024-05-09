@@ -1,8 +1,10 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     RabbitMQModule.forRoot(RabbitMQModule, {
       exchanges: [
         {
@@ -10,7 +12,7 @@ import { Module } from '@nestjs/common';
           type: 'topic',
         },
       ],
-      uri: `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@${process.env.RMQ_URL}`,
+      uri: `amqps://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@${process.env.RMQ_URL}`,
       connectionInitOptions: { wait: false },
       enableControllerDiscovery: true,
     }),

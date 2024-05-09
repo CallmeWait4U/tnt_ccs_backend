@@ -11,6 +11,7 @@ type CustomerEntity = Prisma.CustomerGetPayload<{
     business: true;
     individual: true;
     employees: true;
+    phasesCustomer: true;
   };
 }>;
 
