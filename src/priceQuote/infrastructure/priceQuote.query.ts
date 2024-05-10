@@ -136,15 +136,20 @@ export class PriceQuoteQuery {
 
     const dataComplaint = await this.prisma.complaint.findMany({
       where: { tenantId },
+      include: {
+        listStatus: true,
+      },
     });
     const complaintQuantity = dataComplaint.length;
 
     const complaintStatistic = [
-      ...new Set(dataComplaint.map((item) => item.status)),
+      ...new Set(dataComplaint.map((item) => item.listStatus[-1].status)),
     ].map((status) => {
       return {
         status,
-        quantity: dataComplaint.filter((item) => item.status === status).length,
+        quantity: dataComplaint.filter(
+          (item) => item.listStatus[-1].status === status,
+        ).length,
       };
     });
 

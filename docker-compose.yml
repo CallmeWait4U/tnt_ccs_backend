@@ -5,53 +5,71 @@ networks:
     # external: true
     
 volumes:
-  postgresdb-data:
-  rabbitmq-data:
-  redis-data:
+  # postgresdb-data:
+  # rabbitmq-data:
+  # redis-data:
+  tnt-ccs-server:
 
 services:
-  local-postgres:
-    image: postgres:15.2
-    restart: always
-    container_name: local-postgres
-    ports:
-      - 5432:5432
-    volumes:
-      - postgresdb-data:/var/lib/postgresql/data
-    environment:
-      - TZ=Asia/Ho_Chi_Minh
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=abc12345
-    networks:
-      - gateway-network
+  # local-postgres:
+  #   image: postgres:15.2
+  #   restart: always
+  #   container_name: local-postgres
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - postgresdb-data:/var/lib/postgresql/data
+  #   environment:
+  #     - TZ=Asia/Ho_Chi_Minh
+  #     - POSTGRES_USER=admin
+  #     - POSTGRES_PASSWORD=abc12345
+  #   networks:
+  #     - gateway-network
   
-  local-rabbitmq:
-    image: rabbitmq:3.12.2-management
-    restart: always
-    container_name: local-rabbitmq
-    hostname: local-rabbitmq
-    ports:
-      - 5672:5672
-      - 15672:15672
-    volumes: 
-      - rabbitmq-data:/var/lib/rabbitmq/mnesia
-    environment:
-      - TZ=Asia/Ho_Chi_Minh
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=abc12345
-    networks:
-      - gateway-network
+  # local-rabbitmq:
+  #   image: rabbitmq:3.12.2-management
+  #   restart: always
+  #   container_name: local-rabbitmq
+  #   hostname: local-rabbitmq
+  #   ports:
+  #     - 5672:5672
+  #     - 15672:15672
+  #   volumes: 
+  #     - rabbitmq-data:/var/lib/rabbitmq/mnesia
+  #   environment:
+  #     - TZ=Asia/Ho_Chi_Minh
+  #     - RABBITMQ_DEFAULT_USER=admin
+  #     - RABBITMQ_DEFAULT_PASS=abc12345
+  #   networks:
+  #     - gateway-network
 
-  local-redis:
-    image: redis:7.0.12
-    restart: always
-    container_name: local-redis
+  # local-redis:
+  #   image: redis:7.0.12
+  #   restart: always
+  #   container_name: local-redis
+  #   ports:
+  #     - 6379:6379
+  #   command: redis-server --save 20 1 --loglevel warning
+  #   volumes: 
+  #     - redis-data:/data
+  #   environment:
+  #     - TZ=Asia/Ho_Chi_Minh
+  #   networks:
+  #     - gateway-network
+  
+  tnt-ccs-server:
+    container_name: tnt_ccs_server
+    image: tnt_ccs_server:1.0.0
+    build:
+        context: .
+        target: development
+        dockerfile: ./Dockerfile
+    command: pnpm start
     ports:
-      - 6379:6379
-    command: redis-server --save 20 1 --loglevel warning
-    volumes: 
-      - redis-data:/data
-    environment:
-      - TZ=Asia/Ho_Chi_Minh
+        - 3001:3001
     networks:
-      - gateway-network
+        - gateway-network
+    volumes:
+        - .:/usr/src/app
+        - /usr/src/app/node_modules
+    restart: unless-stopped

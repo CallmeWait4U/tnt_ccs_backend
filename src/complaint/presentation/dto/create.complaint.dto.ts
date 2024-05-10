@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { StatusComplaint } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsArray, IsDateString, IsNotEmpty, IsString } from 'class-validator';
 
@@ -24,14 +23,6 @@ class ValueProperties {
 }
 
 export class CreateComplaintDTO {
-  @ApiProperty({
-    example: StatusComplaint.PENDING,
-    enum: StatusComplaint,
-  })
-  @IsNotEmpty()
-  @IsString()
-  status: StatusComplaint;
-
   @ApiProperty({ example: 'typeComplaintUUID', type: String })
   @IsNotEmpty()
   @IsString()

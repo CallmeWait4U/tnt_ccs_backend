@@ -1,6 +1,12 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
-import { BusinessType, CustomerModel, IndividualType } from './customer.model';
+import {
+  BusinessType,
+  CustomerModel,
+  IndividualType,
+  PhasesCustomerType,
+} from './customer.model';
 
 const field = {
   source: 'Nguồn',
@@ -34,9 +40,22 @@ const field = {
 export class CustomerDomain {
   create(model: CustomerModel): CustomerModel {
     const customerUUID = uuidv4().toString();
+    const phasesCustomerUUID = uuidv4().toString();
     model.uuid = customerUUID;
     model.code = 'KH-';
     model.receiveMail = false;
+    model.phasesCustomer = [
+      plainToClass(
+        PhasesCustomerType,
+        {
+          uuid: phasesCustomerUUID,
+          date: new Date(),
+          phaseUUID: model.phaseUUID,
+          customerUUID: undefined,
+        },
+        { excludeExtraneousValues: true },
+      ),
+    ];
     return model;
   }
 
@@ -75,6 +94,21 @@ export class CustomerDomain {
           if (customerUpdate[prop] !== value) {
             listNote.push(field[prop] + ',');
             customerCurrent[prop] = customerUpdate[prop];
+            const phasesCustomerUUID = uuidv4().toString();
+            if (prop === 'phaseUUID') {
+              customerCurrent.phasesCustomer.push(
+                plainToClass(
+                  PhasesCustomerType,
+                  {
+                    uuid: phasesCustomerUUID,
+                    date: new Date(),
+                    phaseUUID: customerUpdate[prop],
+                    customerUUID: undefined,
+                  },
+                  { excludeExtraneousValues: true },
+                ),
+              );
+            }
           }
         }
       }

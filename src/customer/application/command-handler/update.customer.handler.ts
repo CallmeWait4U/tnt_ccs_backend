@@ -26,7 +26,16 @@ export class UpdateCustomerHandler
       modelCurrent,
       command,
     );
-    const uuid = await this.customerRespository.update(modelUpdated);
-    return { uuid, note };
+    if (modelCurrent.phaseUUID !== modelUpdated.phaseUUID) {
+      return {
+        uuid: await this.customerRespository.update(modelUpdated, false),
+        note,
+      };
+    } else {
+      return {
+        uuid: await this.customerRespository.update(modelUpdated, true),
+        note,
+      };
+    }
   }
 }

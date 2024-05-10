@@ -39,6 +39,11 @@ export class UpdateIndividualCustomerDTO {
   @IsString()
   detailAddress: string;
 
+  @ApiProperty({ required: false, example: 'phaseUUID', type: String })
+  @IsOptional()
+  @IsString()
+  phaseUUID: string;
+
   @ApiProperty({ required: false, example: false, type: Boolean })
   @IsOptional()
   @IsBoolean()

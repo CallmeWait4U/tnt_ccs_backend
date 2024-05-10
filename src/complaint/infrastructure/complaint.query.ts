@@ -82,6 +82,7 @@ export class ComplaintQuery {
           customer: { include: { business: true, individual: true } },
           typeComplaint: true,
           employees: true,
+          listStatus: true,
         },
       }),
       this.prisma.complaint.count({ where: { AND: conditions } }),
@@ -92,6 +93,7 @@ export class ComplaintQuery {
           ComplaintItem,
           {
             ...i,
+            status: i.listStatus[-1].status,
             customerName: i.customer.isBusiness
               ? i.customer.business.name
               : i.customer.individual.name,
@@ -136,6 +138,7 @@ export class ComplaintQuery {
         customer: { include: { business: true, individual: true } },
         typeComplaint: { include: { listOfField: true } },
         valueFieldComplaint: true,
+        listStatus: true,
       },
     });
     const fieldComplaintUUIDs = data.typeComplaint.listOfField.map(
@@ -165,6 +168,7 @@ export class ComplaintQuery {
       ReadComplaintResult,
       {
         ...data,
+        status: data.listStatus[-1].status,
         listOfField: data.typeComplaint.listOfField.map((field) =>
           plainToClass(Field, field, { excludeExtraneousValues: true }),
         ),

@@ -88,8 +88,6 @@ model Customer {
   individual         Individual?
   tenantId           String?
   tasks              Task[]
-  phase              Phase                 @relation(fields: [phaseUUID], references: [uuid])
-  phaseUUID          String
   priceQuoteRequests PriceQuoteRequest[]
   priceQuotes        PriceQuote[]
   bills              Bill[]
@@ -98,7 +96,19 @@ model Customer {
   employees          Employee[]
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @default(now()) @updatedAt
-  EmailTask          EmailTask[]
+  emailTask          EmailTask[]
+  phasesCustomer     PhasesCustomer[]
+  phase              Phase?                @relation(fields: [phaseUUID], references: [uuid])
+  phaseUUID          String?
+}
+
+model PhasesCustomer {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @unique @default(uuid())
+  date         DateTime
+  phaseUUID    String
+  customer     Customer @relation(fields: [customerUUID], references: [uuid])
+  customerUUID String
 }
 
 model Business {
@@ -310,22 +320,30 @@ model TypeComplaint {
 }
 
 model Complaint {
-  id                  Int                   @id @default(autoincrement())
-  uuid                String                @unique @default(uuid())
+  id                  Int                      @id @default(autoincrement())
+  uuid                String                   @unique @default(uuid())
   code                String
-  status              StatusComplaint
+  listStatus          HistoryStatusComplaint[]
   employees           Employee[]
   createdDate         DateTime
   sentDate            DateTime
-  customer            Customer?             @relation(fields: [customerUUID], references: [uuid])
+  customer            Customer?                @relation(fields: [customerUUID], references: [uuid])
   customerUUID        String?
-  typeComplaint       TypeComplaint?        @relation(fields: [typeComplaintUUID], references: [uuid])
+  typeComplaint       TypeComplaint?           @relation(fields: [typeComplaintUUID], references: [uuid])
   typeComplaintUUID   String?
-  bill                Bill?                 @relation(fields: [billUUID], references: [uuid])
+  bill                Bill?                    @relation(fields: [billUUID], references: [uuid])
   billUUID            String?
   tenantId            String?
   valueFieldComplaint ValueFieldComplaint[]
   activityComplaint   ActivityComplaint[]
+}
+
+model HistoryStatusComplaint {
+  id            Int             @id @default(autoincrement())
+  date          DateTime
+  status        StatusComplaint
+  complaint     Complaint?      @relation(fields: [complaintUUID], references: [uuid])
+  complaintUUID String?
 }
 
 model ActivityComplaint {

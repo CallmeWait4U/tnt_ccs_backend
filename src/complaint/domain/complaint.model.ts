@@ -17,6 +17,17 @@ export class ActivityType {
   name: string;
 }
 
+export class HistoryStatusComplaintType {
+  @Expose()
+  id: number;
+  @Expose()
+  date: Date;
+  @Expose()
+  status: StatusComplaint;
+  @Expose()
+  complaintUUID: string;
+}
+
 export class FieldComplaintModel {
   @Expose()
   id?: number;
@@ -61,7 +72,7 @@ export class ComplaintModel {
   @Expose()
   code: string;
   @Expose()
-  status: StatusComplaint;
+  listStatus: HistoryStatusComplaintType[];
   @Expose()
   employees: EmployeeType[];
   @Expose()

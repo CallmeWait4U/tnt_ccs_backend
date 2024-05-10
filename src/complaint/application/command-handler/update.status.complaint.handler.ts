@@ -19,10 +19,12 @@ export class UpdateStatusComplaintHandler
       command.tenantId,
     );
     this.complaintDomain.checkComplaint(modelCurrent);
-    const modelUpdated = this.complaintDomain.updateStatusComplaint(
-      modelCurrent[0],
-      command,
+    const historyStatusComplaint = this.complaintDomain.updateStatusComplaint(
+      command.status,
     );
-    return await this.complaintRepository.updateStatusComplaint(modelUpdated);
+    return await this.complaintRepository.updateStatusComplaint(
+      modelCurrent[0],
+      historyStatusComplaint,
+    );
   }
 }

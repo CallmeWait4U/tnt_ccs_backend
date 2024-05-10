@@ -11,6 +11,7 @@ export class UpdateCustomerCommand implements ICommand {
   description: string;
   hasAccount: StatusCustomerAccount;
   name: string;
+  phaseUUID: string;
   tenantId: string;
   // Business
   businessNationality: string;

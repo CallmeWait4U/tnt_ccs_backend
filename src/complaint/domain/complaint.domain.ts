@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
-import { ActivityComplaint } from '@prisma/client';
+import { ActivityComplaint, StatusComplaint } from '@prisma/client';
+import { plainToClass } from 'class-transformer';
 import { FirebaseService } from 'libs/firebase.module';
 import { v4 as uuidv4 } from 'uuid';
 import { ComplaintQuery } from '../infrastructure/complaint.query';
@@ -7,6 +8,7 @@ import {
   ActivityComplaintModel,
   ComplaintModel,
   EmployeeType,
+  HistoryStatusComplaintType,
   TypeComplaintModel,
 } from './complaint.model';
 
@@ -72,6 +74,17 @@ export class ComplaintDomain {
       ...i,
       tenantId: model.tenantId,
     }));
+    model.listStatus = [
+      plainToClass(
+        HistoryStatusComplaintType,
+        {
+          date: new Date(),
+          status: StatusComplaint.PENDING,
+          complaintUUID: undefined,
+        },
+        { excludeExtraneousValues: true },
+      ),
+    ];
     model.employees = listEmployees;
     return model;
   }
@@ -101,18 +114,11 @@ export class ComplaintDomain {
     return model;
   }
 
-  updateStatusComplaint(
-    complaintCurrent: ComplaintModel,
-    complaintUpdate: Partial<ComplaintModel>,
-  ): ComplaintModel {
-    for (const [prop, value] of Object.entries(complaintCurrent)) {
-      if (prop === 'status') {
-        complaintCurrent[prop] = complaintUpdate[prop]
-          ? complaintUpdate[prop]
-          : value;
-      }
-    }
-    return complaintCurrent;
+  updateStatusComplaint(status: StatusComplaint): HistoryStatusComplaintType {
+    return plainToClass(HistoryStatusComplaintType, {
+      data: new Date(),
+      status,
+    });
   }
 
   updateTypeComplaint(

@@ -51,6 +51,19 @@ export class IndividualType {
   nationality: string;
 }
 
+export class PhasesCustomerType {
+  @Expose()
+  id: number;
+  @Expose()
+  uuid: string;
+  @Expose()
+  date: Date;
+  @Expose()
+  phaseUUID: string;
+  @Expose()
+  customerUUID: string;
+}
+
 export class CustomerModel {
   @Expose()
   id: number;
@@ -78,6 +91,8 @@ export class CustomerModel {
   hasAccount: StatusCustomerAccount;
   @Expose()
   phaseUUID: string;
+  @Expose()
+  phasesCustomer: PhasesCustomerType[];
   @Expose()
   tenantId: string;
   @Expose()
