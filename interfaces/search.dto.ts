@@ -17,9 +17,6 @@ export class SearchDTO {
   @ApiProperty({
     required: false,
     type: String,
-    example: JSON.stringify({
-      name: { isCustom: false, value: 'Thanh', valueType: 'text' },
-    }),
   })
   @IsOptional()
   @Type(() => String)

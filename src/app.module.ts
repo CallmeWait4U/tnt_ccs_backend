@@ -22,6 +22,7 @@ import { PhaseModule } from './phase/phase.module';
 import { PriceQuoteModule } from './priceQuote/priceQuote.module';
 import { PriceQuoteRequestModule } from './priceQuoteRequest/priceQuoteRequest.module';
 import { ProductModule } from './product/product.module';
+import { StatisticModule } from './statistic/statistic.module';
 import { TestModule } from './test/test.module';
 import { UserModule } from './user/user.module';
 
@@ -50,6 +51,7 @@ import { UserModule } from './user/user.module';
     ComplaintModule,
     ChatModule,
     UserModule,
+    StatisticModule,
     TestModule,
   ],
   controllers: [AppController],
