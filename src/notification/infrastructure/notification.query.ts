@@ -1,7 +1,12 @@
 import { Inject } from '@nestjs/common';
 import { Prisma, Tenant } from '@prisma/client';
+import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
+import {
+  GetNotificationsItem,
+  GetNotificationsResult,
+} from '../application/query/result/get.notifications.query.result';
 
 export class NotificationQuery {
   @Inject()
@@ -58,5 +63,27 @@ export class NotificationQuery {
     });
     const tenants = await this.prisma.tenant.findMany();
     return { employees, tenants };
+  }
+
+  async getNotification(
+    uuid: string,
+    tenantId: string,
+  ): Promise<GetNotificationsResult> {
+    const [data, total] = await Promise.all([
+      this.prisma.notification.findMany({
+        where: { accountUUID: uuid, tenantId },
+      }),
+      this.prisma.notification.count({
+        where: { accountUUID: uuid, tenantId },
+      }),
+    ]);
+    return {
+      items: data.map((i) =>
+        plainToClass(GetNotificationsItem, i, {
+          excludeExtraneousValues: true,
+        }),
+      ),
+      total,
+    };
   }
 }

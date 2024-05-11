@@ -1,15 +1,21 @@
 import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { AuthGuard } from '@nestjs/passport';
 import { Cron } from '@nestjs/schedule';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { User } from 'interfaces/user';
+import { GetUser } from 'libs/getuser.decorator';
 import { CreateNotificationCommand } from '../application/command/create.notification.command';
 import { NotifyViaMailCommand } from '../application/command/notify.via.mail.command';
+import { GetNotificationsQuery } from '../application/query/get.notifications.query';
 import { CreateNotificationDTO } from './dto/create.notification.dto';
 import { NotificationGateway } from './notification.gateway';
 
 @ApiTags('notifications')
 @Controller('notifications')
+@UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 export class NotificationController {
   @Inject()
   private readonly notificationGateway: NotificationGateway;
@@ -49,5 +55,11 @@ export class NotificationController {
   }
 
   @Get('/all')
-  async getNotifications() {}
+  async getNotifications(@GetUser() user: User) {
+    const query = new GetNotificationsQuery({
+      uuid: user.uuid,
+      tenantId: user.tenantId,
+    });
+    return await this.queryBus.execute(query);
+  }
 }
