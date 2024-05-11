@@ -11,13 +11,13 @@ export class CustomerType {
   @Expose()
   receiveMail: boolean;
   @Expose()
+  name: string;
+  @Expose()
   business: {
-    name: string;
     representativeEmail: string;
   };
   @Expose()
   individual: {
-    name: string;
     email: string;
   };
 }

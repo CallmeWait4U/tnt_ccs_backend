@@ -109,6 +109,7 @@ export class TestService {
 
     // Tạo Account - Employee
     const dataAccount: CreateAccountCommand[] = [];
+    const accountUUIDs: { uuid: string; tenantId: string }[] = [];
     for (let i = 0; i < 12; i++) {
       dataAccount.push(
         new CreateAccountCommand({
@@ -142,7 +143,8 @@ export class TestService {
       );
     }
     for (const item of dataAccount) {
-      await this.commandBus.execute(item);
+      const uuid = await this.commandBus.execute(item);
+      accountUUIDs.push({ uuid, tenantId: item.tenantId });
     }
     console.log('Đã tạo Tài khoản cho Admin/Employee');
 
@@ -440,6 +442,7 @@ export class TestService {
           days: 10,
           refDate: new Date(),
         });
+        const account = faker.helpers.arrayElement(accountUUIDs);
         dataPriceQuote.push(
           new CreatePriceQuoteCommand({
             code: 'BG-' + i.toString().padStart(8, '0') + '-' + code,
@@ -447,6 +450,8 @@ export class TestService {
             status: faker.helpers.arrayElement(['SENT', 'UNSENT']),
             sentDate: faker.date.future({ refDate: createdDate }),
             customerUUID: customer.uuid,
+            accountUUID: account.uuid,
+            tenantId: account.tenantId,
             priceQuoteRequestUUID:
               faker.helpers.arrayElement(priceQuoteRequest),
             products: faker.helpers.arrayElements(products).map((product) => {
@@ -457,6 +462,7 @@ export class TestService {
                   Number(faker.commerce.price({ min: 1000, max: 8739 })) * 1000,
               };
             }),
+            effectiveDate: faker.date.future(),
           }),
         );
       }
@@ -489,6 +495,7 @@ export class TestService {
           days: 10,
           refDate: new Date(),
         });
+        const priceQuote = faker.helpers.arrayElement(priceQuotes);
         dataBill.push(
           new CreateBillCommand({
             code: 'HD-' + i.toString().padStart(8, '0') + '-' + code,
@@ -496,21 +503,20 @@ export class TestService {
             status: faker.helpers.arrayElement(['PAID', 'UNPAID']),
             sentDate: faker.date.future({ refDate: createdDate }),
             customerUUID: customer.uuid,
-            products: faker.helpers
-              .arrayElement(priceQuotes)
-              .products.map((product) => {
-                return {
-                  uuid: product.productUUID,
-                  quantity: faker.number.int({ min: 1, max: product.quantity }),
-                  fixedPrice:
-                    Number(
-                      faker.commerce.price({
-                        min: 1000,
-                        max: product.negotiatedPrice / 1000,
-                      }),
-                    ) * 1000,
-                };
-              }),
+            priceQuoteUUID: priceQuote.uuid,
+            products: priceQuote.products.map((product) => {
+              return {
+                uuid: product.productUUID,
+                quantity: faker.number.int({ min: 1, max: product.quantity }),
+                fixedPrice:
+                  Number(
+                    faker.commerce.price({
+                      min: 1000,
+                      max: product.negotiatedPrice / 1000,
+                    }),
+                  ) * 1000,
+              };
+            }),
           }),
         );
       }

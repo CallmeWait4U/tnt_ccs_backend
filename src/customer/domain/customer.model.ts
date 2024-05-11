@@ -5,8 +5,6 @@ export class BusinessType {
   @Expose()
   id: number;
   @Expose()
-  name: string;
-  @Expose()
   businessNationality: string;
   @Expose()
   registrationNumber: string;
@@ -35,8 +33,6 @@ export class BusinessType {
 export class IndividualType {
   @Expose()
   id: number;
-  @Expose()
-  name: string;
   @Expose()
   dayOfBirth: Date;
   @Expose()
@@ -69,6 +65,8 @@ export class CustomerModel {
   id: number;
   @Expose()
   uuid: string;
+  @Expose()
+  name: string;
   @Expose()
   code: string;
   @Expose()

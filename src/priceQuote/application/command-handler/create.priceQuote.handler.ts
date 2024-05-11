@@ -18,7 +18,14 @@ export class CreatePriceQuoteHandler
 
   async execute(command: CreatePriceQuoteCommand): Promise<string> {
     const model = this.priceQuoteFactory.createPriceQuoteModel(command);
-    const priceQuote = await this.priceQuoteDomain.create(model);
+    const employeeUUID = await this.priceQuoteRepository.getEmployeeUUID(
+      command.accountUUID,
+      command.tenantId,
+    );
+    const priceQuote = await this.priceQuoteDomain.create({
+      ...model,
+      employeeUUID,
+    });
 
     return await this.priceQuoteRepository.create(priceQuote);
   }

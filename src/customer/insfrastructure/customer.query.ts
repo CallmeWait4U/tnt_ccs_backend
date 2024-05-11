@@ -107,7 +107,7 @@ export class CustomerQuery {
     return {
       items: data.map((i) => {
         const propRelation = {
-          name: i.isBusiness ? i.business.name : i.individual.name,
+          name: i.name,
           email: i.isBusiness
             ? i.business.representativeEmail
             : i.individual.email,
@@ -208,7 +208,7 @@ export class CustomerQuery {
     return {
       items: data.map((i) => {
         const propRelation = {
-          name: i.isBusiness ? i.business.name : i.individual.name,
+          name: i.name,
           email: i.isBusiness
             ? i.business.representativeEmail
             : i.individual.email,

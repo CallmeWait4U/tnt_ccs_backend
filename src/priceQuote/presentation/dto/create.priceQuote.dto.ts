@@ -35,6 +35,11 @@ export class CreatePriceQuoteDTO {
   @IsDateString()
   createdDate: Date;
 
+  @ApiProperty({ example: new Date('01-01-1998'), type: Date })
+  @IsNotEmpty()
+  @IsDateString()
+  effectiveDate: Date;
+
   @ApiProperty({ example: StatusPriceQuote.CANCELED, enum: StatusPriceQuote })
   @IsNotEmpty()
   @IsString()

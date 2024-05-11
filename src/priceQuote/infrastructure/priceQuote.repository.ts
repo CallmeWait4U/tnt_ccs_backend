@@ -11,8 +11,13 @@ export class PriceQuoteRepository {
 
   async create(priceQuote: PriceQuoteModel): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { customerUUID, products, priceQuoteRequestUUID, ...data } =
-      priceQuote;
+    const {
+      customerUUID,
+      products,
+      priceQuoteRequestUUID,
+      employeeUUID,
+      ...data
+    } = priceQuote;
     const priceQuoteRequestConect = priceQuoteRequestUUID
       ? { connect: { uuid: priceQuoteRequestUUID } }
       : undefined;
@@ -26,6 +31,7 @@ export class PriceQuoteRepository {
           },
         },
         priceQuoteRequest: priceQuoteRequestConect,
+        createdBy: { connect: { uuid: employeeUUID } },
       },
     });
 
@@ -129,18 +135,31 @@ export class PriceQuoteRepository {
     return uuids;
   }
 
-  async getByUUID(uuid: string): Promise<PriceQuoteModel> {
+  async getByUUID(uuid: string, tenantId: string): Promise<PriceQuoteModel> {
     const entity = await this.prisma.priceQuote.findUnique({
-      where: { uuid },
+      where: { uuid, tenantId },
     });
     return this.priceQuoteFactory.createPriceQuoteModel(entity);
   }
 
-  async getByUUIDs(uuids: string[] | string): Promise<PriceQuoteModel[]> {
+  async getByUUIDs(
+    uuids: string[] | string,
+    tenantId: string,
+  ): Promise<PriceQuoteModel[]> {
     const entities = await this.prisma.priceQuote.findMany({
-      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] } },
+      where: { uuid: { in: Array.isArray(uuids) ? uuids : [uuids] }, tenantId },
     });
     return this.priceQuoteFactory.createPriceQuoteModels(entities);
+  }
+
+  async getEmployeeUUID(
+    accountUUID: string,
+    tenantId: string,
+  ): Promise<string> {
+    const account = await this.prisma.account.findUnique({
+      where: { uuid: accountUUID, tenantId },
+    });
+    return account.employeeUUID;
   }
 
   async count(): Promise<number> {

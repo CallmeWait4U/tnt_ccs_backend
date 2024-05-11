@@ -16,6 +16,7 @@ export class UpdatePriceQuoteHandler
   async execute(command: UpdatePriceQuoteCommand): Promise<string> {
     const modelCurrent = await this.priceQuoteRepository.getByUUID(
       command.uuid,
+      command.tenantId,
     );
     const modelUpdated = this.priceQuoteDomain.update(modelCurrent, command);
     return await this.priceQuoteRepository.update(modelUpdated);

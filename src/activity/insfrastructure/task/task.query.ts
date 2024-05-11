@@ -57,6 +57,7 @@ export class TaskQuery {
           customer: {
             select: {
               isBusiness: true,
+              name: true,
               business: true,
               individual: true,
             },
@@ -77,9 +78,7 @@ export class TaskQuery {
           TaskItem,
           {
             ...i,
-            customerName: i.customer.isBusiness
-              ? i.customer.business.name
-              : i.customer.individual.name,
+            customerName: i.customer.name,
             employeeName: i.employees.map((employee) => employee.name),
           },
           { excludeExtraneousValues: true },
@@ -97,6 +96,7 @@ export class TaskQuery {
           select: {
             code: true,
             isBusiness: true,
+            name: true,
             business: true,
             individual: true,
           },
@@ -115,9 +115,7 @@ export class TaskQuery {
       {
         ...res,
         customerCode: res.customer.code,
-        customerName: res.customer.isBusiness
-          ? res.customer.business.name
-          : res.customer.individual.name,
+        customerName: res.customer.name,
       },
       { excludeExtraneousValues: true },
     );

@@ -32,9 +32,7 @@ export class NotificationDomain {
           customer.tenantId === tenant.tenantId &&
           customer.tasks.length > 0
         ) {
-          const nameCustomer = customer.isBusiness
-            ? customer.business.name
-            : customer.individual.name;
+          const nameCustomer = customer.name;
           const emailCustomer = customer.isBusiness
             ? customer.business.representativeEmail
             : customer.individual.email;

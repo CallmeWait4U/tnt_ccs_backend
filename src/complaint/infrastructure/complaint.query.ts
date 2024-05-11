@@ -94,9 +94,7 @@ export class ComplaintQuery {
           {
             ...i,
             status: i.listStatus[-1].status,
-            customerName: i.customer.isBusiness
-              ? i.customer.business.name
-              : i.customer.individual.name,
+            customerName: i.customer.name,
             customerCode: i.customer.code,
             typeComplaintName: i.typeComplaint.name,
             employeeName: i.employees.map((e) => e.name),
@@ -175,9 +173,7 @@ export class ComplaintQuery {
         valueFieldComplaint,
         customerUUID: data.customer.uuid,
         isBusiness: data.customer.isBusiness,
-        customerName: data.customer.isBusiness
-          ? data.customer.business.name
-          : data.customer.individual.name,
+        customerName: data.customer.name,
         customerCCCD: data.customer.isBusiness
           ? data.customer.business.representativeCccd
           : data.customer.individual.cccd,

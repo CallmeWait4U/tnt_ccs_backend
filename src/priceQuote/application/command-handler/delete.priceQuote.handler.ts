@@ -11,7 +11,10 @@ export class DeletePriceQuoteHandler
   private readonly priceQuoteRepository: PriceQuoteRepository;
 
   async execute(command: DeletePriceQuoteCommand): Promise<string[]> {
-    const models = await this.priceQuoteRepository.getByUUIDs(command.uuid);
+    const models = await this.priceQuoteRepository.getByUUIDs(
+      command.uuid,
+      command.tenantId,
+    );
     return await this.priceQuoteRepository.delete(models);
   }
 }

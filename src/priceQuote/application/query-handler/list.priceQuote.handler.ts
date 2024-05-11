@@ -11,6 +11,7 @@ export class GetPriceQuotesHandler
 
   async execute(query: GetPriceQuotesQuery): Promise<GetPriceQuotesResult> {
     return await this.priceQuoteQuery.getPriceQuotes(
+      query.tenantId,
       query.offset,
       query.limit,
       query.searchModel,

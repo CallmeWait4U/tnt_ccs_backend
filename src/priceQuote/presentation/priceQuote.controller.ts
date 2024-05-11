@@ -50,7 +50,12 @@ export class PriceQuoteController {
     }
     const offset = !q.offset || q.offset < 0 ? 0 : q.offset;
     const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
-    const query = new GetPriceQuotesQuery(offset, limit, searchModel);
+    const query = new GetPriceQuotesQuery(
+      user.tenantId,
+      offset,
+      limit,
+      searchModel,
+    );
     return await this.queryBus.execute(query);
   }
 
@@ -60,7 +65,7 @@ export class PriceQuoteController {
     if (user.type === 'CUSTOMER') {
       customerUUID = user.uuid;
     }
-    const query = new ReadPriceQuoteQuery(q.uuid, customerUUID);
+    const query = new ReadPriceQuoteQuery(q.uuid, user.tenantId, customerUUID);
     return await this.queryBus.execute(query);
   }
 
@@ -77,6 +82,7 @@ export class PriceQuoteController {
     }
     const command = new CreatePriceQuoteCommand({
       ...body,
+      accountUUID: user.uuid,
       tenantId: user.tenantId,
     });
     return await this.commandBus.execute(command);
@@ -109,7 +115,10 @@ export class PriceQuoteController {
         HttpStatus.FORBIDDEN,
       );
     }
-    const command = new DeletePriceQuoteCommand(body);
+    const command = new DeletePriceQuoteCommand({
+      ...body,
+      tenantId: user.tenantId,
+    });
     return await this.commandBus.execute(command);
   }
   @Get('/statistic/get')

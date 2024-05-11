@@ -13,6 +13,8 @@ export class CreatePriceQuoteCommand implements ICommand {
   customerUUID: string;
   priceQuoteRequestUUID: string;
   tenantId: string;
+  accountUUID: string;
+  effectiveDate: Date;
   products: ProductItem[];
 
   constructor(data: Partial<CreatePriceQuoteCommand>) {

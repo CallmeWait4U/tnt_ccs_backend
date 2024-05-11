@@ -19,13 +19,14 @@ export class PriceQuoteQuery {
   private readonly util: UtilityImplement;
 
   async getPriceQuotes(
+    tenantId: string,
     offset: number,
     limit: number,
     searchModel?: any,
   ): Promise<GetPriceQuotesResult> {
     const conditions = [];
     const search = searchModel ? JSON.parse(searchModel) : undefined;
-
+    conditions.push({ tenantId });
     if (search) {
       for (const [prop, item] of Object.entries(search)) {
         const obj = {};
@@ -60,10 +61,13 @@ export class PriceQuoteQuery {
 
   async readPriceQuote(
     uuid: string,
+    tenantId: string,
     customerUUID?: string,
   ): Promise<ReadPriceQuoteResult> {
     const conditions =
-      customerUUID && customerUUID !== '' ? { uuid, customerUUID } : { uuid };
+      customerUUID && customerUUID !== ''
+        ? { uuid, customerUUID, tenantId }
+        : { uuid, tenantId };
 
     const priceQuote = await this.prisma.priceQuote.findUnique({
       include: {

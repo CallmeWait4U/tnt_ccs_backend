@@ -53,10 +53,7 @@ export class BillQuery {
 
     return {
       items: data.map((i) => {
-        const name =
-          i.customer.isBusiness === true
-            ? i.customer.business.name
-            : i.customer.individual.name;
+        const name = i.customer.name;
         const phoneNumber =
           i.customer.isBusiness === true
             ? i.customer.business.representativePhone

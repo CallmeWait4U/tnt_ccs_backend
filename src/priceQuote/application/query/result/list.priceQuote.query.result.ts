@@ -13,6 +13,9 @@ export class PriceQuoteItem {
   createdDate: Date;
 
   @Expose()
+  effectivceDate: Date;
+
+  @Expose()
   status: StatusPriceQuote;
 
   @Expose()

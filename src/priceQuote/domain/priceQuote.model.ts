@@ -22,6 +22,9 @@ export class PriceQuoteModel {
   createdDate: Date;
 
   @Expose()
+  effectiveDate: Date;
+
+  @Expose()
   status: StatusPriceQuote;
 
   @Expose()
@@ -29,6 +32,9 @@ export class PriceQuoteModel {
 
   @Expose()
   customerUUID: string;
+
+  @Expose()
+  employeeUUID: string;
 
   @Expose()
   priceQuoteRequestUUID: string;

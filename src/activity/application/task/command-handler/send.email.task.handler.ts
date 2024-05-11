@@ -36,9 +36,7 @@ export class SendEmailTaskHandler
       from: { name: employee.name, address: 'tnt.ccs.system@gmail.com' },
       recipients: [
         {
-          name: customer.isBusiness
-            ? customer.business.name
-            : customer.individual.name,
+          name: customer.name,
           address: customer.isBusiness
             ? customer.business.representativeEmail
             : customer.individual.email,

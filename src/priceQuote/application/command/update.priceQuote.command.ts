@@ -13,6 +13,7 @@ export class UpdatePriceQuoteCommand implements ICommand {
   status: StatusPriceQuote;
   sentDate: Date;
   customerUUID: string;
+  tenantId: string;
   products: ProductItem[];
 
   constructor(data: Partial<UpdatePriceQuoteCommand>) {

@@ -29,6 +29,9 @@ export class ReadPriceQuoteResult implements IQueryResult {
   createdDate: Date;
 
   @Expose()
+  effectivceDate: Date;
+
+  @Expose()
   status: StatusPriceQuote;
 
   @Expose()
