@@ -24,7 +24,10 @@ export class RefreshTokensPairHandler
       command.uuid,
       command.tenantId,
     );
-    const account = await this.authenticationDomain.refresh(model);
+    const account = await this.authenticationDomain.refresh(
+      model,
+      command.domain,
+    );
     return await this.authenticationRepository.updateAccount(account);
   }
 }

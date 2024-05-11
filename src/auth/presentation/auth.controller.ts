@@ -85,6 +85,7 @@ export class AuthController {
     const command = new RefreshTokensPairCommand({
       uuid: user.uuid,
       tenantId: user.tenantId,
+      domain: user.domain,
     });
     return await this.commandBus.execute(command);
   }

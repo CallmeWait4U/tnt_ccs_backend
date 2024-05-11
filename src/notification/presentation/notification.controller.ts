@@ -1,5 +1,5 @@
 import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
-import { Controller, Inject } from '@nestjs/common';
+import { Controller, Get, Inject } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Cron } from '@nestjs/schedule';
 import { ApiTags } from '@nestjs/swagger';
@@ -47,4 +47,7 @@ export class NotificationController {
     const command = new NotifyViaMailCommand();
     await this.commandBus.execute(command);
   }
+
+  @Get('/all')
+  async getNotifications() {}
 }

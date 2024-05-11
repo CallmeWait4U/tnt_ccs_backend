@@ -7,6 +7,8 @@ export class User {
   @Expose()
   type: TypeAccount;
   @Expose()
+  domain: string;
+  @Expose()
   tenantId: string;
   @Expose()
   permissions: Permission[];

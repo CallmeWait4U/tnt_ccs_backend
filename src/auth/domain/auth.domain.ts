@@ -52,7 +52,11 @@ export class AuthDomain {
       );
   }
 
-  async signIn(model: AccountModel, password: string): Promise<AccountModel> {
+  async signIn(
+    model: AccountModel,
+    password: string,
+    domain: string,
+  ): Promise<AccountModel> {
     if (!model) {
       throw new HttpException('Wrong Username', HttpStatus.BAD_REQUEST);
     }
@@ -60,7 +64,7 @@ export class AuthDomain {
     if (!match) {
       throw new HttpException('Wrong Password', HttpStatus.BAD_REQUEST);
     }
-    const tokens = await this.generateTokenPair(model);
+    const tokens = await this.generateTokenPair(model, domain);
     model.accessToken = tokens.accessToken;
     model.refreshToken = tokens.refreshToken;
     return model;
@@ -90,11 +94,11 @@ export class AuthDomain {
     return model;
   }
 
-  async refresh(model: AccountModel): Promise<AccountModel> {
+  async refresh(model: AccountModel, domain: string): Promise<AccountModel> {
     if (!model || !model.refreshToken) {
       throw new HttpException('Access denied', HttpStatus.FORBIDDEN);
     }
-    const tokens = await this.generateTokenPair(model);
+    const tokens = await this.generateTokenPair(model, domain);
     model.accessToken = tokens.accessToken;
     model.refreshToken = tokens.refreshToken;
     return model;
@@ -102,8 +106,13 @@ export class AuthDomain {
 
   private async generateTokenPair(
     account: AccountModel,
+    domain: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = plainToClass(User, account, { excludeExtraneousValues: true });
+    const user = plainToClass(
+      User,
+      { ...account, domain },
+      { excludeExtraneousValues: true },
+    );
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         { ...user },
