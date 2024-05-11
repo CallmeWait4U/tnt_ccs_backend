@@ -297,13 +297,16 @@ export class TestService {
 
     // Tạo Account cho Khách hàng
     const dataAccountCustomer: CreateAccountForCustomerCommand[] = [];
+    const customers = faker.helpers.arrayElements(customerUUID, {
+      min: 12,
+      max: 12,
+    });
     for (let i = 0; i < 12; i++) {
-      const customer = faker.helpers.arrayElement(customerUUID);
       dataAccountCustomer.push(
         new CreateAccountForCustomerCommand({
-          customerUUID: customer.uuid,
+          customerUUID: customers[i].uuid,
           type: TypeAccount.CUSTOMER,
-          tenantId: customer.tenantId,
+          tenantId: customers[i].tenantId,
         }),
       );
     }
