@@ -162,4 +162,7 @@ export class GetInfoUserEmployeeResult implements IQueryResult {
 
   @Expose()
   detailAddress: string;
+
+  @Expose()
+  type: string;
 }

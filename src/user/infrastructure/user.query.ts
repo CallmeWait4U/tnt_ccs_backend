@@ -38,21 +38,30 @@ export class UserQuery {
       },
     });
     if (account.type !== TypeAccount.CUSTOMER) {
-      return plainToClass(GetInfoUserEmployeeResult, account.employee, {
-        excludeExtraneousValues: true,
-      });
+      return plainToClass(
+        GetInfoUserEmployeeResult,
+        {
+          ...account.employee,
+          type: account.type,
+        },
+        {
+          excludeExtraneousValues: true,
+        },
+      );
     }
     if (account.customer.isBusiness) {
       return plainToClass(GetInfoUserBusinessResult, {
         ...account.customer,
         ...account.customer.business,
         phaseName: account.customer.phase.name,
+        type: account.type,
       });
     }
     return plainToClass(GetInfoUserIndividualResult, {
       ...account.customer,
       ...account.customer.individual,
       phaseName: account.customer.phase.name,
+      type: account.type,
     });
   }
 }
