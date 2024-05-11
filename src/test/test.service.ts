@@ -1,9 +1,10 @@
 import { faker } from '@faker-js/faker/locale/vi';
 import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Gender, StatusCustomerAccount } from '@prisma/client';
+import { Gender, StatusCustomerAccount, TypeAccount } from '@prisma/client';
 import { PrismaService } from 'libs/database.module';
 import { CreateAccountCommand } from 'src/account/application/command/create.account.command';
+import { CreateAccountForCustomerCommand } from 'src/account/application/command/create.account.for.customer.command';
 import { CreateActivityCommand } from 'src/activity/application/activity/command/create.activity.command';
 import { CreateTaskCommand } from 'src/activity/application/task/command/create.task.command';
 import { SignUpCommand } from 'src/auth/application/command/signup.command';
@@ -177,7 +178,11 @@ export class TestService {
 
     // Tạo Khách hàng
     const dataCustomer: CreateCustomerCommand[] = [];
-    const customerUUID: { uuid: string; isBusiness: boolean }[] = [];
+    const customerUUID: {
+      uuid: string;
+      tenantId: string;
+      isBusiness: boolean;
+    }[] = [];
     const numCus = faker.number.int({ min: 50, max: 100 });
     for (let i = 0; i < numCus; i++) {
       const employeeBus: string[] = [];
@@ -284,10 +289,28 @@ export class TestService {
     for (const item of dataCustomer) {
       customerUUID.push({
         uuid: await this.commandBus.execute(item),
+        tenantId: item.tenantId,
         isBusiness: item.isBusiness,
       });
     }
     console.log('Đã tạo Khách hàng');
+
+    // Tạo Account cho Khách hàng
+    const dataAccountCustomer: CreateAccountForCustomerCommand[] = [];
+    for (let i = 0; i < 12; i++) {
+      const customer = faker.helpers.arrayElement(customerUUID);
+      dataAccountCustomer.push(
+        new CreateAccountForCustomerCommand({
+          customerUUID: customer.uuid,
+          type: TypeAccount.CUSTOMER,
+          tenantId: customer.tenantId,
+        }),
+      );
+    }
+    for (const item of dataAccountCustomer) {
+      await this.commandBus.execute(item);
+    }
+    console.log('Đã tạo Tài khoản cho Khách hàng');
 
     // Tạo Task
     const dataTask: CreateTaskCommand[] = [];

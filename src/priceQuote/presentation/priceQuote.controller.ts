@@ -75,7 +75,10 @@ export class PriceQuoteController {
         HttpStatus.FORBIDDEN,
       );
     }
-    const command = new CreatePriceQuoteCommand(body);
+    const command = new CreatePriceQuoteCommand({
+      ...body,
+      tenantId: user.tenantId,
+    });
     return await this.commandBus.execute(command);
   }
 

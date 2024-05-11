@@ -31,6 +31,8 @@ export class TenantModel {
   @Expose()
   domain: string;
   @Expose()
+  createdDate: Date;
+  @Expose()
   tenantId: string;
 }
 

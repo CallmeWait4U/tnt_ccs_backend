@@ -16,6 +16,7 @@ export class AuthDomain {
     const tenantUUID = uuidv4().toString();
     const tenantID = uuidv4().toString();
     model.uuid = tenantUUID;
+    model.createdDate = new Date();
     model.tenantId = tenantID;
     domainList.forEach((domain) => {
       if (domain === model.domain) {

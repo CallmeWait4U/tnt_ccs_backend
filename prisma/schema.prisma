@@ -11,8 +11,8 @@ datasource db {
 }
 
 model Tenant {
-  id                         Int     @id @default(autoincrement())
-  uuid                       String  @unique @default(uuid())
+  id                         Int      @id @default(autoincrement())
+  uuid                       String   @unique @default(uuid())
   name                       String
   taxCode                    String
   businessRegistrationNumber String
@@ -24,7 +24,8 @@ model Tenant {
   district                   String
   city                       String
   country                    String
-  domain                     String  @unique
+  domain                     String   @unique
+  createdDate                DateTime
   tenantId                   String
 }
 
