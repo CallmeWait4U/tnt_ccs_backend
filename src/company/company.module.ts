@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { FindAllHandler } from './application/query-handler/find.all.handler';
+import { ListCompanyHandler } from './application/query-handler/list.company.handler';
+import { CompanyQuery } from './insfrastructure/company.query';
 import { CompanyController } from './presentation/company.controller';
 
-const application = [FindAllHandler];
+const application = [ListCompanyHandler];
 
-const infrastructure = [];
+const infrastructure = [CompanyQuery];
 
 const domain = [];
 
