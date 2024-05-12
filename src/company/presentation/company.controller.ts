@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateCompanyCommand } from '../application/command/create.company.command';
-import { FindAllQuery } from '../application/query/find.all.query';
+import { ListCompanyQuery } from '../application/query/list.company.query';
 import { CreateCompanyDTO } from './dto/create.company.dto';
-import { FindAllDTO } from './dto/find.all.dto';
 
 @Controller('company')
 export class CompanyController {
@@ -13,9 +12,8 @@ export class CompanyController {
   ) {}
 
   @Get('all')
-  async findAll(@Query() q: FindAllDTO) {
-    const searchModel = q.searchModel ? JSON.parse(q.searchModel) : undefined;
-    const query = new FindAllQuery(searchModel, q.offset, q.limit);
+  async findAllCompany() {
+    const query = new ListCompanyQuery();
     return await this.queryBus.execute(query);
   }
 
