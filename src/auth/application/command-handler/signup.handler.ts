@@ -1,5 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { WelcomeMailDTO } from 'interfaces/mailer.dto';
+import { EmailService } from 'libs/email.module';
 import { AuthDomain } from 'src/auth/domain/auth.domain';
 import { AuthFactory } from 'src/auth/infrastructure/auth.factory';
 import { AuthQuery } from 'src/auth/infrastructure/auth.query';
@@ -16,6 +18,8 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand, string> {
   private readonly authenticationDomain: AuthDomain;
   @Inject()
   private readonly authenticationQuery: AuthQuery;
+  @Inject()
+  private readonly emailService: EmailService;
 
   async execute(command: SignUpCommand): Promise<string> {
     // Create Tenant
@@ -39,6 +43,15 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand, string> {
       accountModel,
       command.passwordConfirm,
     );
-    return await this.authenticationRepository.createAccount(account);
+    const result = await this.authenticationRepository.createAccount(account);
+    const mailerDto: WelcomeMailDTO = {
+      from: { name: 'TNT.CCS', address: 'tnt.ccs.system@gmail.com' },
+      recipients: [{ name: command.name, address: command.email }],
+      subject: 'Chào mừng đến với TNT CCS',
+      domain: command.domain,
+      name: command.name,
+    };
+    // await this.emailService.sendWelcomeEmail(mailerDto);
+    return result;
   }
 }

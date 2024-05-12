@@ -52,8 +52,8 @@ export class RedisImplement {
     CacheModule.register({
       useFactory: async () => ({
         store: redisStore,
-        host: 'redis-11608.c8.us-east-1-3.ec2.redns.redis-cloud.com',
-        port: 11608,
+        // host: 'redis-11608.c8.us-east-1-3.ec2.redns.redis-cloud.com',
+        // port: 11608,
         isGlobal: true,
       }),
     }),

@@ -2,7 +2,7 @@ import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { Injectable, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AutoMailDTO, MailerDTO } from 'interfaces/mailer.dto';
+import { AutoMailDTO, MailerDTO, WelcomeMailDTO } from 'interfaces/mailer.dto';
 import * as nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import { join } from 'path';
@@ -58,6 +58,20 @@ export class EmailService {
         : [],
     };
     const result = await transport.sendMail(options);
+    return result;
+  }
+
+  async sendWelcomeEmail(mail: WelcomeMailDTO) {
+    const result = await this.mailerService.sendMail({
+      from: mail.from,
+      to: mail.recipients,
+      subject: mail.subject,
+      template: join(__dirname, '../mail/templates/welcome'),
+      context: {
+        name: mail.name,
+        domain: mail.domain,
+      },
+    });
     return result;
   }
 
