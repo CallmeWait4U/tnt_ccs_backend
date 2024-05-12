@@ -1,5 +1,5 @@
 import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
-import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { Cron } from '@nestjs/schedule';
@@ -10,15 +10,15 @@ import { CreateNotificationCommand } from '../application/command/create.notific
 import { NotifyViaMailCommand } from '../application/command/notify.via.mail.command';
 import { GetNotificationsQuery } from '../application/query/get.notifications.query';
 import { CreateNotificationDTO } from './dto/create.notification.dto';
-import { NotificationGateway } from './notification.gateway';
+// import { NotificationGateway } from './notification.gateway';
 
 @ApiTags('notifications')
 @Controller('notifications')
 @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth()
 export class NotificationController {
-  @Inject()
-  private readonly notificationGateway: NotificationGateway;
+  // @Inject()
+  // private readonly notificationGateway: NotificationGateway;
 
   constructor(
     readonly commandBus: CommandBus,
@@ -32,7 +32,7 @@ export class NotificationController {
   })
   async sendNotification(token: string) {
     console.log(token);
-    await this.notificationGateway.handleNotification(token, 'hello');
+    // await this.notificationGateway.handleNotification(token, 'hello');
   }
 
   @RabbitRPC({
@@ -44,7 +44,7 @@ export class NotificationController {
     console.log(payload);
     const command = new CreateNotificationCommand(payload);
     await this.commandBus.execute(command);
-    await this.notificationGateway.notifyComplaint(payload);
+    // await this.notificationGateway.notifyComplaint(payload);
   }
 
   @Cron('0 0 7 * * *')

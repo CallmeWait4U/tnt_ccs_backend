@@ -11,7 +11,7 @@ import { NotificationFactory } from './infrastructure/notification.factory';
 import { NotificationQuery } from './infrastructure/notification.query';
 import { NotificationRepository } from './infrastructure/notification.repository';
 import { NotificationController } from './presentation/notification.controller';
-import { NotificationGateway } from './presentation/notification.gateway';
+// import { NotificationGateway } from './presentation/notification.gateway';
 
 const application = [
   NotifyViaMailHandler,
@@ -30,7 +30,7 @@ const domain = [NotificationDomain];
 @Module({
   imports: [ScheduleModule.forRoot(), EmailModule, CqrsModule, RedisModule],
   providers: [
-    NotificationGateway,
+    // NotificationGateway,
     ...application,
     ...infrastructure,
     ...domain,
