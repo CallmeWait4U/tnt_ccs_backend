@@ -1,17 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Gender, TypeAccount } from '@prisma/client';
-import {
-  IsDateString,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class UpdateAccountDTO {
   @ApiProperty({ example: 'uuid', type: String })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  uuid: string;
+  uuid?: string;
 
   @ApiProperty({ required: false, example: 'Nguyễn Văn A', type: String })
   @IsOptional()

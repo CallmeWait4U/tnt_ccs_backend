@@ -145,6 +145,7 @@ export class AccountController {
   async updateAccount(@Body() body: UpdateAccountDTO, @GetUser() user: User) {
     const command = new UpdateAccountCommand({
       ...body,
+      uuid: body.uuid ? body.uuid : user.uuid,
       tenantId: user.tenantId,
     });
     return await this.commandBus.execute(command);
