@@ -45,20 +45,21 @@ export class CustomerQuery {
           }
         } else {
           const { value } = this.util.buildSearch(item);
-          if (prop === 'name') {
-            obj['OR'] = [
-              {
-                business: {
-                  name: value,
-                },
-              },
-              {
-                individual: {
-                  name: value,
-                },
-              },
-            ];
-          } else if (prop === 'email') {
+          // if (prop === 'name') {
+          //   obj['OR'] = [
+          //     {
+          //       business: {
+          //         name: value,
+          //       },
+          //     },
+          //     {
+          //       individual: {
+          //         name: value,
+          //       },
+          //     },
+          //   ];
+          // } else
+          if (prop === 'email') {
             obj['OR'] = [
               {
                 business: {
@@ -72,9 +73,7 @@ export class CustomerQuery {
               },
             ];
           } else {
-            obj[prop] = {
-              [item.valueType === 'text' ? 'contains' : 'equals']: value,
-            };
+            obj[prop] = value;
           }
           conditions.push(obj);
         }
