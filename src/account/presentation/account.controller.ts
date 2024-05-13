@@ -18,14 +18,18 @@ import { GetUser } from 'libs/getuser.decorator';
 import { CreateAccountCommand } from '../application/command/create.account.command';
 import { CreateAccountForCustomerCommand } from '../application/command/create.account.for.customer.command';
 import { DeleteAccountCommand } from '../application/command/delete.account.command';
+import { RejectAccountForCustomerCommand } from '../application/command/reject.account.for.customer.command';
 import { UpdateAccountCommand } from '../application/command/update.account.command';
 import { GetAccountsQuery } from '../application/query/get.accounts.query';
+import { GetApprovalCustomerListQuery } from '../application/query/get.approval.customer.list.query';
 import { ReadAccountQuery } from '../application/query/read.account.query';
 import { CreateAccountDTO } from './dto/create.account.dto';
 import { CreateAccountForCustomerDTO } from './dto/create.account.for.customer.dto';
 import { DeleteAccountDTO } from './dto/delete.account.dto';
 import { GetAccountsDTO } from './dto/get.accounts.dto';
+import { GetApprovalCustomerListDTO } from './dto/get.approval.customer.list.dto';
 import { ReadAccountDTO } from './dto/read.account.dto';
+import { RejectAccountForCustomerDTO } from './dto/reject.account.for.customer.dto';
 import { UpdateAccountDTO } from './dto/update.account.dto';
 
 @ApiTags('accounts')
@@ -53,6 +57,28 @@ export class AccountController {
       offset,
       limit,
       q.type,
+      q.searchModel,
+    );
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/approvalCustomers')
+  async getApprovalCustomersList(
+    @Query() q: GetApprovalCustomerListDTO,
+    @GetUser() user: User,
+  ) {
+    if (user.type === 'CUSTOMER') {
+      return new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    const offset = !q.offset || q.offset < 0 ? 0 : q.offset;
+    const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
+    const query = new GetApprovalCustomerListQuery(
+      user.tenantId,
+      offset,
+      limit,
       q.searchModel,
     );
     return await this.queryBus.execute(query);
@@ -91,6 +117,24 @@ export class AccountController {
       );
     }
     const command = new CreateAccountForCustomerCommand({
+      ...body,
+      tenantId: user.tenantId,
+    });
+    return await this.commandBus.execute(command);
+  }
+
+  @Put('/rejectCustomer')
+  async rejectAccountForCustomer(
+    @Body() body: RejectAccountForCustomerDTO,
+    @GetUser() user: User,
+  ) {
+    if (user.type === 'CUSTOMER') {
+      return new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    const command = new RejectAccountForCustomerCommand({
       ...body,
       tenantId: user.tenantId,
     });
