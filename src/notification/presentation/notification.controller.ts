@@ -47,6 +47,14 @@ export class NotificationController {
     await this.notificationGateway.notifyComplaint(payload);
   }
 
+  @RabbitRPC({
+    exchange: 'exchange1',
+    routingKey: 'handle.logout',
+    queue: 'tnt.ccs-handle.logout',
+  })
+  async handleLogout(token: string) {
+    await this.notificationGateway.handleLogout(token);
+  }
   @Cron('0 0 7 * * *')
   //@Get('/autoSendMail')
   async notifyViaMail() {

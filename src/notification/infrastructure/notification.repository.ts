@@ -13,15 +13,20 @@ export class NotificationRepository {
     notifications: NotificationModel[],
   ): Promise<string[]> {
     const data = [];
-    notifications.forEach((notification) => {
+    notifications.forEach(async (notification) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, accountUUID, ...dataNotification } = notification;
       data.push({
         ...dataNotification,
         account: { connect: { uuid: accountUUID } },
       });
+      await this.prisma.notification.create({
+        data: {
+          ...dataNotification,
+          account: { connect: { uuid: accountUUID } },
+        },
+      });
     });
-    await this.prisma.notification.createMany({ data });
     return notifications.map((i) => i.uuid);
   }
 }

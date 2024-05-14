@@ -42,10 +42,10 @@ export class SignUpDTO {
   @IsString()
   email: string;
 
-  @ApiProperty({ example: '246 Lý Thường Kiệt', type: String })
-  @IsNotEmpty()
+  @ApiProperty({ required: false, example: '246 Lý Thường Kiệt', type: String })
+  @IsOptional()
   @IsString()
-  addressDetail: string;
+  addressDetail?: string;
 
   @ApiProperty({ example: 'Quận 10', type: String })
   @IsNotEmpty()

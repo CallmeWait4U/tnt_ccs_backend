@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
 import { EmailModule } from 'libs/email.module';
+import { RmqModule } from 'libs/rabbitmq.module';
 import { RefreshTokensPairHandler } from './application/command-handler/refreshTokenPair.handler';
 import { SignOutHandler } from './application/command-handler/signout.handler';
 import { SignUpHandler } from './application/command-handler/signup.handler';
@@ -35,6 +36,7 @@ const strategies = [AccessTokenStrategy, RefreshTokenStrategy];
       secret: jwtConfig.access,
       signOptions: { expiresIn: jwtConfig.expiresIn.access },
     }),
+    RmqModule,
     CqrsModule,
     EmailModule,
   ],

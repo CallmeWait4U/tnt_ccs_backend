@@ -210,7 +210,7 @@ export class TestService {
         new CreateCustomerCommand({
           isBusiness: true,
           source: 1,
-          city: 1,
+          city: faker.location.city(),
           district: faker.location.county(),
           detailAddress: faker.location.streetAddress(),
           description: faker.lorem.sentence(),
@@ -258,7 +258,7 @@ export class TestService {
         new CreateCustomerCommand({
           isBusiness: false,
           source: 1,
-          city: 1,
+          city: faker.location.city(),
           district: faker.location.county(),
           detailAddress: faker.location.streetAddress(),
           description: faker.lorem.sentence(),

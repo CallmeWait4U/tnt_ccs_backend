@@ -24,17 +24,41 @@ export class NotificationGateway {
   @SubscribeMessage('connection')
   public async handleConnection(@ConnectedSocket() client: Socket) {
     const token = client.handshake.auth?.token;
-    await this.redisImplement.saveSession(token, client.id);
-    this.userOnline.push(client);
+    console.log('connect ', token);
+    const users = this.userOnline.filter(
+      (user) => user.handshake.auth.token === token,
+    );
+    if (!users || users.length === 0) {
+      this.userOnline.push(client);
+      await this.redisImplement.saveSession(token, client.id);
+    }
+    console.log(this.userOnline);
   }
 
   @SubscribeMessage('disconnect')
   public async handleDisconnect(@ConnectedSocket() client: Socket) {
     const token = client.handshake.auth?.token;
+    console.log('disconnect ', token);
     await this.redisImplement.deleteSession(token, client.id);
     const user = this.userOnline.filter((user) => user.id === client.id)[0];
     const index = this.userOnline.indexOf(user);
-    if (index > -1) this.userOnline.splice(index, 1);
+    if (index > -1) {
+      this.userOnline.splice(index, 1);
+    }
+    console.log(this.userOnline);
+  }
+
+  public async handleLogout(token: string) {
+    // const token = client.handshake.auth?.token;
+    console.log('disconnect ', token);
+    const user = this.userOnline.filter(
+      (user) => token === user.handshake.auth?.token,
+    )[0];
+    const index = this.userOnline.indexOf(user);
+    if (index > -1) {
+      this.userOnline.splice(index, 1);
+      await this.redisImplement.deleteSession(token, user.id);
+    }
   }
 
   public async handleNotification(token: string, message: string) {
@@ -56,7 +80,8 @@ export class NotificationGateway {
           user.send({
             title: payload.title,
             content: payload.content,
-            second: (new Date().getTime() - payload.time.getTime()) / 1000,
+            second:
+              (new Date().getTime() - new Date(payload.time).getTime()) / 1000,
           });
         });
       }

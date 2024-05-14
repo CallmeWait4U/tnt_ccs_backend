@@ -54,11 +54,15 @@ export class ComplaintController {
 
   @Get('/all')
   async getComplaints(@Query() q: GetComplaintsDTO, @GetUser() user: User) {
+    let customerUUID;
     if (user.type === 'CUSTOMER') {
-      return new HttpException(
-        "You don't have permission to access this resource",
-        HttpStatus.FORBIDDEN,
-      );
+      // return new HttpException(
+      //   "You don't have permission to access this resource",
+      //   HttpStatus.FORBIDDEN,
+      // );
+      customerUUID = user.uuid;
+    } else {
+      customerUUID = undefined;
     }
     const offset = !q.offset || q.offset < 0 ? 0 : q.offset;
     const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
@@ -66,6 +70,7 @@ export class ComplaintController {
       user.tenantId,
       offset,
       limit,
+      customerUUID,
       q.searchModel,
     );
     return await this.queryBus.execute(query);
@@ -91,12 +96,12 @@ export class ComplaintController {
     @UploadedFiles() images: Express.Multer.File[],
     @GetUser() user: User,
   ) {
-    // if (user.type !== 'CUSTOMER') {
-    //   return new HttpException(
-    //     "You don't have permission to access this resource",
-    //     HttpStatus.FORBIDDEN,
-    //   );
-    // }
+    if (user.type !== 'CUSTOMER') {
+      return new HttpException(
+        "You don't have permission to access this resource",
+        HttpStatus.FORBIDDEN,
+      );
+    }
     const dataComplaint = {} as any;
     for (const i in body) {
       if (i === 'valueFieldComplaint') {
@@ -108,7 +113,7 @@ export class ComplaintController {
     const command = new CreateComplaintCommand({
       ...dataComplaint,
       images,
-      // customerUUID: user.uuid,
+      customerUUID: user.uuid,
       tenantId: user.tenantId,
     });
     await this.commandBus.execute(command);

@@ -26,6 +26,19 @@ export class ComplaintRepository {
       listStatus,
       ...dataComplaint
     } = complaint;
+    if (!billUUID) {
+      const newComplaint = await this.prisma.complaint.create({
+        data: {
+          ...dataComplaint,
+          customer: { connect: { uuid: customerUUID } },
+          typeComplaint: { connect: { uuid: typeComplaintUUID } },
+          employees: { connect: employees },
+          valueFieldComplaint: { createMany: { data: valueFieldComplaint } },
+          listStatus: { createMany: { data: listStatus } },
+        },
+      });
+      return newComplaint.uuid;
+    }
     const newComplaint = await this.prisma.complaint.create({
       data: {
         ...dataComplaint,

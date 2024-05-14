@@ -147,12 +147,14 @@ export class PriceQuoteQuery {
     const complaintQuantity = dataComplaint.length;
 
     const complaintStatistic = [
-      ...new Set(dataComplaint.map((item) => item.listStatus[-1].status)),
+      ...new Set(
+        dataComplaint.map((item) => item.listStatus.slice(-1)[0].status),
+      ),
     ].map((status) => {
       return {
         status,
         quantity: dataComplaint.filter(
-          (item) => item.listStatus[-1].status === status,
+          (item) => item.listStatus.slice(-1)[0].status === status,
         ).length,
       };
     });

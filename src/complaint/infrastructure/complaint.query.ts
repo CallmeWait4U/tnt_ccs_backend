@@ -32,6 +32,7 @@ export class ComplaintQuery {
     tenantId: string,
     offset: number,
     limit: number,
+    accountCustomerUUID?: string,
     searchModel?: any,
   ): Promise<GetComplaintsResult> {
     const conditions = [];
@@ -73,13 +74,19 @@ export class ComplaintQuery {
       }
     }
     conditions.push({ tenantId });
+    if (accountCustomerUUID) {
+      const account = await this.prisma.account.findUnique({
+        where: { uuid: accountCustomerUUID, tenantId },
+      });
+      conditions.push({ customerUUID: account.customerUUID });
+    }
     const [data, total] = await Promise.all([
       this.prisma.complaint.findMany({
         skip: Number(offset),
         take: Number(limit),
         where: { AND: conditions },
         include: {
-          customer: { include: { business: true, individual: true } },
+          customer: true,
           typeComplaint: true,
           employees: true,
           listStatus: true,
@@ -93,7 +100,7 @@ export class ComplaintQuery {
           ComplaintItem,
           {
             ...i,
-            status: i.listStatus[-1].status,
+            status: i.listStatus.slice(-1)[0].status,
             customerName: i.customer.name,
             customerCode: i.customer.code,
             typeComplaintName: i.typeComplaint.name,
@@ -203,6 +210,12 @@ export class ComplaintQuery {
         },
       },
     });
+    if (!data)
+      return plainToClass(
+        ReadTypeComplaintResult,
+        {},
+        { excludeExtraneousValues: true },
+      );
     return plainToClass(
       ReadTypeComplaintResult,
       {
@@ -216,12 +229,19 @@ export class ComplaintQuery {
     );
   }
 
+  async getCustomerUUID(uuid: string) {
+    const account = await this.prisma.account.findUnique({
+      where: { uuid },
+    });
+    return account.customerUUID;
+  }
+
   async getListEmployees(customerUUID: string) {
-    const data = await this.prisma.customer.findUnique({
+    const customer = await this.prisma.customer.findUnique({
       where: { uuid: customerUUID },
       include: { employees: true },
     });
-    return data.employees.map((employee) => ({
+    return customer.employees.map((employee) => ({
       uuid: employee.uuid,
       name: employee.name,
       code: employee.code,

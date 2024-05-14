@@ -79,7 +79,7 @@ model Customer {
   code               String
   isBusiness         Boolean
   source             Int?
-  city               Int?
+  city               String?
   district           String?
   detailAddress      String?
   description        String?

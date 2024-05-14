@@ -34,11 +34,11 @@ export class TestController {
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     const dto: MailerDTO = {
-      from: { name: 'Thanh', address: 'nhatthanh2002chuyen@gmail.com' },
-      recipients: [{ name: 'Ngọ', address: 'ngo.lehuy719@hcmut.edu.vn' }],
+      from: { name: 'Thanh', address: 'tnt.ccs.system@gmail.com' },
+      recipients: [{ name: 'Thanh2', address: 'thanh.bui2002bt@hcmut.edu.vn' }],
       subject: 'Nothing',
       html: '<p>Hi %name1%,</p><p>I am really sorry for disturbing you.</p><p>Best regards,</p><p>%name2%</p>',
-      placeholderReplacements: { name1: 'NGỌ', name2: 'THANH' },
+      placeholderReplacements: { name1: 'HIHI', name2: 'THANH' },
       attachments: files,
     };
     return this.emailService.sendEmail(dto);

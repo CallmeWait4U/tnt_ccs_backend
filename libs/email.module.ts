@@ -99,7 +99,8 @@ export class EmailService {
       useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get<string>('MAIL_HOST'),
-          secure: false,
+          service: 'gmail',
+          secure: true,
           auth: {
             user: config.get<string>('MAIL_USER'),
             pass: config.get<string>('MAIL_PASSWORD'),

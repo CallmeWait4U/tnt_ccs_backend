@@ -51,7 +51,7 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand, string> {
       domain: command.domain,
       name: command.name,
     };
-    // await this.emailService.sendWelcomeEmail(mailerDto);
+    await this.emailService.sendWelcomeEmail(mailerDto);
     return result;
   }
 }
