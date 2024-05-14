@@ -62,6 +62,7 @@ export class AuthController {
     const command = new SignOutCommand({
       uuid: user.uuid,
       tenantId: user.tenantId,
+      domain: user.domain,
     });
     await this.commandBus.execute(command);
   }

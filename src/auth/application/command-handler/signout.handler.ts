@@ -21,6 +21,6 @@ export class SignOutHandler implements ICommandHandler<SignOutCommand, void> {
     );
     this.amqpService.publish('exchange1', 'handle.logout', model.accessToken);
     const account = this.authenticationDomain.signOut(model);
-    await this.authenticationRepository.updateAccount(account);
+    await this.authenticationRepository.updateAccount(account, command.domain);
   }
 }

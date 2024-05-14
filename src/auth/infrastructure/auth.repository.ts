@@ -30,6 +30,7 @@ export class AuthRepository {
 
   async updateAccount(
     account: AccountModel,
+    domain: string,
     signIn?: boolean,
   ): Promise<SignInResult | { accessToken: string; refreshToken: string }> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
