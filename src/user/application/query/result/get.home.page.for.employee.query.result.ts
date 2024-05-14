@@ -16,6 +16,9 @@ export class TaskForEmployee {
 
   @Expose()
   endDate: Date;
+
+  @Expose()
+  activityUUID: string;
 }
 
 export class GetHomePageForEmployeeResult implements IQueryResult {
