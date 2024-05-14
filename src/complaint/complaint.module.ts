@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RmqModule } from 'libs/rabbitmq.module';
-import { CreateActivityComplaintHandler } from './application/command-handler/create.activity,complaint.handler';
+import { CreateActivityComplaintHandler } from './application/command-handler/create.activity.complaint.handler';
 import { CreateComplaintHandler } from './application/command-handler/create.complaint.handler';
 import { CreateTypeComplaintHandler } from './application/command-handler/create.typeComplaint.handler';
 import { DeleteActivityComplaintHandler } from './application/command-handler/delete.activity.complaint.handler';

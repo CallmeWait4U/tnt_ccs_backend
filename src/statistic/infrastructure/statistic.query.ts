@@ -12,6 +12,10 @@ import {
   CountCustomerPhaseItem,
 } from '../application/query/result/count.customer.phase.by.month.query.result';
 import {
+  CountCustomersByLocationItem,
+  CountCustomersByLocationResult,
+} from '../application/query/result/count.customers.by.location.query.result';
+import {
   CountCustomersPerPhaseItem,
   CountCustomersPerPhaseResult,
 } from '../application/query/result/count.customers.per.phase.query.result';
@@ -100,6 +104,48 @@ export class StatisticQuery {
         return item;
       }),
       total,
+    };
+  }
+
+  async countCustomersByLocation(
+    tenantId: string,
+  ): Promise<CountCustomersByLocationResult> {
+    const [data, total] = await Promise.all([
+      this.prisma.customer.findMany({ where: { tenantId } }),
+      this.prisma.customer.count({ where: { tenantId } }),
+    ]);
+    const cities: string[] = [];
+    const items: CountCustomersByLocationItem[] = [];
+    for (const i of data) {
+      if (i.city) {
+        if (cities.includes(i.city)) {
+          const idx = cities.indexOf(i.city);
+          items[idx].numCustomer++;
+        } else {
+          cities.push(i.city);
+          items.push({ city: i.city, numCustomer: 0 });
+        }
+      }
+    }
+    items.sort((a, b) => b.numCustomer - a.numCustomer);
+    return {
+      items:
+        items.length > 3
+          ? [
+              items[0],
+              items[1],
+              items[2],
+              {
+                city: 'other',
+                numCustomer:
+                  total -
+                  items[0].numCustomer -
+                  items[1].numCustomer -
+                  items[2].numCustomer,
+              },
+            ]
+          : items,
+      total: items.length > 3 ? 4 : items.length,
     };
   }
 
