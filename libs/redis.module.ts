@@ -36,13 +36,16 @@ export class RedisImplement {
   }
 
   async deleteSession(token: string, sid: string): Promise<void> {
-    const sids: string[] = JSON.parse(await this.redis.get(token));
-    const index = sids.indexOf(sid);
-    if (index > -1) sids.splice(index, 1);
-    if (sids.length > 0) {
-      await this.redis.set(token, JSON.stringify(sids));
-    } else {
-      await this.redis.del(token);
+    const result = (await this.redis.get(token)) as string;
+    if (result) {
+      const sids: string[] = JSON.parse(result);
+      const index = sids.indexOf(sid);
+      if (index > -1) sids.splice(index, 1);
+      if (sids.length > 0) {
+        await this.redis.set(token, JSON.stringify(sids));
+      } else {
+        await this.redis.del(token);
+      }
     }
   }
 }
