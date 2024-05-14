@@ -80,6 +80,7 @@ export class TaskQuery {
             ...i,
             customerName: i.customer.name,
             employeeName: i.employees.map((employee) => employee.name),
+            activityUUID: i.activityUUID,
           },
           { excludeExtraneousValues: true },
         );
