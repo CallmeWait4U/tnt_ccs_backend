@@ -310,8 +310,6 @@ export class StatisticQuery {
       let numPriceQuotes = 0;
       let numPriceQuotesConvertBill = 0;
       data.forEach((priceQuote) => {
-        console.log(priceQuote.createdDate);
-        console.log(listTimes[i]);
         if (
           priceQuote.createdDate.getTime() < listTimes[i].getTime() &&
           priceQuote.createdDate.getTime() > listTimes[i + 1].getTime()
