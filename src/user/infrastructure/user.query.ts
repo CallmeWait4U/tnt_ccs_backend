@@ -138,7 +138,11 @@ export class UserQuery {
         listTask: data.map((i) =>
           plainToClass(
             TaskForEmployee,
-            { ...i, customerName: i.customer.name },
+            {
+              ...i,
+              customerName: i.customer.name,
+              activityUUID: i.activityUUID,
+            },
             { excludeExtraneousValues: true },
           ),
         ),
