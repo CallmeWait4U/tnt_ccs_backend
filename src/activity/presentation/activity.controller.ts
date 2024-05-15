@@ -15,7 +15,7 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
 import { CreateActivityCommand } from '../application/activity/command/create.activity.command';
@@ -40,7 +40,7 @@ import { DeleteTaskDTO } from './dto/task/delete.task.dto';
 import { GetTasksByCustomer } from './dto/task/get.tasks.by.customer.dto';
 import { GetTasksDTO } from './dto/task/get.tasks.dto';
 import { ReadTaskDTO } from './dto/task/read.task.dto';
-import { SendEmailTaskDTO } from './dto/task/send.email.task.dto';
+// import { SendEmailTaskDTO } from './dto/task/send.email.task.dto';
 import { UpdateStatusTaskDTO } from './dto/task/update.status.task.dto';
 
 @ApiTags('activities')
@@ -155,9 +155,10 @@ export class ActivityController {
   }
 
   @Post('/tasks/sendEmail')
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('files'))
   async sendEmailTask(
-    @Body() body: SendEmailTaskDTO,
+    @Body() body: any,
     @UploadedFiles() files: Express.Multer.File[],
     @GetUser() user: User,
   ) {
