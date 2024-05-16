@@ -56,7 +56,7 @@ export class BillController {
     return await this.queryBus.execute(query);
   }
 
-  @Get('/getByCustomer')
+  @Get('/selector/byCustomer')
   async listBillsByCustomer(
     @Query() q: GetBillsByCustomerDTO,
     @GetUser() user: User,

@@ -65,7 +65,7 @@ export class PriceQuoteRequestController {
     return await this.queryBus.execute(query);
   }
 
-  @Get('/getByCustomer')
+  @Get('/selector/byCustomer')
   async getPriceQuoteByCustomer(
     @Query() q: GetPriceQuoteRequestByCustomerDTO,
     @GetUser() user: User,
