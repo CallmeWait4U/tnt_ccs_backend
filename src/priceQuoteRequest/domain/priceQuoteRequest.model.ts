@@ -28,5 +28,8 @@ export class PriceQuoteRequestModel {
   customerUUID: string;
 
   @Expose()
+  tenantId: string;
+
+  @Expose()
   products: ProductItemOfPriceQuoteRequestModel[];
 }

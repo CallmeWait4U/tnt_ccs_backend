@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CreatePriceQuoteHandler } from './application/command-handler/create.priceQuote.handler';
 import { DeletePriceQuoteHandler } from './application/command-handler/delete.priceQuote.handler';
 import { UpdatePriceQuoteHandler } from './application/command-handler/update.priceQuote.handler';
+import { GetPriceQuotesByCustomerHandler } from './application/query-handler/get.priceQuote.by.customer.handler';
 import { GetPriceQuotesHandler } from './application/query-handler/list.priceQuote.handler';
 import { ReadPriceQuoteHandler } from './application/query-handler/read.priceQuote.handler';
 import { StatisticPriceQuoteHandler } from './application/query-handler/statistic.priceQuote.handler';
@@ -14,6 +15,7 @@ import { PriceQuoteController } from './presentation/priceQuote.controller';
 
 const application = [
   GetPriceQuotesHandler,
+  GetPriceQuotesByCustomerHandler,
   ReadPriceQuoteHandler,
   CreatePriceQuoteHandler,
   UpdatePriceQuoteHandler,

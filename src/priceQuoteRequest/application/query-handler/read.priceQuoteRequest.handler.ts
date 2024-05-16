@@ -15,6 +15,9 @@ export class ReadPriceQuoteRequestHandler
   async execute(
     query: ReadPriceQuoteRequestQuery,
   ): Promise<ReadPriceQuoteRequestResult> {
-    return await this.priceQuoteRequestQuery.readPriceQuoteRequest(query.uuid);
+    return await this.priceQuoteRequestQuery.readPriceQuoteRequest(
+      query.uuid,
+      query.tenantId,
+    );
   }
 }

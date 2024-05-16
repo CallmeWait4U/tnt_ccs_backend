@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { Customer, StatusPriceQuoteRequest } from '@prisma/client';
 import { PrismaService } from 'libs/database.module';
 import { PriceQuoteRequestModel } from '../domain/priceQuoteRequest.model';
 import { PriceQuoteRequestFactory } from './priceQuoteRequest.factory';
@@ -25,6 +26,7 @@ export class PriceQuoteRequestRepository {
     if (products.length > 0) {
       await Promise.all(
         products.map(async (item) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { uuid, ...data } = item;
           await this.prisma.productPriceQuoteRequest.create({
             data: {
@@ -70,6 +72,7 @@ export class PriceQuoteRequestRepository {
         products.map(async (item) => {
           if (item.uuid)
             if (!listProductCurrentUUIDS.includes(item.uuid)) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { uuid, ...data } = item;
               await this.prisma.productPriceQuoteRequest.create({
                 data: {
@@ -95,6 +98,7 @@ export class PriceQuoteRequestRepository {
                   },
                 });
               if (currentProduct?.id) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { uuid, ...dataUpdate } = item;
                 await this.prisma.productPriceQuoteRequest.update({
                   data: { ...dataUpdate },
@@ -107,6 +111,13 @@ export class PriceQuoteRequestRepository {
     }
 
     return uuid;
+  }
+
+  async updateStatus(uuid: string, tenantId: string): Promise<void> {
+    await this.prisma.priceQuoteRequest.update({
+      where: { uuid, tenantId },
+      data: { status: StatusPriceQuoteRequest.SENT },
+    });
   }
 
   async delete(models: PriceQuoteRequestModel[]): Promise<string[]> {
@@ -139,7 +150,14 @@ export class PriceQuoteRequestRepository {
     );
   }
 
-  async count(): Promise<number> {
-    return await this.prisma.priceQuoteRequest.count();
+  async getCustomerByAccount(
+    uuid: string,
+    tenantId: string,
+  ): Promise<Customer> {
+    const data = await this.prisma.account.findUnique({
+      where: { uuid, tenantId },
+      include: { customer: true },
+    });
+    return data.customer;
   }
 }

@@ -4,6 +4,7 @@ import {
   IsDateString,
   IsNotEmpty,
   IsNumberString,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -24,8 +25,8 @@ class ProductItem {
   fixedPrice: number;
 }
 export class UpdateBillDTO {
-  @ApiProperty({ example: 'NV-00001', type: String })
-  @IsNotEmpty()
+  @ApiProperty({ required: false, example: '', type: String })
+  @IsOptional()
   @IsString()
   code: string;
 

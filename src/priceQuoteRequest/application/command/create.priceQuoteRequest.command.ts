@@ -9,8 +9,9 @@ export class CreatePriceQuoteRequestCommand implements ICommand {
   createdDate: Date;
   status: StatusPriceQuoteRequest;
   sentDate: Date;
-  customerUUID: string;
+  accountCustomerUUID: string;
   products: ProductItem[];
+  tenantId: string;
 
   constructor(data: Partial<CreatePriceQuoteRequestCommand>) {
     Object.assign(this, data);

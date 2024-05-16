@@ -299,6 +299,7 @@ export class TestService {
 
     // Tạo Account cho Khách hàng
     const dataAccountCustomer: CreateAccountForCustomerCommand[] = [];
+    const accountCustomers: { uuid: string; tenantId: string }[] = [];
     const customers = faker.helpers.arrayElements(customerUUID, {
       min: 12,
       max: 12,
@@ -313,7 +314,8 @@ export class TestService {
       );
     }
     for (const item of dataAccountCustomer) {
-      await this.commandBus.execute(item);
+      const uuid = await this.commandBus.execute(item);
+      accountCustomers.push({ uuid, tenantId: item.tenantId });
     }
     console.log('Đã tạo Tài khoản cho Khách hàng');
 
@@ -401,13 +403,15 @@ export class TestService {
           days: 10,
           refDate: new Date(),
         });
+        const accountCustomer = faker.helpers.arrayElement(accountCustomers);
         dataPriceQuoteRequest.push(
           new CreatePriceQuoteRequestCommand({
             code: 'YCBG-' + i.toString().padStart(8, '0') + '-' + code,
             createdDate: createdDate,
             status: faker.helpers.arrayElement(['SENT', 'UNSENT']),
             sentDate: faker.date.future({ refDate: createdDate }),
-            customerUUID: customer.uuid,
+            accountCustomerUUID: accountCustomer.uuid,
+            tenantId: accountCustomer.tenantId,
             products: faker.helpers.arrayElements(products).map((product) => {
               return {
                 uuid: product.uuid,

@@ -19,12 +19,8 @@ class ProductItem {
   @IsNumberString()
   quantity: number;
 }
-export class CreatePriceQuoteRequestDTO {
-  @ApiProperty({ example: 'NV-00001', type: String })
-  @IsNotEmpty()
-  @IsString()
-  code: string;
 
+export class CreatePriceQuoteRequestDTO {
   @ApiProperty({ example: new Date('01-01-1998'), type: Date })
   @IsNotEmpty()
   @IsDateString()
@@ -42,11 +38,6 @@ export class CreatePriceQuoteRequestDTO {
   @IsOptional()
   @IsDateString()
   sentDate: Date;
-
-  @ApiProperty({ example: 'uuid', type: String })
-  @IsNotEmpty()
-  @IsString()
-  customerUUID: string;
 
   @ApiProperty({
     example: [{ uuid: 'uuid', quantity: 1 }],

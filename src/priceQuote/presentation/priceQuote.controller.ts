@@ -19,11 +19,13 @@ import { GetUser } from 'libs/getuser.decorator';
 import { CreatePriceQuoteCommand } from '../application/command/create.priceQuote.command';
 import { DeletePriceQuoteCommand } from '../application/command/delete.priceQuote.command';
 import { UpdatePriceQuoteCommand } from '../application/command/update.priceQuote.command';
+import { GetPriceQuotesByCustomerQuery } from '../application/query/get.priceQuote.by.customer.query';
 import { GetPriceQuotesQuery } from '../application/query/list.priceQuote.query';
 import { ReadPriceQuoteQuery } from '../application/query/read.priceQuote.query';
 import { StatisticPriceQuoteQuery } from '../application/query/statistic.priceQuote.query';
 import { CreatePriceQuoteDTO } from './dto/create.priceQuote.dto';
 import { DeletePriceQuoteDTO } from './dto/delete.priceQuote.dto';
+import { GetPriceQuotesByCustomerDTO } from './dto/get.priceQuote.by.customer.dto';
 import { GetPriceQuotesDTO } from './dto/list.priceQuote.dto';
 import { ReadPriceQuoteDTO } from './dto/read.priceQuote.dto';
 import { UpdatePriceQuoteDTO } from './dto/update.priceQuote.dto';
@@ -66,6 +68,18 @@ export class PriceQuoteController {
       customerUUID = user.uuid;
     }
     const query = new ReadPriceQuoteQuery(q.uuid, user.tenantId, customerUUID);
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/getByCustomer')
+  async getPriceQuoteByCustomer(
+    @Query() q: GetPriceQuotesByCustomerDTO,
+    @GetUser() user: User,
+  ) {
+    const query = new GetPriceQuotesByCustomerQuery(
+      q.customerUUID,
+      user.tenantId,
+    );
     return await this.queryBus.execute(query);
   }
 

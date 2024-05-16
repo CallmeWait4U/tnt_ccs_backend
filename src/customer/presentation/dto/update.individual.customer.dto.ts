@@ -15,6 +15,11 @@ export class UpdateIndividualCustomerDTO {
   @IsString()
   uuid: string;
 
+  @ApiProperty({ required: false, example: 'KH-22222', type: String })
+  @IsOptional()
+  @IsString()
+  code: string;
+
   @ApiProperty({ required: false, example: 1, type: Number })
   @IsOptional()
   @IsNumber()

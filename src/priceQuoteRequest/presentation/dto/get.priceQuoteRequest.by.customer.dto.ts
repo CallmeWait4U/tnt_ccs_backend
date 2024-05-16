@@ -1,14 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class GetTasksByCustomer {
+export class GetPriceQuoteRequestByCustomerDTO {
   @ApiProperty({ example: 'customerUUID', type: String })
   @IsNotEmpty()
   @IsString()
   customerUUID: string;
-
-  @ApiProperty({ example: true, type: Boolean })
-  @IsNotEmpty()
-  // @IsBoolean()
-  history: boolean;
 }

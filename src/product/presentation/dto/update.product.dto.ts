@@ -12,8 +12,8 @@ export class UpdateProductDTO {
   @IsString()
   name: string;
 
-  @ApiProperty({ example: 'NV-00001', type: String })
-  @IsNotEmpty()
+  @ApiProperty({ required: false, example: '', type: String })
+  @IsOptional()
   @IsString()
   code: string;
 

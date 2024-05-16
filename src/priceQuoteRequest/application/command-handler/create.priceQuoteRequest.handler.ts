@@ -17,8 +17,15 @@ export class CreatePriceQuoteRequestHandler
   private readonly priceQuoteRequestDomain: PriceQuoteRequestDomain;
 
   async execute(command: CreatePriceQuoteRequestCommand): Promise<string> {
-    const model =
-      this.priceQuoteRequestFactory.createPriceQuoteRequestModel(command);
+    const customer =
+      await this.priceQuoteRequestRepository.getCustomerByAccount(
+        command.accountCustomerUUID,
+        command.tenantId,
+      );
+    const model = this.priceQuoteRequestFactory.createPriceQuoteRequestModel({
+      ...command,
+      customerUUID: customer.uuid,
+    });
     const priceQuoteRequest = await this.priceQuoteRequestDomain.create(model);
 
     return await this.priceQuoteRequestRepository.create(priceQuoteRequest);

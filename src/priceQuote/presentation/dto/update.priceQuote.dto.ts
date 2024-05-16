@@ -25,7 +25,7 @@ class ProductItem {
   negotiatedPrice: number;
 }
 export class UpdatePriceQuoteDTO {
-  @ApiProperty({ example: 'NV-00001', type: String })
+  @ApiProperty({ example: '', type: String })
   @IsNotEmpty()
   @IsString()
   code: string;

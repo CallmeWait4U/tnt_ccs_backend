@@ -3,6 +3,7 @@ import { Gender, StatusCustomerAccount } from '@prisma/client';
 
 export class UpdateCustomerCommand implements ICommand {
   uuid: string;
+  code: string;
   source: number;
   city: string;
   district: string;

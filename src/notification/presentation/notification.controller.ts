@@ -37,8 +37,8 @@ export class NotificationController {
 
   @RabbitRPC({
     exchange: 'exchange1',
-    routingKey: 'notify.conplaint',
-    queue: 'tnt.ccs-notify.conplaint',
+    routingKey: 'notify.complaint',
+    queue: 'tnt.ccs-notify.complaint',
   })
   async notifyComplaint(payload: CreateNotificationDTO) {
     console.log(payload);

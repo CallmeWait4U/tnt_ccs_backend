@@ -19,12 +19,8 @@ class ProductItem {
   @IsNumberString()
   quantity: number;
 }
-export class UpdatePriceQuoteRequestDTO {
-  @ApiProperty({ example: 'NV-00001', type: String })
-  @IsNotEmpty()
-  @IsString()
-  code: string;
 
+export class UpdatePriceQuoteRequestDTO {
   @ApiProperty({ example: new Date('01-01-1998'), type: Date })
   @IsNotEmpty()
   @IsDateString()
