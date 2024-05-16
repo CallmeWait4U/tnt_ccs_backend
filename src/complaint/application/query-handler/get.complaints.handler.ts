@@ -14,7 +14,6 @@ export class GetComplaintsHandler
       query.tenantId,
       query.offset,
       query.limit,
-      query.customerUUID,
       query.searchModel,
     );
   }

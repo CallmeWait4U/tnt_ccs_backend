@@ -32,7 +32,6 @@ export class ComplaintQuery {
     tenantId: string,
     offset: number,
     limit: number,
-    accountCustomerUUID?: string,
     searchModel?: any,
   ): Promise<GetComplaintsResult> {
     const conditions = [];
@@ -74,12 +73,89 @@ export class ComplaintQuery {
       }
     }
     conditions.push({ tenantId });
-    if (accountCustomerUUID) {
-      const account = await this.prisma.account.findUnique({
-        where: { uuid: accountCustomerUUID, tenantId },
-      });
-      conditions.push({ customerUUID: account.customerUUID });
+    const [data, total] = await Promise.all([
+      this.prisma.complaint.findMany({
+        skip: Number(offset),
+        take: Number(limit),
+        where: { AND: conditions },
+        include: {
+          customer: true,
+          typeComplaint: true,
+          employees: true,
+          listStatus: true,
+        },
+      }),
+      this.prisma.complaint.count({ where: { AND: conditions } }),
+    ]);
+    return {
+      items: data.map((i) => {
+        return plainToClass(
+          ComplaintItem,
+          {
+            ...i,
+            status: i.listStatus.slice(-1)[0].status,
+            customerName: i.customer.name,
+            customerCode: i.customer.code,
+            typeComplaintName: i.typeComplaint.name,
+            employeeName: i.employees.map((e) => e.name),
+          },
+          { excludeExtraneousValues: true },
+        );
+      }),
+      total,
+    };
+  }
+
+  async getComplaintsByCustomer(
+    tenantId: string,
+    offset: number,
+    limit: number,
+    accountCustomerUUID: string,
+    searchModel?: any,
+  ): Promise<GetComplaintsResult> {
+    const conditions = [];
+    const search: { [key: string]: any } = searchModel
+      ? JSON.parse(searchModel)
+      : undefined;
+    if (search) {
+      for (const [prop, item] of Object.entries(search)) {
+        const obj = {};
+        if (item.isCustom) {
+          if (prop === 'customerName') {
+            const { value } = this.util.buildSearch(item);
+            conditions.push({
+              customer: {
+                OR: [
+                  { business: { name: value } },
+                  { individual: { name: value } },
+                ],
+              },
+            });
+          }
+          if (prop === 'customerCode') {
+            const { value } = this.util.buildSearch(item);
+            conditions.push({ customer: { code: value } });
+          }
+          if (prop === 'typeComplaintName') {
+            const { value } = this.util.buildSearch(item);
+            conditions.push({ typeComplaint: { name: value } });
+          }
+          if (prop === 'employeeName') {
+            const { value } = this.util.buildSearch(item);
+            conditions.push({ employee: { some: { name: value } } });
+          }
+        } else {
+          const { value } = this.util.buildSearch(item);
+          obj[prop] = value;
+          conditions.push(obj);
+        }
+      }
     }
+    const account = await this.prisma.account.findUnique({
+      where: { uuid: accountCustomerUUID, tenantId },
+    });
+    conditions.push({ tenantId });
+    conditions.push({ customerUUID: account.customerUUID });
     const [data, total] = await Promise.all([
       this.prisma.complaint.findMany({
         skip: Number(offset),

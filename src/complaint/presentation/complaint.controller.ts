@@ -26,6 +26,7 @@ import { DeleteTypeComplaintCommand } from '../application/command/delete.typeCo
 import { UpdateStatusComplaintCommand } from '../application/command/update.status.complaint.command';
 import { UpdateTypeComplaintCommand } from '../application/command/update.typeComplaint.command';
 import { GetActivitiesComplaintQuery } from '../application/query/get.activities.complaint.query';
+import { GetComplaintsByCustomerQuery } from '../application/query/get.complaints.by.customer.query';
 import { GetComplaintsQuery } from '../application/query/get.complaints.query';
 import { GetSelectorTypeQuery } from '../application/query/get.selector.type.query';
 import { ReadComplaintQuery } from '../application/query/read.complaint.query';
@@ -54,23 +55,29 @@ export class ComplaintController {
 
   @Get('/all')
   async getComplaints(@Query() q: GetComplaintsDTO, @GetUser() user: User) {
-    let customerUUID;
-    if (user.type === 'CUSTOMER') {
-      // return new HttpException(
-      //   "You don't have permission to access this resource",
-      //   HttpStatus.FORBIDDEN,
-      // );
-      customerUUID = user.uuid;
-    } else {
-      customerUUID = undefined;
-    }
     const offset = !q.offset || q.offset < 0 ? 0 : q.offset;
     const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
     const query = new GetComplaintsQuery(
       user.tenantId,
       offset,
       limit,
-      customerUUID,
+      q.searchModel,
+    );
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/getByCustomer')
+  async getComplaintsByCustomer(
+    @Query() q: GetComplaintsDTO,
+    @GetUser() user: User,
+  ) {
+    const offset = !q.offset || q.offset < 0 ? 0 : q.offset;
+    const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
+    const query = new GetComplaintsByCustomerQuery(
+      user.tenantId,
+      offset,
+      limit,
+      user.uuid,
       q.searchModel,
     );
     return await this.queryBus.execute(query);

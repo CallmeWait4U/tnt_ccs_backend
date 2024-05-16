@@ -1,10 +1,11 @@
 import { IQuery } from '@nestjs/cqrs';
 
-export class GetComplaintsQuery implements IQuery {
+export class GetComplaintsByCustomerQuery implements IQuery {
   constructor(
     readonly tenantId: string,
     readonly offset: number,
     readonly limit: number,
+    readonly accountUUID: string,
     readonly searchModel?: any,
   ) {}
 }

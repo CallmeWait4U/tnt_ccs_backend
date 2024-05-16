@@ -10,6 +10,7 @@ import { DeleteTypeComplaintHandler } from './application/command-handler/delete
 import { UpdateStatusComplaintHandler } from './application/command-handler/update.status.complaint.handler';
 import { UpdateTypeComplaintHandler } from './application/command-handler/update.typeComplaint.handler';
 import { GetActivitiesComplaintHandler } from './application/query-handler/get.activities.complaint.handler';
+import { GetComplaintsByCustomerHandler } from './application/query-handler/get.complaints.by.customer.handler';
 import { GetComplaintsHandler } from './application/query-handler/get.complaints.handler';
 import { GetSelectorTypeHandler } from './application/query-handler/get.selector.type.handler';
 import { ReadComplaintHandler } from './application/query-handler/read.complaint.handler';
@@ -30,6 +31,7 @@ const application = [
   GetComplaintsHandler,
   ReadComplaintHandler,
   GetSelectorTypeHandler,
+  GetComplaintsByCustomerHandler,
   ReadTypeComplaintHandler,
   UpdateStatusComplaintHandler,
   UpdateTypeComplaintHandler,
