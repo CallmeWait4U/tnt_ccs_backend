@@ -126,10 +126,11 @@ export class TaskQuery {
     employeeUUID: string,
     tenantId: string,
   ): Promise<Employee> {
-    const employee = await this.prisma.employee.findUnique({
+    const account = await this.prisma.account.findUnique({
       where: { uuid: employeeUUID, tenantId },
+      include: { employee: true },
     });
-    return employee;
+    return account.employee;
   }
 
   async getInfoCustomer(
