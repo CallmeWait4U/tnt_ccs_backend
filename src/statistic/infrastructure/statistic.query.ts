@@ -1,7 +1,18 @@
 import { Inject } from '@nestjs/common';
+import { StatusComplaint, StatusTask } from '@prisma/client';
 import { OptionsStatisticEnum } from 'interfaces/options.statistic.enum';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
+import {
+  CountActivitiesItem,
+  CountActivitiesResult,
+  CountStatusActivity,
+} from '../application/query/result/count.activities.query.result';
+import {
+  CountComplaintItem,
+  CountComplaintResult,
+  CountStatusComplaint,
+} from '../application/query/result/count.complaint.query.result';
 import {
   CountCustomerFollowingSourceItem,
   CountCustomerFollowingSourceResult,
@@ -334,6 +345,73 @@ export class StatisticQuery {
           time: listTimes[i].getFullYear() + 1,
         });
       }
+    }
+    return { items, total: items.length };
+  }
+
+  async countComplaint(tenantId: string): Promise<CountComplaintResult> {
+    const dataTypeComplaint = await this.prisma.typeComplaint.findMany({
+      where: { tenantId },
+    });
+    const items: CountComplaintItem[] = [];
+    for (const typeComplaint of dataTypeComplaint) {
+      const classification: CountStatusComplaint[] = [
+        { numComplaint: 0, status: StatusComplaint.PENDING },
+        { numComplaint: 0, status: StatusComplaint.PROCESSING },
+        { numComplaint: 0, status: StatusComplaint.REPROCESS },
+        { numComplaint: 0, status: StatusComplaint.SOLVED },
+      ];
+      const complaints = await this.prisma.complaint.findMany({
+        where: { typeComplaintUUID: typeComplaint.uuid },
+        include: { listStatus: { orderBy: { date: 'asc' } } },
+      });
+      complaints.forEach((complaint) => {
+        if (complaint.listStatus[0].status === StatusComplaint.PENDING) {
+          classification[0].numComplaint++;
+        } else if (
+          complaint.listStatus[0].status === StatusComplaint.PROCESSING
+        ) {
+          classification[1].numComplaint++;
+        } else if (
+          complaint.listStatus[0].status === StatusComplaint.REPROCESS
+        ) {
+          classification[2].numComplaint++;
+        } else {
+          classification[3].numComplaint++;
+        }
+      });
+      items.push({
+        classification,
+        typeComplaintName: typeComplaint.name,
+      });
+    }
+    return { items, total: items.length };
+  }
+
+  async countActivities(tenantId: string): Promise<CountActivitiesResult> {
+    const dataActivities = await this.prisma.activity.findMany({
+      where: { tenantId },
+    });
+    const items: CountActivitiesItem[] = [];
+    for (const activity of dataActivities) {
+      const completedTask = await this.prisma.task.findMany({
+        where: { activityUUID: activity.uuid, status: StatusTask.COMPLETED },
+      });
+      const inprogressTask = await this.prisma.task.findMany({
+        where: { activityUUID: activity.uuid, status: StatusTask.COMPLETED },
+      });
+      const overdueTask = await this.prisma.task.findMany({
+        where: { activityUUID: activity.uuid, status: StatusTask.COMPLETED },
+      });
+      const classification: CountStatusActivity[] = [
+        { numTask: completedTask.length, status: StatusTask.COMPLETED },
+        { numTask: inprogressTask.length, status: StatusTask.INPROGRESS },
+        { numTask: overdueTask.length, status: StatusTask.OVERDUE },
+      ];
+      items.push({
+        classification,
+        activityName: activity.name,
+      });
     }
     return { items, total: items.length };
   }

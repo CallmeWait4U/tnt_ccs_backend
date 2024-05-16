@@ -4,6 +4,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
+import { CountActivitiesQuery } from '../application/query/count.activities.query';
+import { CountComplaintQuery } from '../application/query/count.complaint.query';
 import { CountCustomerFollowingSourceQuery } from '../application/query/count.customer.following.source.query';
 import { CountCustomerPhaseByMonthQuery } from '../application/query/count.customer.phase.by.month.query';
 import { CountCustomersByLocationQuery } from '../application/query/count.customers.by.location.query';
@@ -66,6 +68,18 @@ export class StatisticController {
     @GetUser() user: User,
   ) {
     const query = new CountPriceQuoteByMonthQuery(user.tenantId, q.option);
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/complaints')
+  async countComplaint(@GetUser() user: User) {
+    const query = new CountComplaintQuery(user.tenantId);
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/activities')
+  async countActivities(@GetUser() user: User) {
+    const query = new CountActivitiesQuery(user.tenantId);
     return await this.queryBus.execute(query);
   }
 }

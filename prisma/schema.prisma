@@ -470,6 +470,7 @@ enum StatusComplaint {
   PENDING    @map("Chưa xử lý")
   PROCESSING @map("Đang xử lý")
   SOLVED     @map("Đã xử lý")
+  SATISFIED  @map("Hài lòng")
   REPROCESS  @map("Xử lý lại")
 }
 

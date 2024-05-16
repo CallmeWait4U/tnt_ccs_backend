@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { CountActivitiesHandler } from './application/query-handler/count.activities.handler';
+import { CountComplaintHandler } from './application/query-handler/count.complaint.handler';
 import { CountCustomerFollowingSourceHandler } from './application/query-handler/count.customer.following.source.handler';
 import { CountCustomersPerPhaseHandler } from './application/query-handler/count.customer.per.phase.handler';
 import { CountCustomerPhaseByMonthHandler } from './application/query-handler/count.customer.phase.by.month.handler';
@@ -17,6 +19,8 @@ const application = [
   CountCustomerPhaseByMonthHandler,
   CountPriceQuoteByMonthHandler,
   CountCustomersByLocationHandler,
+  CountComplaintHandler,
+  CountActivitiesHandler,
 ];
 
 const infrastructure = [StatisticQuery];
