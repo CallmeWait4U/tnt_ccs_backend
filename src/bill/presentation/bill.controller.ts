@@ -41,18 +41,15 @@ export class BillController {
 
   @Get('')
   async listBills(@Query() q: GetBillsDTO, @GetUser() user: User) {
-    let searchModel = q.searchModel || '{}';
-
-    if (user.type === 'CUSTOMER') {
-      searchModel = JSON.stringify({
-        ...JSON.parse(searchModel),
-        customerUUID: { isCustom: false, value: user.uuid, valueType: 'text' },
-      });
-    }
-
     const offset = !q.offset || q.offset < 0 ? 0 : q.offset;
     const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
-    const query = new GetBillsQuery(offset, limit, searchModel);
+    const query = new GetBillsQuery(
+      user.tenantId,
+      user.uuid,
+      offset,
+      limit,
+      q.searchModel,
+    );
     return await this.queryBus.execute(query);
   }
 

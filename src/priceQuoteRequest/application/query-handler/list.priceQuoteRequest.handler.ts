@@ -15,7 +15,12 @@ export class GetPriceQuoteRequestsHandler
   async execute(
     query: GetPriceQuoteRequestsQuery,
   ): Promise<GetPriceQuoteRequestsResult> {
+    const customer = await this.priceQuoteRequestQuery.getCustomerFromAccount(
+      query.accountUUID,
+      query.tenantId,
+    );
     return await this.priceQuoteRequestQuery.getPriceQuoteRequests(
+      customer.uuid,
       query.tenantId,
       query.offset,
       query.limit,

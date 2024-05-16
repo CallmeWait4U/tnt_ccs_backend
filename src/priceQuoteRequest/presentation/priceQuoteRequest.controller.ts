@@ -49,6 +49,7 @@ export class PriceQuoteRequestController {
     const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
     const query = new GetPriceQuoteRequestsQuery(
       user.tenantId,
+      user.uuid,
       offset,
       limit,
       q.searchModel,

@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { Customer } from '@prisma/client';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
@@ -24,13 +25,14 @@ export class PriceQuoteQuery {
 
   async getPriceQuotes(
     tenantId: string,
+    customerUUID: string,
     offset: number,
     limit: number,
     searchModel?: any,
   ): Promise<GetPriceQuotesResult> {
     const conditions = [];
     const search = searchModel ? JSON.parse(searchModel) : undefined;
-    conditions.push({ tenantId });
+    conditions.push({ tenantId }, { customerUUID });
     if (search) {
       for (const [prop, item] of Object.entries(search)) {
         const obj = {};
@@ -111,6 +113,17 @@ export class PriceQuoteQuery {
       return res;
     }
     return {} as ReadPriceQuoteResult;
+  }
+
+  async getCustomerFromAccount(
+    uuid: string,
+    tenantId: string,
+  ): Promise<Customer> {
+    const data = await this.prisma.account.findUnique({
+      where: { uuid, tenantId },
+      include: { customer: true },
+    });
+    return data.customer;
   }
 
   async getPriceQuoteByCustomer(

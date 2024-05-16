@@ -23,6 +23,7 @@ export class PriceQuoteRequestQuery {
   private readonly util: UtilityImplement;
 
   async getPriceQuoteRequests(
+    customerUUID: string,
     tenantId: string,
     offset: number,
     limit: number,
@@ -40,7 +41,7 @@ export class PriceQuoteRequestQuery {
         conditions.push(obj);
       }
     }
-    conditions.push({ tenantId });
+    conditions.push({ tenantId }, { customerUUID });
     const [data, total] = await Promise.all([
       this.prisma.priceQuoteRequest.findMany({
         skip: Number(offset),
@@ -117,6 +118,17 @@ export class PriceQuoteRequestQuery {
         }),
       ),
     };
+  }
+
+  async getCustomerFromAccount(
+    uuid: string,
+    tenantId: string,
+  ): Promise<Customer> {
+    const data = await this.prisma.account.findUnique({
+      where: { uuid, tenantId },
+      include: { customer: true },
+    });
+    return data.customer;
   }
 
   async getCustomer(uuid: string, tenantId: string): Promise<Customer> {

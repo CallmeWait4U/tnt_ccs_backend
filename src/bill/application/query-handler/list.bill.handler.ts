@@ -10,7 +10,13 @@ export class GetBillsHandler
   constructor(private readonly billQuery: BillQuery) {}
 
   async execute(query: GetBillsQuery): Promise<GetBillsResult> {
+    const customer = await this.billQuery.getCustomerFromAccount(
+      query.accountUUID,
+      query.tenantId,
+    );
     return await this.billQuery.getBills(
+      query.tenantId,
+      customer.uuid,
       query.offset,
       query.limit,
       query.searchModel,

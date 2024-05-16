@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { Customer } from '@prisma/client';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
@@ -22,13 +23,15 @@ export class BillQuery {
   private readonly util: UtilityImplement;
 
   async getBills(
+    tenantId: string,
+    customerUUID: string,
     offset: number,
     limit: number,
     searchModel?: any,
   ): Promise<GetBillsResult> {
     const conditions = [];
     const search = searchModel ? JSON.parse(searchModel) : undefined;
-
+    conditions.push({ tenantId }, { customerUUID });
     if (search) {
       for (const [prop, item] of Object.entries(search)) {
         const obj = {};
@@ -142,5 +145,16 @@ export class BillQuery {
       return res;
     }
     return {} as ReadBillResult;
+  }
+
+  async getCustomerFromAccount(
+    uuid: string,
+    tenantId: string,
+  ): Promise<Customer> {
+    const data = await this.prisma.account.findUnique({
+      where: { uuid, tenantId },
+      include: { customer: true },
+    });
+    return data.customer;
   }
 }
