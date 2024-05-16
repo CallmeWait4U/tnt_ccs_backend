@@ -6,12 +6,16 @@ export class CompanyQuery {
   @Inject()
   private readonly prisma: PrismaService;
   async listCompany(): Promise<ListCompanyResult> {
-    return (await this.prisma.tenant.findMany({
+    const data = await this.prisma.tenant.findMany({
       select: {
         name: true,
         uuid: true,
         domain: true,
       },
-    })) as unknown as ListCompanyResult;
+    });
+    const result = new ListCompanyResult();
+    result.items = data;
+    result.total = data.length;
+    return result;
   }
 }
