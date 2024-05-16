@@ -5,8 +5,12 @@ import { DeleteEpmloyeeHandler } from './application/activity/command-handler/de
 import { UpdateActivityHandler } from './application/activity/command-handler/update.activity.handler';
 import { GetActivitiesHandler } from './application/activity/query-handler/get.activities.handler';
 import { ReadActivityHandler } from './application/activity/query-handler/read.activity.handler';
+import { CreateAutoTaskHandler } from './application/task/command-handler/create.auto.task.handler';
 import { CreateTaskHandler } from './application/task/command-handler/create.task.handler';
 import { DeleteTaskHandler } from './application/task/command-handler/delete.task.handler';
+import { SendEmailTaskHandler } from './application/task/command-handler/send.email.task.handler';
+import { UpdateStatusTaskHandler } from './application/task/command-handler/update.status.task.handler';
+import { GetTasksByCustomerHandler } from './application/task/query-handler/get.tasks.by.customer.handler';
 import { GetTasksHandler } from './application/task/query-handler/get.tasks.handler';
 import { ReadTaskHandler } from './application/task/query-handler/read.task.handler';
 import { ActivityDomain } from './domain/activity/activity.domain';
@@ -29,6 +33,10 @@ const application = [
   ReadTaskHandler,
   CreateTaskHandler,
   DeleteTaskHandler,
+  GetTasksByCustomerHandler,
+  CreateAutoTaskHandler,
+  UpdateStatusTaskHandler,
+  SendEmailTaskHandler,
 ];
 
 const infrastructure = [

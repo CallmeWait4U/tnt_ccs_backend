@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { TypeAccount } from '@prisma/client';
+import { StatusCustomerAccount, TypeAccount } from '@prisma/client';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
@@ -73,7 +73,7 @@ export class AccountQuery {
             conditions.push(obj);
           }
         }
-        conditions.push({ hasAccount: true });
+        conditions.push({ hasAccount: StatusCustomerAccount.APPROVED });
       } else {
         for (const [prop, item] of Object.entries(search)) {
           const obj = {};
@@ -173,6 +173,106 @@ export class AccountQuery {
             ...i.employee,
             ...i.customer,
             ...i,
+          },
+          { excludeExtraneousValues: true },
+        );
+      }),
+      total,
+    };
+  }
+
+  async getApprovalCustomersList(
+    tenantId: string,
+    offset: number,
+    limit: number,
+    searchModel?: any,
+  ): Promise<GetAccountsResult> {
+    const conditions = [];
+    const search: { [key: string]: any } = searchModel
+      ? JSON.parse(searchModel)
+      : undefined;
+    conditions.push({ tenantId });
+    if (search) {
+      for (const [prop, item] of Object.entries(search)) {
+        const obj = {};
+        if (item.isCustom) {
+          if (prop === 'phaseName') {
+            const { value } = this.util.buildSearch(item);
+            conditions.push({ phase: { name: value } });
+          }
+        } else {
+          const { value } = this.util.buildSearch(item);
+          if (prop === 'name') {
+            obj['OR'] = [
+              {
+                business: {
+                  name: value,
+                },
+              },
+              {
+                individual: {
+                  name: value,
+                },
+              },
+            ];
+          } else if (prop === 'email') {
+            obj['OR'] = [
+              {
+                business: {
+                  representativeEmail: value,
+                },
+              },
+              {
+                individual: {
+                  email: value,
+                },
+              },
+            ];
+          } else {
+            obj[prop] = {
+              [item.valueType === 'text' ? 'contains' : 'equals']: value,
+            };
+          }
+          conditions.push(obj);
+        }
+      }
+    }
+    conditions.push({ hasAccount: StatusCustomerAccount.PENDING });
+    const [data, total] = await Promise.all([
+      this.prisma.customer.findMany({
+        skip: Number(offset),
+        take: Number(limit),
+        where: { AND: conditions },
+        include: {
+          phase: {
+            select: {
+              name: true,
+            },
+          },
+          business: true,
+          individual: true,
+        },
+        orderBy: [{ id: 'asc' }],
+      }),
+      this.prisma.customer.count({ where: { AND: conditions } }),
+    ]);
+    return {
+      items: data.map((i) => {
+        const propRelation = {
+          name: i.name,
+          email: i.isBusiness
+            ? i.business.representativeEmail
+            : i.individual.email,
+          phoneNumber: i.isBusiness
+            ? i.business.representativePhone
+            : i.individual.phoneNumber,
+        };
+        return plainToClass(
+          AccountCustomerItem,
+          {
+            ...i,
+            ...propRelation,
+            phaseName: i.phase.name,
           },
           { excludeExtraneousValues: true },
         );

@@ -56,7 +56,7 @@ export class ReadBusinessResult implements IQueryResult {
   district: string;
 
   @Expose()
-  city: number;
+  city: string;
 
   @Expose()
   representativeName: string;

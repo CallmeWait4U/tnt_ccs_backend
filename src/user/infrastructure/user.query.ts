@@ -12,6 +12,10 @@ import {
   GetInfoUserEmployeeResult,
   GetInfoUserIndividualResult,
 } from '../application/query/result/get.info.user.query.result';
+import {
+  SelectorEmployeeItem,
+  SelectorEmployeeResult,
+} from '../application/query/result/selector.employee.result';
 
 export class UserQuery {
   @Inject()
@@ -138,7 +142,11 @@ export class UserQuery {
         listTask: data.map((i) =>
           plainToClass(
             TaskForEmployee,
-            { ...i, customerName: i.customer.name },
+            {
+              ...i,
+              customerName: i.customer.name,
+              activityUUID: i.activityUUID,
+            },
             { excludeExtraneousValues: true },
           ),
         ),
@@ -151,6 +159,33 @@ export class UserQuery {
       numPriceQuotes: 0,
       listTask: [],
       totalTask: 0,
+    };
+  }
+
+  async getSelectorEmployee(
+    tenantId: string,
+    customerUUID?: string,
+  ): Promise<SelectorEmployeeResult> {
+    if (customerUUID) {
+      const data = await this.prisma.customer.findUnique({
+        where: { uuid: customerUUID, tenantId },
+        include: { employees: true },
+      });
+      return {
+        items: data.employees.map((employee) =>
+          plainToClass(SelectorEmployeeItem, employee, {
+            excludeExtraneousValues: true,
+          }),
+        ),
+      };
+    }
+    const data = await this.prisma.employee.findMany({ where: { tenantId } });
+    return {
+      items: data.map((i) =>
+        plainToClass(SelectorEmployeeItem, i, {
+          excludeExtraneousValues: true,
+        }),
+      ),
     };
   }
 }

@@ -3,6 +3,10 @@ import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
 import {
+  GetBillByCustomerItem,
+  GetBillByCustomerResult,
+} from '../application/query/result/list.bill.by.customer.result';
+import {
   BillItem,
   GetBillsResult,
 } from '../application/query/result/list.bill.query.result';
@@ -68,6 +72,24 @@ export class BillQuery {
           { excludeExtraneousValues: true },
         );
       }),
+      total,
+    };
+  }
+
+  async getBillsByCustomer(
+    customerUUID: string,
+    tenantId: string,
+  ): Promise<GetBillByCustomerResult> {
+    const [data, total] = await Promise.all([
+      this.prisma.bill.findMany({ where: { tenantId, customerUUID } }),
+      this.prisma.bill.count({ where: { tenantId, customerUUID } }),
+    ]);
+    return {
+      items: data.map((i) =>
+        plainToClass(GetBillByCustomerItem, i, {
+          excludeExtraneousValues: true,
+        }),
+      ),
       total,
     };
   }

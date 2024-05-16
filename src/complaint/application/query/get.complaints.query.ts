@@ -5,6 +5,7 @@ export class GetComplaintsQuery implements IQuery {
     readonly tenantId: string,
     readonly offset: number,
     readonly limit: number,
+    readonly customerUUID?: string,
     readonly searchModel?: any,
   ) {}
 }

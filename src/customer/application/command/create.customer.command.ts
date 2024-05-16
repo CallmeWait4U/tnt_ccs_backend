@@ -4,7 +4,7 @@ import { Gender, StatusCustomerAccount } from '@prisma/client';
 export class CreateCustomerCommand implements ICommand {
   isBusiness: boolean;
   source: number;
-  city: number;
+  city: string;
   district: string;
   detailAddress: string;
   description: string;

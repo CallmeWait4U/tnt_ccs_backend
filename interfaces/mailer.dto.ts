@@ -23,3 +23,11 @@ export type AutoMailDTO = {
     endDate: Date;
   }[];
 };
+
+export type WelcomeMailDTO = {
+  from?: Address;
+  recipients: Address[];
+  subject: string;
+  name: string;
+  domain: string;
+};

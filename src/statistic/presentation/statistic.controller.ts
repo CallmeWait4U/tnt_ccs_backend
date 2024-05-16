@@ -6,6 +6,7 @@ import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
 import { CountCustomerFollowingSourceQuery } from '../application/query/count.customer.following.source.query';
 import { CountCustomerPhaseByMonthQuery } from '../application/query/count.customer.phase.by.month.query';
+import { CountCustomersByLocationQuery } from '../application/query/count.customers.by.location.query';
 import { CountCustomersPerPhaseQuery } from '../application/query/count.customers.per.phase.query';
 import { CountPriceQuoteAndBillQuery } from '../application/query/count.priceQuote.bill.query';
 import { CountPriceQuoteByMonthQuery } from '../application/query/count.priceQuote.by.month.query';
@@ -29,6 +30,12 @@ export class StatisticController {
     @GetUser() user: User,
   ) {
     const query = new CountCustomersPerPhaseQuery(user.tenantId);
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/customersByLocation')
+  async countCustomersByLocation(@GetUser() user: User) {
+    const query = new CountCustomersByLocationQuery(user.tenantId);
     return await this.queryBus.execute(query);
   }
 

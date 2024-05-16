@@ -26,6 +26,10 @@ export class SignInHandler implements IQueryHandler<SignInQuery, SignInResult> {
       query.password,
       query.domain,
     );
-    return await this.authenticationRepository.updateAccount(model, true);
+    return await this.authenticationRepository.updateAccount(
+      model,
+      query.domain,
+      true,
+    );
   }
 }

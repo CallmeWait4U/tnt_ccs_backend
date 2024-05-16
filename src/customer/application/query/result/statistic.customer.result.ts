@@ -25,7 +25,7 @@ export class StatisticCustomerByPhaseResult {
 }
 export class StatisticCustomerByLocationResult {
   @Expose()
-  city: number;
+  city: string;
   @Expose()
   total: number;
 }

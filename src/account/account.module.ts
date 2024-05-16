@@ -3,8 +3,10 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CreateAccountForCustomerHandler } from './application/command-handler/create.account.for.customer.handler';
 import { CreateAccountHandler } from './application/command-handler/create.account.handler';
 import { DeleteAccountHandler } from './application/command-handler/delete.account.handler';
+import { RejectAccountForCustomerHandler } from './application/command-handler/reject.account.for.customer.handler';
 import { UpdateAccountHandler } from './application/command-handler/update.account.handler';
 import { GetAccountsHandler } from './application/query-handler/get.accounts.handler';
+import { GetApprovalCustomerListHandler } from './application/query-handler/get.approval.customer.list.handler';
 import { ReadAccountHandler } from './application/query-handler/read.account.handler';
 import { AccountDomain } from './domain/account.domain';
 import { AccountFactory } from './infrastructure/account.factory';
@@ -14,9 +16,11 @@ import { AccountController } from './presentation/account.controller';
 
 const application = [
   GetAccountsHandler,
+  GetApprovalCustomerListHandler,
   ReadAccountHandler,
   CreateAccountHandler,
   CreateAccountForCustomerHandler,
+  RejectAccountForCustomerHandler,
   UpdateAccountHandler,
   DeleteAccountHandler,
 ];

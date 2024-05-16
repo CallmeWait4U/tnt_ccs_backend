@@ -18,6 +18,7 @@ export class SendEmailTaskDTO {
   taskUUID: string;
 
   @ApiProperty({
+    required: false,
     description: 'Attachments',
     type: 'array',
     items: {
@@ -28,5 +29,6 @@ export class SendEmailTaskDTO {
       },
     },
   })
+  @IsOptional()
   files: Express.Multer.File[];
 }

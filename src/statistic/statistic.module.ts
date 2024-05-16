@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CountCustomerFollowingSourceHandler } from './application/query-handler/count.customer.following.source.handler';
 import { CountCustomersPerPhaseHandler } from './application/query-handler/count.customer.per.phase.handler';
 import { CountCustomerPhaseByMonthHandler } from './application/query-handler/count.customer.phase.by.month.handler';
+import { CountCustomersByLocationHandler } from './application/query-handler/count.customers.by.location.handler';
 import { CountPriceQuoteAndBillHandler } from './application/query-handler/count.priceQuote.bill.handler';
 import { CountPriceQuoteByMonthHandler } from './application/query-handler/count.priceQuote.by.month.handler';
 import { StatisticDomain } from './domain/statistic.domain';
@@ -15,6 +16,7 @@ const application = [
   CountPriceQuoteAndBillHandler,
   CountCustomerPhaseByMonthHandler,
   CountPriceQuoteByMonthHandler,
+  CountCustomersByLocationHandler,
 ];
 
 const infrastructure = [StatisticQuery];

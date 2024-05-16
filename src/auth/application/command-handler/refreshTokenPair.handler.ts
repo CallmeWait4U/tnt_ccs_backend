@@ -28,6 +28,9 @@ export class RefreshTokensPairHandler
       model,
       command.domain,
     );
-    return await this.authenticationRepository.updateAccount(account);
+    return await this.authenticationRepository.updateAccount(
+      account,
+      command.domain,
+    );
   }
 }

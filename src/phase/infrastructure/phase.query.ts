@@ -95,7 +95,7 @@ export class PhaseQuery {
       const customersNumber = res._count.customers;
       return plainToClass(
         ReadPhaseResult,
-        { ...res, customersNumber },
+        { ...res, customersNumber, priority: res.priority + 1 },
         { excludeExtraneousValues: true },
       );
     }
@@ -106,7 +106,7 @@ export class PhaseQuery {
     const [data, total] = await Promise.all([
       this.prisma.phase.findMany({
         where: { tenantId },
-        orderBy: [{ id: 'asc' }],
+        orderBy: [{ priority: 'asc' }],
       }),
       this.prisma.phase.count({
         where: { tenantId },

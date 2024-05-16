@@ -10,8 +10,8 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/domain')
-  async getDomain() {
-    return await this.appService.getDomain();
-  }
+  // @Get('/domain')
+  // async getDomain() {
+  //   return await this.appService.getDomain();
+  // }
 }

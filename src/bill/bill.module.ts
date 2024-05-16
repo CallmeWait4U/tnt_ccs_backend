@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CreateBillHandler } from './application/command-handler/create.bill.handler';
 import { DeleteBillHandler } from './application/command-handler/delete.bill.handler';
 import { UpdateBillHandler } from './application/command-handler/update.bill.handler';
+import { GetBillByCustomerHandler } from './application/query-handler/list.bill.by.customer.handler';
 import { GetBillsHandler } from './application/query-handler/list.bill.handler';
 import { ReadBillHandler } from './application/query-handler/read.bill.handler';
 import { BillDomain } from './domain/bill.domain';
@@ -13,6 +14,7 @@ import { BillController } from './presentation/bill.controller';
 
 const application = [
   GetBillsHandler,
+  GetBillByCustomerHandler,
   ReadBillHandler,
   CreateBillHandler,
   UpdateBillHandler,

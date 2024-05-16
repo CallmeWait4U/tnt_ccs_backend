@@ -21,10 +21,10 @@ export class CreateIndividualCustomerDTO {
   @IsNumber()
   source: number;
 
-  @ApiProperty({ example: 1, type: Number })
+  @ApiProperty({ example: 'TP Ho Chi Minh', type: String })
   @IsNotEmpty()
-  @IsNumber()
-  city: number;
+  @IsString()
+  city: string;
 
   @ApiProperty({ example: 'Quận 10', type: String })
   @IsNotEmpty()

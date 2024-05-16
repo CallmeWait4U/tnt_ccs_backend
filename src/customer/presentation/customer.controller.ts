@@ -143,6 +143,7 @@ export class CustomerController {
         HttpStatus.FORBIDDEN,
       );
     }
+    console.log(body);
     const command = new UpdateCustomerCommand({
       ...body,
       tenantId: user.tenantId,

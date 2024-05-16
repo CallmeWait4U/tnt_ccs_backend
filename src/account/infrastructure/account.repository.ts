@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { Prisma, TypeAccount } from '@prisma/client';
+import { Prisma, StatusCustomerAccount, TypeAccount } from '@prisma/client';
 import { PrismaService } from 'libs/database.module';
 import { AccountModel } from '../domain/account.model';
 import { AccountFactory } from './account.factory';
@@ -26,8 +26,23 @@ export class AccountRepository {
           customer: { connect: { uuid: account.customerUUID } },
         },
       });
+      await this.prisma.customer.update({
+        where: { uuid: account.customerUUID },
+        data: { hasAccount: StatusCustomerAccount.APPROVED },
+      });
     }
     return account.uuid;
+  }
+
+  async rejectAccountForCustomer(
+    customerUUID: string,
+    tenantId: string,
+  ): Promise<string> {
+    const customer = await this.prisma.customer.update({
+      where: { uuid: customerUUID, tenantId },
+      data: { hasAccount: StatusCustomerAccount.NOTAPPROVED },
+    });
+    return customer.uuid;
   }
 
   async update(account: AccountModel): Promise<string> {

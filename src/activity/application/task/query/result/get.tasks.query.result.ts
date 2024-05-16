@@ -7,6 +7,9 @@ export class TaskItem {
   uuid: string;
 
   @Expose()
+  activityUUID: string;
+
+  @Expose()
   createDate: Date;
 
   @Expose()

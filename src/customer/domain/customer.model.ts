@@ -74,7 +74,7 @@ export class CustomerModel {
   @Expose()
   source: number;
   @Expose()
-  city: number;
+  city: string;
   @Expose()
   district: string;
   @Expose()

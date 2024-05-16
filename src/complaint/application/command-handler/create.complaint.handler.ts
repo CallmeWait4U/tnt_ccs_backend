@@ -24,9 +24,15 @@ export class CreateComplaintHandler
   constructor(private readonly amqpService: AmqpConnection) {}
 
   async execute(command: CreateComplaintCommand): Promise<string> {
-    const model = this.complaintFactory.createComplaintModel(command);
-    const listEmployees = await this.complaintQuery.getListEmployees(
+    const customerUUID = await this.complaintQuery.getCustomerUUID(
       command.customerUUID,
+    );
+    const model = this.complaintFactory.createComplaintModel({
+      ...command,
+      customerUUID,
+    });
+    const listEmployees = await this.complaintQuery.getListEmployees(
+      customerUUID,
     );
     const typeComplaint = await this.complaintQuery.getTypeComplaint(
       command.typeComplaintUUID,

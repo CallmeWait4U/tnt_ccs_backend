@@ -17,7 +17,7 @@ export class PhaseRepository {
 
     try {
       this.prisma.$transaction(async (transactionClient) => {
-        let priority = phase.priority - 1;
+        let priority = phase.priority;
         await Promise.all(
           listPhase.map(async (item) => {
             if (item.priority === priority) {

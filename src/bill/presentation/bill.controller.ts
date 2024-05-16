@@ -19,10 +19,12 @@ import { GetUser } from 'libs/getuser.decorator';
 import { CreateBillCommand } from '../application/command/create.bill.command';
 import { DeleteBillCommand } from '../application/command/delete.bill.command';
 import { UpdateBillCommand } from '../application/command/update.bill.command';
+import { GetBillByCustomerQuery } from '../application/query/list.bill.by.customer.query';
 import { GetBillsQuery } from '../application/query/list.bill.query';
 import { ReadBillQuery } from '../application/query/read.bill.query';
 import { CreateBillDTO } from './dto/create.bill.dto';
 import { DeleteBillDTO } from './dto/delete.bill.dto';
+import { GetBillsByCustomerDTO } from './dto/list.bill.by.customer.dto';
 import { GetBillsDTO } from './dto/list.bill.dto';
 import { ReadBillDTO } from './dto/read.bill.dto';
 import { UpdateBillDTO } from './dto/update.bill.dto';
@@ -51,6 +53,15 @@ export class BillController {
     const offset = !q.offset || q.offset < 0 ? 0 : q.offset;
     const limit = !q.limit || q.limit < 0 ? 10 : q.limit;
     const query = new GetBillsQuery(offset, limit, searchModel);
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/getByCustomer')
+  async listBillsByCustomer(
+    @Query() q: GetBillsByCustomerDTO,
+    @GetUser() user: User,
+  ) {
+    const query = new GetBillByCustomerQuery(q.customerUUID, user.tenantId);
     return await this.queryBus.execute(query);
   }
 

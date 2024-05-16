@@ -20,10 +20,10 @@ export class UpdateIndividualCustomerDTO {
   @IsNumber()
   source: number;
 
-  @ApiProperty({ required: false, example: 1, type: Number })
+  @ApiProperty({ required: false, example: 'TP Ha Noi', type: String })
   @IsOptional()
-  @IsNumber()
-  city: number;
+  @IsString()
+  city: string;
 
   @ApiProperty({ required: false, example: 'Quận 10', type: String })
   @IsOptional()
