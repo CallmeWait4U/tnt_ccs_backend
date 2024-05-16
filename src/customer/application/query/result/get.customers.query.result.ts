@@ -21,7 +21,7 @@ export class CustomerItem {
   phoneNumber: string;
 
   @Expose()
-  employees: string[];
+  employees: { uuid: string; name: string }[];
 
   @Expose()
   source: number;

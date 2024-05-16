@@ -45,20 +45,6 @@ export class CustomerQuery {
           }
         } else {
           const { value } = this.util.buildSearch(item);
-          // if (prop === 'name') {
-          //   obj['OR'] = [
-          //     {
-          //       business: {
-          //         name: value,
-          //       },
-          //     },
-          //     {
-          //       individual: {
-          //         name: value,
-          //       },
-          //     },
-          //   ];
-          // } else
           if (prop === 'email') {
             obj['OR'] = [
               {
@@ -88,6 +74,7 @@ export class CustomerQuery {
         include: {
           employees: {
             select: {
+              uuid: true,
               name: true,
             },
           },
@@ -120,7 +107,10 @@ export class CustomerQuery {
             ...i,
             ...propRelation,
             employees: i.employees
-              ? i.employees.map((employee) => employee.name)
+              ? i.employees.map((employee) => ({
+                  uuid: employee.uuid,
+                  name: employee.name,
+                }))
               : [],
             phaseName: i.phase ? i.phase.name : '',
           },
