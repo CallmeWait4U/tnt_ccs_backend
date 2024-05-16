@@ -15,6 +15,7 @@ import { GetComplaintsHandler } from './application/query-handler/get.complaints
 import { GetSelectorTypeHandler } from './application/query-handler/get.selector.type.handler';
 import { ReadComplaintHandler } from './application/query-handler/read.complaint.handler';
 import { ReadTypeComplaintHandler } from './application/query-handler/read.typeComplaint.handler';
+import { SelectorComplaintByCustomerHandler } from './application/query-handler/selector.complaint.by.customer.handler';
 import { ComplaintDomain } from './domain/complaint.domain';
 import { ComplaintFactory } from './infrastructure/complaint.factory';
 import { ComplaintQuery } from './infrastructure/complaint.query';
@@ -36,6 +37,7 @@ const application = [
   UpdateStatusComplaintHandler,
   UpdateTypeComplaintHandler,
   GetActivitiesComplaintHandler,
+  SelectorComplaintByCustomerHandler,
 ];
 
 const infrastructure = [ComplaintRepository, ComplaintQuery, ComplaintFactory];

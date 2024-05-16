@@ -6,7 +6,7 @@ import { UtilityImplement } from 'libs/utility.module';
 import {
   GetPriceQuotesByCustomerItem,
   GetPriceQuotesByCustomerResult,
-} from '../application/query/result/get.priceQuote.by.customer.handler';
+} from '../application/query/result/get.priceQuote.by.customer.result';
 import {
   GetPriceQuotesResult,
   PriceQuoteItem,

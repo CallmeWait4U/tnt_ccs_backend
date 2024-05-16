@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { PriceQuoteQuery } from 'src/priceQuote/infrastructure/priceQuote.query';
 import { GetPriceQuotesByCustomerQuery } from '../query/get.priceQuote.by.customer.query';
-import { GetPriceQuotesByCustomerResult } from '../query/result/get.priceQuote.by.customer.handler';
+import { GetPriceQuotesByCustomerResult } from '../query/result/get.priceQuote.by.customer.result';
 
 @QueryHandler(GetPriceQuotesByCustomerQuery)
 export class GetPriceQuotesByCustomerHandler

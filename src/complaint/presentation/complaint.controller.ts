@@ -31,6 +31,7 @@ import { GetComplaintsQuery } from '../application/query/get.complaints.query';
 import { GetSelectorTypeQuery } from '../application/query/get.selector.type.query';
 import { ReadComplaintQuery } from '../application/query/read.complaint.query';
 import { ReadTypeComplaintQuery } from '../application/query/read.typeComplaint.query';
+import { SelectorComplaintByCustomerQuery } from '../application/query/selector.complaint.by.customer.dto';
 import { CreateActivityComplaintDTO } from './dto/create.activity.complaint.dto';
 import { CreateTypeComplaintDTO } from './dto/create.typeComplaint.dto';
 import { DeleteActivityComplaintDTO } from './dto/delete.activity.complaint.dto';
@@ -40,6 +41,7 @@ import { GetActivitiesComplaintDTO } from './dto/get.activities.complaint.dto';
 import { GetComplaintsDTO } from './dto/get.complaint.dto';
 import { ReadComplaintDTO } from './dto/read.complaint.dto';
 import { ReadTypeComplaintDTO } from './dto/read.typeComplaint.dto';
+import { SelectorComplaintByCustomerDTO } from './dto/selector.complaint.by.customer.dto';
 import { UpdateStatusComplaintDTO } from './dto/update.status.complaint.dto';
 import { UpdateTypeComplaintDTO } from './dto/update.typeComplaint.dto';
 
@@ -79,6 +81,18 @@ export class ComplaintController {
       limit,
       user.uuid,
       q.searchModel,
+    );
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/selector/byCustomer')
+  async getPriceQuoteByCustomer(
+    @Query() q: SelectorComplaintByCustomerDTO,
+    @GetUser() user: User,
+  ) {
+    const query = new SelectorComplaintByCustomerQuery(
+      q.customerUUID,
+      user.tenantId,
     );
     return await this.queryBus.execute(query);
   }

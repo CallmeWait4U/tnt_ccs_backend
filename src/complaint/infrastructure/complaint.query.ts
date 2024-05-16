@@ -18,6 +18,10 @@ import {
   ValueField,
 } from '../application/query/result/read.complaint.query.result';
 import { ReadTypeComplaintResult } from '../application/query/result/read.typeComplaint.query.result';
+import {
+  SelectorComplaintByCustomerItem,
+  SelectorComplaintByCustomerResult,
+} from '../application/query/result/selector.complaint.by.customer.query.result';
 import { TypeComplaintModel } from '../domain/complaint.model';
 
 export class ComplaintQuery {
@@ -185,6 +189,24 @@ export class ComplaintQuery {
           { excludeExtraneousValues: true },
         );
       }),
+      total,
+    };
+  }
+
+  async selectorComplaintByCustomer(
+    customerUUID: string,
+    tenantId: string,
+  ): Promise<SelectorComplaintByCustomerResult> {
+    const [data, total] = await Promise.all([
+      this.prisma.complaint.findMany({ where: { customerUUID, tenantId } }),
+      this.prisma.complaint.count({ where: { customerUUID, tenantId } }),
+    ]);
+    return {
+      items: data.map((i) =>
+        plainToClass(SelectorComplaintByCustomerItem, i, {
+          excludeExtraneousValues: true,
+        }),
+      ),
       total,
     };
   }

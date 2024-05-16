@@ -21,6 +21,7 @@ import { DeletePriceQuoteCommand } from '../application/command/delete.priceQuot
 import { UpdatePriceQuoteCommand } from '../application/command/update.priceQuote.command';
 import { GetPriceQuotesByCustomerQuery } from '../application/query/get.priceQuote.by.customer.query';
 import { GetPriceQuotesQuery } from '../application/query/list.priceQuote.query';
+import { ReadPriceQuoteByCustomerQuery } from '../application/query/read.priceQuote.by.customer.query';
 import { ReadPriceQuoteQuery } from '../application/query/read.priceQuote.query';
 import { StatisticPriceQuoteQuery } from '../application/query/statistic.priceQuote.query';
 import { CreatePriceQuoteDTO } from './dto/create.priceQuote.dto';
@@ -69,7 +70,11 @@ export class PriceQuoteController {
     @Body() q: ReadPriceQuoteDTO,
     @GetUser() user: User,
   ) {
-    const query = new ReadPriceQuoteQuery(q.uuid, user.tenantId, user.uuid);
+    const query = new ReadPriceQuoteByCustomerQuery(
+      q.uuid,
+      user.tenantId,
+      user.uuid,
+    );
     return await this.queryBus.execute(query);
   }
 
