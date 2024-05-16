@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
-import { CommandHandler, IQueryHandler } from '@nestjs/cqrs';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { BillQuery } from 'src/bill/infrastructure/bill.query';
 import { GetBillByCustomerQuery } from '../query/list.bill.by.customer.query';
 import { GetBillByCustomerResult } from '../query/result/list.bill.by.customer.result';
 
-@CommandHandler(GetBillByCustomerQuery)
+@QueryHandler(GetBillByCustomerQuery)
 export class GetBillByCustomerHandler
   implements IQueryHandler<GetBillByCustomerQuery, GetBillByCustomerResult>
 {
