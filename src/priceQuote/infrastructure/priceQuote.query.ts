@@ -115,6 +115,53 @@ export class PriceQuoteQuery {
     return {} as ReadPriceQuoteResult;
   }
 
+  async readPriceQuoteByCustomer(
+    uuid: string,
+    tenantId: string,
+    customerUUID: string,
+  ): Promise<ReadPriceQuoteResult> {
+    const conditions = { uuid, customerUUID, tenantId };
+
+    const priceQuote = await this.prisma.priceQuote.findUnique({
+      include: {
+        products: {
+          include: { product: true },
+        },
+      },
+      where: conditions,
+    });
+
+    if (priceQuote) {
+      const { products, ...data } = priceQuote;
+      const res = plainToClass(
+        ReadPriceQuoteResult,
+        { ...data, products: [] },
+        { excludeExtraneousValues: true },
+      );
+      if (products.length > 0) {
+        let total = 0;
+        res.products = products.map((item) => {
+          total += item.negotiatedPrice * item.quantity;
+          return plainToClass(
+            ProductItemOfPriceQuote,
+            {
+              uuid: item.productUUID,
+              name: item.product.name,
+              unit: item.product.unit,
+              negotiatedPrice: item.negotiatedPrice,
+              quantity: item.quantity,
+            },
+            { excludeExtraneousValues: true },
+          );
+        });
+        res.total = total;
+      }
+
+      return res;
+    }
+    return {} as ReadPriceQuoteResult;
+  }
+
   async getCustomerFromAccount(
     uuid: string,
     tenantId: string,

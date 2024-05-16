@@ -5,6 +5,7 @@ import { DeletePriceQuoteHandler } from './application/command-handler/delete.pr
 import { UpdatePriceQuoteHandler } from './application/command-handler/update.priceQuote.handler';
 import { GetPriceQuotesByCustomerHandler } from './application/query-handler/get.priceQuote.by.customer.handler';
 import { GetPriceQuotesHandler } from './application/query-handler/list.priceQuote.handler';
+import { ReadPriceQuoteByCustomerHandler } from './application/query-handler/read.priceQuote.by.customer.handler';
 import { ReadPriceQuoteHandler } from './application/query-handler/read.priceQuote.handler';
 import { StatisticPriceQuoteHandler } from './application/query-handler/statistic.priceQuote.handler';
 import { PriceQuoteDomain } from './domain/priceQuote.domain';
@@ -21,6 +22,7 @@ const application = [
   UpdatePriceQuoteHandler,
   DeletePriceQuoteHandler,
   StatisticPriceQuoteHandler,
+  ReadPriceQuoteByCustomerHandler,
 ];
 
 const infrastructure = [

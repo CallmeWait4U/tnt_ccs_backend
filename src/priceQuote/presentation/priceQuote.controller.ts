@@ -64,6 +64,15 @@ export class PriceQuoteController {
     return await this.queryBus.execute(query);
   }
 
+  @Get('/detail/byCustomer')
+  async readPriceQuoteByCutsomer(
+    @Param() q: ReadPriceQuoteDTO,
+    @GetUser() user: User,
+  ) {
+    const query = new ReadPriceQuoteQuery(q.uuid, user.tenantId, user.uuid);
+    return await this.queryBus.execute(query);
+  }
+
   @Get('/selector/byCustomer')
   async getPriceQuoteByCustomer(
     @Query() q: GetPriceQuotesByCustomerDTO,

@@ -37,9 +37,10 @@ export class SendEmailTaskHandler
       recipients: [
         {
           name: customer.name,
-          address: customer.isBusiness
-            ? customer.business.representativeEmail
-            : customer.individual.email,
+          // address: customer.isBusiness
+          //   ? customer.business.representativeEmail
+          //   : customer.individual.email,
+          address: 'thanh.bui2002bt@hcmut.edu.vn',
         },
       ],
       subject: command.subject,
@@ -47,8 +48,8 @@ export class SendEmailTaskHandler
       attachments: command.files,
     };
     await this.emailService.sendEmail(mailerDto);
-    const model = this.taskFactory.createEmailTaskModel(command);
-    const emailTask = this.taskDomain.createEmailTask(model);
-    await this.taskRepository.createEmailTask(emailTask);
+    // const model = this.taskFactory.createEmailTaskModel(command);
+    // const emailTask = this.taskDomain.createEmailTask(model);
+    // await this.taskRepository.createEmailTask(emailTask);
   }
 }
