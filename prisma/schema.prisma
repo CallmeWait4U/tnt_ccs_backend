@@ -76,7 +76,7 @@ model Customer {
   id                 Int                   @id @default(autoincrement())
   uuid               String                @unique @default(uuid())
   name               String
-  code               String
+  code               String?
   isBusiness         Boolean
   source             Int?
   city               String?
@@ -159,7 +159,7 @@ model Phase {
 model PriceQuoteRequest {
   id           Int                        @id @default(autoincrement())
   uuid         String                     @unique @default(uuid())
-  code         String
+  code         String?
   createdDate  DateTime
   status       StatusPriceQuoteRequest
   sentDate     DateTime?
@@ -173,7 +173,7 @@ model PriceQuoteRequest {
 model PriceQuote {
   id                    Int                 @id @default(autoincrement())
   uuid                  String              @unique @default(uuid())
-  code                  String
+  code                  String?
   createdDate           DateTime
   effectiveDate         DateTime
   createdBy             Employee            @relation(fields: [employeeUUID], references: [uuid])
@@ -192,7 +192,7 @@ model PriceQuote {
 model Bill {
   id             Int           @id @default(autoincrement())
   uuid           String        @unique @default(uuid())
-  code           String
+  code           String?
   status         StatusBill
   createdDate    DateTime
   products       ProductBill[]
@@ -370,7 +370,7 @@ model Product {
   id                        Int                        @id @default(autoincrement())
   uuid                      String                     @unique @default(uuid())
   name                      String
-  code                      String
+  code                      String?
   features                  String?
   quantity                  Int
   description               String?

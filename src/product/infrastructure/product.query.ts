@@ -3,6 +3,10 @@ import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
 import {
+  GetSelectorProductItem,
+  GetSelectorProductResult,
+} from '../application/query/result/get.selector.product.result';
+import {
   ListProductOptionsResult,
   ProductOptionItem,
 } from '../application/query/result/list.product.options.query.result';
@@ -98,6 +102,20 @@ export class ProductQuery {
       );
     }
     return {} as ReadProductResult;
+  }
+
+  async getSelectorProduct(
+    tenantId: string,
+  ): Promise<GetSelectorProductResult> {
+    const data = await this.prisma.product.findMany({ where: { tenantId } });
+    return {
+      items: data.map((i) =>
+        plainToClass(GetSelectorProductItem, i, {
+          excludeExtraneousValues: true,
+        }),
+      ),
+      total: data.length,
+    };
   }
 
   async listProductOptions(

@@ -20,6 +20,7 @@ import { GetUser } from 'libs/getuser.decorator';
 import { CreateProductCommand } from '../application/command/create.product.command';
 import { DeleteProductCommand } from '../application/command/delete.product.command';
 import { UpdateProductCommand } from '../application/command/update.product.command';
+import { GetSelectorProductQuery } from '../application/query/get.selector.product.query';
 import { ListProductOptionsQuery } from '../application/query/list.product.options.query';
 import { ListProductQuery } from '../application/query/list.product.query';
 import { ReadProductQuery } from '../application/query/read.product.query';
@@ -56,6 +57,12 @@ export class ProductController {
   @Get('/:uuid')
   async readProduct(@Query() q: ReadProductDTO, @GetUser() user: User) {
     const query = new ReadProductQuery(q.uuid, user.tenantId);
+    return await this.queryBus.execute(query);
+  }
+
+  @Get('/getSelectorProduct')
+  async getSelectorProduct(@GetUser() user: User) {
+    const query = new GetSelectorProductQuery(user.tenantId);
     return await this.queryBus.execute(query);
   }
 

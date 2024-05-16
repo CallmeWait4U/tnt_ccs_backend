@@ -20,6 +20,11 @@ export class UpdateBusinessCustomerDTO {
   @IsNumber()
   source: number;
 
+  @ApiProperty({ required: false, example: 'KH-11111', type: String })
+  @IsOptional()
+  @IsString()
+  code: string;
+
   @ApiProperty({ required: false, example: 'TP Ha Noi', type: String })
   @IsOptional()
   @IsString()

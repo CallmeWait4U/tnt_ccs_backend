@@ -24,9 +24,10 @@ class ProductItem {
   @IsNumberString()
   fixedPrice: number;
 }
+
 export class CreateBillDTO {
-  @ApiProperty({ example: 'NV-00001', type: String })
-  @IsNotEmpty()
+  @ApiProperty({ required: false, example: '', type: String })
+  @IsOptional()
   @IsString()
   code: string;
 

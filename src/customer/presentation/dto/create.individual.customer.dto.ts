@@ -16,6 +16,11 @@ export class CreateIndividualCustomerDTO {
   @IsBoolean()
   isBusiness: boolean;
 
+  @ApiProperty({ required: false, example: 'KH-123446', type: String })
+  @IsOptional()
+  @IsString()
+  code: string;
+
   @ApiProperty({ example: 1, type: Number })
   @IsNotEmpty()
   @IsNumber()

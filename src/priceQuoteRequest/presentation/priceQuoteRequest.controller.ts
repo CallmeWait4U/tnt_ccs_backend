@@ -12,6 +12,7 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { StatusPriceQuoteRequest } from '@prisma/client';
 import { User } from 'interfaces/user';
 import { GetUser } from 'libs/getuser.decorator';
 import { CreatePriceQuoteRequestCommand } from '../application/command/create.priceQuoteRequest.command';
@@ -95,7 +96,11 @@ export class PriceQuoteRequestController {
       accountCustomerUUID: user.uuid,
       tenantId: user.tenantId,
     });
-    return await this.commandBus.execute(command);
+    const uuid = await this.commandBus.execute(command);
+    if (body.status === StatusPriceQuoteRequest.SENT) {
+      const query = new SendPriceQuoteRequestCommand(uuid, user.tenantId);
+      await this.queryBus.execute(query);
+    }
   }
 
   @Put('/:uuid')

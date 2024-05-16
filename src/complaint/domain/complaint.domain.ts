@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker/locale/vi';
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { ActivityComplaint, StatusComplaint } from '@prisma/client';
 import { plainToClass } from 'class-transformer';
@@ -68,7 +69,7 @@ export class ComplaintDomain {
     }
     const complaintUUID = uuidv4().toString();
     model.uuid = complaintUUID;
-    model.code = `KN-` + model.customerUUID;
+    model.code = `KN-` + faker.string.numeric(5);
     model.createdDate = new Date();
     model.valueFieldComplaint = model.valueFieldComplaint.map((i) => ({
       ...i,
