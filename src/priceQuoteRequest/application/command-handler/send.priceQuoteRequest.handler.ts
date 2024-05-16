@@ -26,7 +26,7 @@ export class SendPriceQuoteRequestHandler
       await this.priceQuoteRequestQuery.getListAccountEmployees(customer.uuid);
     if (listAccountEmployees.length > 0) {
       const payload: CreateNotificationDTO = {
-        title: 'Yêu cầu báo giá mới ' + command.uuid,
+        title: 'Yêu cầu báo giá mới ' + customer.uuid,
         content: 'Bạn nhận được 1 Yêu cầu báo giá mới.',
         time: new Date(),
         accountUUIDs: listAccountEmployees.map(
