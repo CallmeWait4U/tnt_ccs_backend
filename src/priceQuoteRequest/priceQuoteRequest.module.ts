@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { RmqModule } from 'libs/rabbitmq.module';
 import { CreatePriceQuoteRequestHandler } from './application/command-handler/create.priceQuoteRequest.handler';
 import { DeletePriceQuoteRequestHandler } from './application/command-handler/delete.priceQuoteRequest.handler';
+import { SendPriceQuoteRequestHandler } from './application/command-handler/send.priceQuoteRequest.handler';
 import { UpdatePriceQuoteRequestHandler } from './application/command-handler/update.priceQuoteRequest.handler';
+import { GetPriceQuoteRequestByCustomerHanlder } from './application/query-handler/get.priceQuoteRequest.by.customer.handler';
 import { GetPriceQuoteRequestsHandler } from './application/query-handler/list.priceQuoteRequest.handler';
 import { ReadPriceQuoteRequestHandler } from './application/query-handler/read.priceQuoteRequest.handler';
 import { PriceQuoteRequestDomain } from './domain/priceQuoteRequest.domain';
@@ -17,6 +20,8 @@ const application = [
   CreatePriceQuoteRequestHandler,
   UpdatePriceQuoteRequestHandler,
   DeletePriceQuoteRequestHandler,
+  GetPriceQuoteRequestByCustomerHanlder,
+  SendPriceQuoteRequestHandler,
 ];
 
 const infrastructure = [
@@ -28,7 +33,7 @@ const infrastructure = [
 const domain = [PriceQuoteRequestDomain];
 
 @Module({
-  imports: [CqrsModule],
+  imports: [CqrsModule, RmqModule],
   providers: [...application, ...infrastructure, ...domain],
   controllers: [PriceQuoteRequestController],
 })

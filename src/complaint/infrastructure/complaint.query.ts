@@ -289,12 +289,10 @@ export class ComplaintQuery {
     });
     const result: { accountUUID: string; token: string }[] = [];
     data.map((i) => {
-      if (i.account.accessToken) {
-        result.push({
-          accountUUID: i.account.uuid,
-          token: i.account.accessToken,
-        });
-      }
+      result.push({
+        accountUUID: i.account.uuid,
+        token: i.account.accessToken ? i.account.accessToken : '',
+      });
     });
     return result;
   }

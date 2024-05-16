@@ -43,11 +43,6 @@ export class CreatePriceQuoteRequestDTO {
   @IsDateString()
   sentDate: Date;
 
-  @ApiProperty({ example: 'uuid', type: String })
-  @IsNotEmpty()
-  @IsString()
-  customerUUID: string;
-
   @ApiProperty({
     example: [{ uuid: 'uuid', quantity: 1 }],
     type: [ProductItem],

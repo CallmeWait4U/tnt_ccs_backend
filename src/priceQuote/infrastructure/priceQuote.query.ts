@@ -3,6 +3,10 @@ import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'libs/database.module';
 import { UtilityImplement } from 'libs/utility.module';
 import {
+  GetPriceQuotesByCustomerItem,
+  GetPriceQuotesByCustomerResult,
+} from '../application/query/result/get.priceQuote.by.customer.handler';
+import {
   GetPriceQuotesResult,
   PriceQuoteItem,
 } from '../application/query/result/list.priceQuote.query.result';
@@ -108,6 +112,23 @@ export class PriceQuoteQuery {
     }
     return {} as ReadPriceQuoteResult;
   }
+
+  async getPriceQuoteByCustomer(
+    customerUUID: string,
+    tenantId: string,
+  ): Promise<GetPriceQuotesByCustomerResult> {
+    const data = await this.prisma.priceQuote.findMany({
+      where: { customerUUID, tenantId },
+    });
+    return {
+      items: data.map((i) =>
+        plainToClass(GetPriceQuotesByCustomerItem, i, {
+          excludeExtraneousValues: true,
+        }),
+      ),
+    };
+  }
+
   async getStatisticPriceQuote(
     tenantId: string,
   ): Promise<StatisticPriceQuoteQueryResult> {

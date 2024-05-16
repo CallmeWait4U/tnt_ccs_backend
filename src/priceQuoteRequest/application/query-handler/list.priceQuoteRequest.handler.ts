@@ -16,6 +16,7 @@ export class GetPriceQuoteRequestsHandler
     query: GetPriceQuoteRequestsQuery,
   ): Promise<GetPriceQuoteRequestsResult> {
     return await this.priceQuoteRequestQuery.getPriceQuoteRequests(
+      query.tenantId,
       query.offset,
       query.limit,
       query.searchModel,

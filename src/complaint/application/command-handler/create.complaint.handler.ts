@@ -56,7 +56,7 @@ export class CreateComplaintHandler
         tokens: accounts.map((account) => account.token),
         tenantId: command.tenantId,
       };
-      this.amqpService.publish('exchange1', 'notify.conplaint', payload);
+      this.amqpService.publish('exchange1', 'notify.complaint', payload);
     }
     return await this.complaintRepository.createComplaint(complaint);
   }

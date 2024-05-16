@@ -72,18 +72,21 @@ export class NotificationGateway {
 
   public async notifyComplaint(payload: CreateNotificationDTO) {
     for (const token of payload.tokens) {
-      const sids = await this.redisImplement.getClients(token);
-      if (sids.length !== 0) {
-        sids.forEach((sid) => {
-          const user = this.userOnline.filter((user) => user.id === sid)[0];
-          // console.log(user);
-          user.send({
-            title: payload.title,
-            content: payload.content,
-            second:
-              (new Date().getTime() - new Date(payload.time).getTime()) / 1000,
+      if (token !== '') {
+        const sids = await this.redisImplement.getClients(token);
+        if (sids.length !== 0) {
+          sids.forEach((sid) => {
+            const user = this.userOnline.filter((user) => user.id === sid)[0];
+            // console.log(user);
+            user.send({
+              title: payload.title,
+              content: payload.content,
+              second:
+                (new Date().getTime() - new Date(payload.time).getTime()) /
+                1000,
+            });
           });
-        });
+        }
       }
     }
   }
