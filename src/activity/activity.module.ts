@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { EmailModule } from 'libs/email.module';
 import { CreateActivityHandler } from './application/activity/command-handler/create.activity.handler';
 import { DeleteEpmloyeeHandler } from './application/activity/command-handler/delete.activity.handler';
 import { UpdateActivityHandler } from './application/activity/command-handler/update.activity.handler';
@@ -51,7 +52,7 @@ const infrastructure = [
 const domain = [ActivityDomain, TaskDomain];
 
 @Module({
-  imports: [CqrsModule],
+  imports: [CqrsModule, EmailModule],
   providers: [...application, ...infrastructure, ...domain],
   controllers: [ActivityController],
 })
