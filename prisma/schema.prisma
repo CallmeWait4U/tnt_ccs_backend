@@ -137,7 +137,7 @@ model Individual {
   cccd         String?
   gender       Gender?
   email        String?
-  phoneNumber  String
+  phoneNumber  String?
   nationality  String?
   customer     Customer  @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
   customerUUID String    @unique

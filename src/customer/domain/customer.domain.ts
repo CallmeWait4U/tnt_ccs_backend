@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker/locale/vi';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
@@ -42,7 +43,7 @@ export class CustomerDomain {
     const customerUUID = uuidv4().toString();
     const phasesCustomerUUID = uuidv4().toString();
     model.uuid = customerUUID;
-    model.code = 'KH-';
+    model.code = 'KH-' + faker.string.numeric(5);
     model.receiveMail = false;
     model.phasesCustomer = [
       plainToClass(
