@@ -79,11 +79,11 @@ export class PriceQuoteRequestController {
 
   @Post('/send')
   async sendPriceQuoteRequest(
-    @Query() q: SendPriceQuoteRequestDTO,
+    @Body() body: SendPriceQuoteRequestDTO,
     @GetUser() user: User,
   ) {
-    const query = new SendPriceQuoteRequestCommand(q.uuid, user.tenantId);
-    return await this.queryBus.execute(query);
+    const command = new SendPriceQuoteRequestCommand(body.uuid, user.tenantId);
+    return await this.commandBus.execute(command);
   }
 
   @Post('')
@@ -98,8 +98,8 @@ export class PriceQuoteRequestController {
     });
     const uuid = await this.commandBus.execute(command);
     if (body.status === StatusPriceQuoteRequest.SENT) {
-      const query = new SendPriceQuoteRequestCommand(uuid, user.tenantId);
-      await this.queryBus.execute(query);
+      const command = new SendPriceQuoteRequestCommand(uuid, user.tenantId);
+      await this.commandBus.execute(command);
     }
   }
 
