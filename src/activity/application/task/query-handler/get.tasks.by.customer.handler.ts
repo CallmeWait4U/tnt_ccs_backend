@@ -15,7 +15,7 @@ export class GetTasksByCustomerHandler
     return this.taskQuery.getTasksByCustomer(
       query.tenantId,
       query.customerUUID,
-      query.history,
+      Boolean(query.history),
     );
   }
 }
