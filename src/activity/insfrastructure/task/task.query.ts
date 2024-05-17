@@ -173,7 +173,7 @@ export class TaskQuery {
           employees: { select: { name: true } },
         },
       }),
-      this.prisma.task.count({ where: { customerUUID } }),
+      this.prisma.task.count({ where: { AND: conditions } }),
     ]);
     return {
       items: data.map((item) => {

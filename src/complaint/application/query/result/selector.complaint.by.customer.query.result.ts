@@ -1,4 +1,5 @@
 import { IQueryResult } from '@nestjs/cqrs';
+import { StatusComplaint } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class SelectorComplaintByCustomerItem {
@@ -13,6 +14,9 @@ export class SelectorComplaintByCustomerItem {
 
   @Expose()
   sentDate: string;
+
+  @Expose()
+  status: StatusComplaint;
 }
 
 export class SelectorComplaintByCustomerResult implements IQueryResult {

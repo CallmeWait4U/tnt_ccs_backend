@@ -198,14 +198,28 @@ export class ComplaintQuery {
     tenantId: string,
   ): Promise<SelectorComplaintByCustomerResult> {
     const [data, total] = await Promise.all([
-      this.prisma.complaint.findMany({ where: { customerUUID, tenantId } }),
+      this.prisma.complaint.findMany({
+        where: { customerUUID, tenantId },
+        include: {
+          typeComplaint: true,
+          listStatus: { orderBy: { date: 'asc' } },
+        },
+      }),
       this.prisma.complaint.count({ where: { customerUUID, tenantId } }),
     ]);
     return {
       items: data.map((i) =>
-        plainToClass(SelectorComplaintByCustomerItem, i, {
-          excludeExtraneousValues: true,
-        }),
+        plainToClass(
+          SelectorComplaintByCustomerItem,
+          {
+            ...i,
+            typeComplaintName: i.typeComplaint.name,
+            status: i.listStatus[0],
+          },
+          {
+            excludeExtraneousValues: true,
+          },
+        ),
       ),
       total,
     };

@@ -86,7 +86,7 @@ export class ComplaintController {
   }
 
   @Get('/selector/byCustomer')
-  async getPriceQuoteByCustomer(
+  async selectorComplaintByCustomer(
     @Query() q: SelectorComplaintByCustomerDTO,
     @GetUser() user: User,
   ) {
