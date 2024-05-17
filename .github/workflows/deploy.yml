@@ -1,0 +1,31 @@
+# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+name: Node.js CD TNTCCS-Server
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["develop"]
+
+jobs:
+  # Build job
+  build:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+    - uses: actions/checkout@v3
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - run: pnpm install --no-frozen-lockfile
+    - run: pnpm prisma generate
+    - run: pnpm build
+    - run: |
+        touch .env
+        echo "${{ secrets.PROD_ENV_FILE }}" > .env
