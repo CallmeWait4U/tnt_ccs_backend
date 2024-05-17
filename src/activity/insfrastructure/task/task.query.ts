@@ -152,7 +152,7 @@ export class TaskQuery {
     history: boolean,
   ): Promise<GetTasksByCustomerResult> {
     const conditions = [];
-    if (history) {
+    if (history === true) {
       conditions.push(
         { tenantId },
         { customerUUID },
@@ -162,7 +162,7 @@ export class TaskQuery {
       conditions.push(
         { tenantId },
         { customerUUID },
-        { status: StatusTask.INPROGRESS || StatusTask.OVERDUE },
+        { status: { in: [StatusTask.INPROGRESS, StatusTask.OVERDUE] } },
       );
     }
     const [data, total] = await Promise.all([
