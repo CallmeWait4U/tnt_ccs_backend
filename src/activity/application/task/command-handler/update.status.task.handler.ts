@@ -14,12 +14,12 @@ export class UpdateStatusTaskHandler
   private readonly taskDomain: TaskDomain;
 
   async execute(command: UpdateStatusTaskCommand): Promise<string> {
-    const model = await this.taskRepository.getByUUID(
+    const model = await this.taskRepository.getByUUIDs(
       command.uuid,
       command.tenantId,
     );
     this.taskDomain.checkTask(model);
-    this.taskDomain.updateStatus(model);
-    return await this.taskRepository.updateStatus(model);
+    this.taskDomain.updateStatus(model[0]);
+    return await this.taskRepository.updateStatus(model[0]);
   }
 }
