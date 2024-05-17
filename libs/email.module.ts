@@ -3,8 +3,8 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { Injectable, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AutoMailDTO, MailerDTO, WelcomeMailDTO } from 'interfaces/mailer.dto';
-import * as nodemailer from 'nodemailer';
-import Mail from 'nodemailer/lib/mailer';
+// import * as nodemailer from 'nodemailer';
+// import Mail from 'nodemailer/lib/mailer';
 import { join } from 'path';
 
 @Injectable()
@@ -14,40 +14,39 @@ export class EmailService {
     private readonly mailerService: MailerService,
   ) {}
 
-  mailTransport() {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      host: this.configService.get<string>('MAIL_HOST'),
-      port: this.configService.get<number>('MAIL_PORT'),
-      secure: true, // Use `true` for port 465, `false` for all other ports
-      auth: {
-        user: this.configService.get<string>('MAIL_USER'),
-        pass: this.configService.get<string>('MAIL_PASSWORD'),
-      },
-    });
-    return transporter;
-  }
+  // mailTransport() {
+  //   const transporter = nodemailer.createTransport({
+  //     service: 'gmail',
+  //     host: this.configService.get<string>('MAIL_HOST'),
+  //     port: this.configService.get<number>('MAIL_PORT'),
+  //     secure: true, // Use `true` for port 465, `false` for all other ports
+  //     auth: {
+  //       user: this.configService.get<string>('MAIL_USER'),
+  //       pass: this.configService.get<string>('MAIL_PASSWORD'),
+  //     },
+  //   });
+  //   return transporter;
+  // }
 
-  template(html: string, replacements: Record<string, string>) {
-    return html.replace(/%(\w*)%/g, (m, key) => {
-      return replacements.hasOwnProperty(key) ? replacements[key] : '';
-    });
-  }
+  // template(html: string, replacements: Record<string, string>) {
+  //   return html.replace(/%(\w*)%/g, (m, key) => {
+  //     return replacements.hasOwnProperty(key) ? replacements[key] : '';
+  //   });
+  // }
 
   async sendEmail(mailer: MailerDTO) {
     const { from, recipients, subject } = mailer;
-    const html = mailer.placeholderReplacements
-      ? this.template(mailer.html, mailer.placeholderReplacements)
-      : mailer.html;
-    const transport = this.mailTransport();
-    const options: Mail.Options = {
+    // const html = mailer.placeholderReplacements
+    //   ? this.template(mailer.html, mailer.placeholderReplacements)
+    //   : mailer.html;
+    const result = await this.mailerService.sendMail({
       from: from ?? {
         name: this.configService.get<string>('APP_NAME'),
         address: this.configService.get<string>('DEFAULT_MAIL_FROM'),
       },
       to: recipients,
       subject,
-      html,
+      html: mailer.html,
       attachments: mailer.attachments
         ? mailer.attachments.map((attachment) => ({
             filename: attachment.originalname,
@@ -56,8 +55,7 @@ export class EmailService {
             contentTransferEncoding: 'base64',
           }))
         : [],
-    };
-    const result = await transport.sendMail(options);
+    });
     return result;
   }
 
