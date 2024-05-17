@@ -169,7 +169,7 @@ export class TaskQuery {
       this.prisma.task.findMany({
         where: { AND: conditions },
         include: {
-          activity: { select: { name: true } },
+          activity: { select: { name: true, uuid: true } },
           employees: { select: { name: true } },
         },
       }),
@@ -182,6 +182,7 @@ export class TaskQuery {
           {
             ...item,
             activityName: item.activity.name,
+            activityUUID: item.activity.uuid,
             employeeName: item.employees.map((employee) => employee.name),
           },
           { excludeExtraneousValues: true },

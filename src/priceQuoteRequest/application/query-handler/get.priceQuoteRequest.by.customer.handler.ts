@@ -18,7 +18,6 @@ export class GetPriceQuoteRequestByCustomerHanlder
   async execute(
     query: GetPriceQuoteRequestByCustomerQuery,
   ): Promise<GetPriceQuoteRequestByCustomerResult> {
-    console.log(query);
     return await this.priceQuoteRequestQuery.getPriceQuoteRequestByCustomer(
       query.customerUUID,
       query.tenantId,
