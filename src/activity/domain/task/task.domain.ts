@@ -13,8 +13,8 @@ export class TaskDomain {
     model.uuid = taskUUID;
     model.status =
       new Date() > new Date(model.endDate)
-        ? StatusTask.INPROGRESS
-        : StatusTask.OVERDUE;
+        ? StatusTask.OVERDUE
+        : StatusTask.INPROGRESS;
     model.employees = employees;
     model.title = activityName;
     if (!model.customerUUID) return 'Không có UUID của khách hàng';
