@@ -23,6 +23,9 @@ export class GetTasksByCustomerItem {
 
   @Expose()
   employeeName: string[];
+
+  @Expose()
+  activityUUID: string;
 }
 
 export class GetTasksByCustomerResult implements IQueryResult {
