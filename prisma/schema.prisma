@@ -42,9 +42,9 @@ model Account {
   tenantId      String?
   permissions   Permission[]
   notifications Notification[]
-  customer      Customer?      @relation(fields: [customerUUID], references: [uuid])
+  customer      Customer?      @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
   customerUUID  String?        @unique
-  employee      Employee?      @relation(fields: [employeeUUID], references: [uuid])
+  employee      Employee?      @relation(fields: [employeeUUID], references: [uuid], onDelete: Cascade)
   employeeUUID  String?        @unique
   chat_sender   Chat[]         @relation("Sender")
   chat_receiver Chat[]         @relation("Receiver")
@@ -109,7 +109,7 @@ model PhasesCustomer {
   uuid         String   @unique @default(uuid())
   date         DateTime
   phaseUUID    String
-  customer     Customer @relation(fields: [customerUUID], references: [uuid])
+  customer     Customer @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
   customerUUID String
 }
 
@@ -164,7 +164,7 @@ model PriceQuoteRequest {
   status       StatusPriceQuoteRequest
   sentDate     DateTime?
   products     ProductPriceQuoteRequest[]
-  customer     Customer?                  @relation(fields: [customerUUID], references: [uuid])
+  customer     Customer?                  @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
   customerUUID String?
   quote        PriceQuote[]
   tenantId     String?
@@ -181,8 +181,8 @@ model PriceQuote {
   status                StatusPriceQuote
   sentDate              DateTime?
   products              ProductPriceQuote[]
-  customer              Customer?           @relation(fields: [customerUUID], references: [uuid])
-  priceQuoteRequest     PriceQuoteRequest?  @relation(fields: [priceQuoteRequestUUID], references: [uuid])
+  customer              Customer?           @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
+  priceQuoteRequest     PriceQuoteRequest?  @relation(fields: [priceQuoteRequestUUID], references: [uuid], onDelete: NoAction)
   priceQuoteRequestUUID String?
   customerUUID          String?
   tenantId              String?
@@ -196,9 +196,9 @@ model Bill {
   status         StatusBill
   createdDate    DateTime
   products       ProductBill[]
-  customer       Customer?     @relation(fields: [customerUUID], references: [uuid])
+  customer       Customer?     @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
   customerUUID   String?
-  priceQuote     PriceQuote?   @relation(fields: [priceQuoteUUID], references: [uuid])
+  priceQuote     PriceQuote?   @relation(fields: [priceQuoteUUID], references: [uuid], onDelete: NoAction)
   priceQuoteUUID String?
   complaints     Complaint[]
   tenantId       String?
@@ -208,9 +208,9 @@ model Bill {
 model ProductPriceQuoteRequest {
   id                    Int               @id @default(autoincrement())
   quantity              Int
-  priceQuoteRequest     PriceQuoteRequest @relation(fields: [priceQuoteRequestUUID], references: [uuid])
+  priceQuoteRequest     PriceQuoteRequest @relation(fields: [priceQuoteRequestUUID], references: [uuid], onDelete: Cascade)
   priceQuoteRequestUUID String
-  product               Product           @relation(fields: [productUUID], references: [uuid])
+  product               Product           @relation(fields: [productUUID], references: [uuid], onDelete: NoAction)
   productUUID           String
 }
 
@@ -218,9 +218,9 @@ model ProductPriceQuote {
   id              Int        @id @default(autoincrement())
   negotiatedPrice Int
   quantity        Int
-  priceQuote      PriceQuote @relation(fields: [priceQuoteUUID], references: [uuid])
+  priceQuote      PriceQuote @relation(fields: [priceQuoteUUID], references: [uuid], onDelete: Cascade)
   priceQuoteUUID  String
-  product         Product    @relation(fields: [productUUID], references: [uuid])
+  product         Product    @relation(fields: [productUUID], references: [uuid], onDelete: NoAction)
   productUUID     String
 }
 
@@ -228,9 +228,9 @@ model ProductBill {
   id          Int     @id @default(autoincrement())
   fixedPrice  Int
   quantity    Int
-  bill        Bill    @relation(fields: [billUUID], references: [uuid])
+  bill        Bill    @relation(fields: [billUUID], references: [uuid], onDelete: Cascade)
   billUUID    String
-  product     Product @relation(fields: [productUUID], references: [uuid])
+  product     Product @relation(fields: [productUUID], references: [uuid], onDelete: NoAction)
   productUUID String
 }
 
@@ -289,10 +289,10 @@ model Task {
   autoAnnounceCus Boolean
   autoAnnounceEmp Boolean
   tenantId        String?
-  customer        Customer    @relation(fields: [customerUUID], references: [uuid])
+  customer        Customer    @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
   customerUUID    String
   employees       Employee[]
-  activity        Activity?   @relation(fields: [activityUUID], references: [uuid])
+  activity        Activity?   @relation(fields: [activityUUID], references: [uuid], onDelete: NoAction)
   activityUUID    String?
   emailTask       EmailTask[]
 }
@@ -303,9 +303,9 @@ model EmailTask {
   sentDate     DateTime
   subject      String?
   content      String
-  from         Employee @relation(fields: [employeeUUID], references: [uuid])
+  from         Employee @relation(fields: [employeeUUID], references: [uuid], onDelete: NoAction)
   employeeUUID String
-  recipient    Customer @relation(fields: [customerUUID], references: [uuid])
+  recipient    Customer @relation(fields: [customerUUID], references: [uuid], onDelete: NoAction)
   customerUUID String
   task         Task     @relation(fields: [taskUUID], references: [uuid])
   taskUUID     String
@@ -331,11 +331,11 @@ model Complaint {
   employees           Employee[]
   createdDate         DateTime
   sentDate            DateTime
-  customer            Customer?                @relation(fields: [customerUUID], references: [uuid])
+  customer            Customer?                @relation(fields: [customerUUID], references: [uuid], onDelete: Cascade)
   customerUUID        String?
-  typeComplaint       TypeComplaint?           @relation(fields: [typeComplaintUUID], references: [uuid])
+  typeComplaint       TypeComplaint?           @relation(fields: [typeComplaintUUID], references: [uuid], onDelete: NoAction)
   typeComplaintUUID   String?
-  bill                Bill?                    @relation(fields: [billUUID], references: [uuid])
+  bill                Bill?                    @relation(fields: [billUUID], references: [uuid], onDelete: NoAction)
   billUUID            String?
   tenantId            String?
   valueFieldComplaint ValueFieldComplaint[]
