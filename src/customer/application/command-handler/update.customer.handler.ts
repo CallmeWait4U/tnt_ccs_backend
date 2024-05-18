@@ -26,7 +26,7 @@ export class UpdateCustomerHandler
       modelCurrent,
       command,
     );
-    if (modelCurrent.phaseUUID !== modelUpdated.phaseUUID) {
+    if (modelCurrent.phaseUUID === modelUpdated.phaseUUID) {
       return {
         uuid: await this.customerRespository.update(modelUpdated, false),
         note,
