@@ -16,8 +16,10 @@ const field = {
   description: 'Ghi chú',
   name: 'Tên',
   code: 'Mã',
+  receiveMail: 'Nhận mail từ doanh nghiệp',
   // Business
   businessNationality: 'Quốc gia',
+  phaseUUID: 'Giai đoạn',
   registrationNumber: 'Số ĐKKD',
   taxCode: 'Mã số thuế',
   industry: 'Lĩnh vực kinh doanh',
