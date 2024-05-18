@@ -64,7 +64,7 @@ export class CustomerRespository {
       phasesCustomer,
       ...dataCus
     } = customer;
-    if (updatePhase) {
+    if (updatePhase === true) {
       await this.prisma.customer.update({
         data: {
           ...dataCus,
