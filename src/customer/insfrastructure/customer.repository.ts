@@ -107,6 +107,9 @@ export class CustomerRespository {
 
   async delete(models: CustomerModel[]): Promise<string[]> {
     const uuids = models.map((model) => model.uuid);
+    await this.prisma.phasesCustomer.deleteMany({
+      where: { customerUUID: { in: uuids } },
+    });
     await this.prisma.customer.deleteMany({ where: { uuid: { in: uuids } } });
     return uuids;
   }
