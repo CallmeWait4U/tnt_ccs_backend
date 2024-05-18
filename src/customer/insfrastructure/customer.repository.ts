@@ -74,15 +74,17 @@ export class CustomerRespository {
         where: { uuid },
       });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id, customerUUID, ...dataPhasesCustomer } = phasesCustomer[-1];
+      const { id, customerUUID, ...dataPhasesCustomer } =
+        phasesCustomer[phasesCustomer.length - 1];
       await this.prisma.phasesCustomer.create({
         data: { ...dataPhasesCustomer, customer: { connect: { uuid } } },
       });
+    } else {
+      await this.prisma.customer.update({
+        data: { ...dataCus, employees: { connect: employees } },
+        where: { uuid },
+      });
     }
-    await this.prisma.customer.update({
-      data: { ...dataCus, employees: { connect: employees } },
-      where: { uuid },
-    });
     if (customer.isBusiness) {
       const { id, ...dataBusiness } = business;
       await this.prisma.business.update({
@@ -112,7 +114,7 @@ export class CustomerRespository {
   async getByUUID(uuid: string, tenantId: string): Promise<CustomerModel> {
     const entity = await this.prisma.customer.findUnique({
       where: { uuid, tenantId },
-      include: { business: true, individual: true },
+      include: { business: true, individual: true, phasesCustomer: true },
     });
     return this.customerFactory.createCustomerModel(entity);
   }
