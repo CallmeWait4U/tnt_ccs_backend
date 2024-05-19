@@ -255,7 +255,9 @@ export class ComplaintQuery {
         customer: { include: { business: true, individual: true } },
         typeComplaint: { include: { listOfField: true } },
         valueFieldComplaint: true,
-        listStatus: true,
+        listStatus: {
+          orderBy: { date: 'desc' },
+        },
       },
     });
     const fieldComplaintUUIDs = data.typeComplaint.listOfField.map(
@@ -285,7 +287,7 @@ export class ComplaintQuery {
       ReadComplaintResult,
       {
         ...data,
-        status: data.listStatus[-1].status,
+        status: data.listStatus[0].status,
         listOfField: data.typeComplaint.listOfField.map((field) =>
           plainToClass(Field, field, { excludeExtraneousValues: true }),
         ),

@@ -363,7 +363,7 @@ export class StatisticQuery {
       ];
       const complaints = await this.prisma.complaint.findMany({
         where: { typeComplaintUUID: typeComplaint.uuid },
-        include: { listStatus: { orderBy: { date: 'asc' } } },
+        include: { listStatus: { orderBy: { date: 'desc' } } },
       });
       complaints.forEach((complaint) => {
         if (complaint.listStatus[0].status === StatusComplaint.PENDING) {
