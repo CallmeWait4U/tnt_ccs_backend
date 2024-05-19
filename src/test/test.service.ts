@@ -521,6 +521,7 @@ export class TestService {
                   ) * 1000,
               };
             }),
+            tenantId: customer.tenantId,
           }),
         );
       }

@@ -12,6 +12,7 @@ export class CreateBillCommand implements ICommand {
   sentDate: Date;
   customerUUID: string;
   priceQuoteUUID: string;
+  tenantId: string;
   products: ProductItem[];
 
   constructor(data: Partial<CreateBillCommand>) {
