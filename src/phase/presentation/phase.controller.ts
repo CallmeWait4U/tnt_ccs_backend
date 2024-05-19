@@ -116,7 +116,7 @@ export class PhaseController {
       );
     }
     const command = new DeletePhaseCommand({
-      ...body,
+      uuids: [body.uuid],
       tenantId: user.tenantId,
     });
     return await this.commandBus.execute(command);
