@@ -152,6 +152,9 @@ export class AccountQuery {
         total,
       };
     }
+    conditions.push({
+      type: { in: [TypeAccount.ADMIN, TypeAccount.EMPLOYEE] },
+    });
     const [data, total] = await Promise.all([
       this.prisma.account.findMany({
         skip: Number(offset),
