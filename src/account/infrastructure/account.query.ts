@@ -295,17 +295,32 @@ export class AccountQuery {
       where: { uuid, tenantId },
       include: {
         employee: true,
-        customer: true,
+        customer: { include: { business: true, individual: true } },
       },
     });
     if (res) {
-      const info =
-        res.type === TypeAccount.CUSTOMER ? res.customer : res.employee;
-      return plainToClass(
-        ReadAccountResult,
-        { ...res, ...info },
-        { excludeExtraneousValues: true },
-      );
+      if (res.type === TypeAccount.CUSTOMER) {
+        const propRelation = {
+          name: res.customer.name,
+          email: res.customer.isBusiness
+            ? res.customer.business.representativeEmail
+            : res.customer.individual.email,
+          phoneNumber: res.customer.isBusiness
+            ? res.customer.business.representativePhone
+            : res.customer.individual.phoneNumber,
+        };
+        return plainToClass(
+          ReadAccountResult,
+          { ...res, ...res.customer, ...propRelation },
+          { excludeExtraneousValues: true },
+        );
+      } else {
+        return plainToClass(
+          ReadAccountResult,
+          { ...res, ...res.employee },
+          { excludeExtraneousValues: true },
+        );
+      }
     }
     return {} as ReadAccountResult;
   }
