@@ -305,9 +305,9 @@ export class StatisticQuery {
       const tenant = await this.prisma.tenant.findFirst({
         where: { tenantId },
       });
-      if (tenant.createdDate.getFullYear() < listTimes[0].getFullYear()) {
+      if (tenant.createdDate.getFullYear() <= listTimes[0].getFullYear()) {
         for (
-          let i = tenant.createdDate.getFullYear();
+          let i = tenant.createdDate.getFullYear() - 1;
           i < listTimes[0].getFullYear();
           i++
         ) {
@@ -342,7 +342,7 @@ export class StatisticQuery {
         items.push({
           numPriceQuotes,
           numPriceQuotesConvertBill,
-          time: listTimes[i].getFullYear() + 1,
+          time: listTimes[i].getFullYear(),
         });
       }
     }
