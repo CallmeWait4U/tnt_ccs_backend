@@ -73,7 +73,6 @@ export class AccountQuery {
             conditions.push(obj);
           }
         }
-        conditions.push({ hasAccount: StatusCustomerAccount.APPROVED });
       } else {
         for (const [prop, item] of Object.entries(search)) {
           const obj = {};
@@ -110,6 +109,7 @@ export class AccountQuery {
       }
     }
     if (type === TypeAccount.CUSTOMER) {
+      conditions.push({ hasAccount: StatusCustomerAccount.APPROVED });
       const [data, total] = await Promise.all([
         this.prisma.customer.findMany({
           skip: Number(offset),
@@ -123,6 +123,7 @@ export class AccountQuery {
             },
             business: true,
             individual: true,
+            account: true,
           },
           orderBy: [{ id: 'asc' }],
         }),
@@ -144,6 +145,7 @@ export class AccountQuery {
             {
               ...i,
               ...propRelation,
+              uuid: i.account.uuid,
               phaseName: i.phase.name,
             },
             { excludeExtraneousValues: true },
@@ -288,17 +290,28 @@ export class AccountQuery {
     uuid: string,
     tenantId: string,
   ): Promise<ReadAccountResult> {
+    console.log(uuid);
     const res = await this.prisma.account.findUnique({
       where: { uuid, tenantId },
       include: {
         employee: true,
+        customer: true,
       },
     });
+    console.log(res);
     if (res) {
-      const employee = res.employee ? res.employee : {};
+      const info =
+        res.type === TypeAccount.CUSTOMER ? res.customer : res.employee;
+      console.log(
+        plainToClass(
+          ReadAccountResult,
+          { ...res, ...info },
+          { excludeExtraneousValues: true },
+        ),
+      );
       return plainToClass(
         ReadAccountResult,
-        { ...res, ...employee },
+        { ...res, ...info },
         { excludeExtraneousValues: true },
       );
     }
