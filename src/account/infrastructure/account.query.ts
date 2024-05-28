@@ -298,17 +298,9 @@ export class AccountQuery {
         customer: true,
       },
     });
-    console.log(res);
     if (res) {
       const info =
         res.type === TypeAccount.CUSTOMER ? res.customer : res.employee;
-      console.log(
-        plainToClass(
-          ReadAccountResult,
-          { ...res, ...info },
-          { excludeExtraneousValues: true },
-        ),
-      );
       return plainToClass(
         ReadAccountResult,
         { ...res, ...info },

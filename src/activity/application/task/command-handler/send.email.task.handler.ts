@@ -48,8 +48,11 @@ export class SendEmailTaskHandler
       attachments: command.files,
     };
     await this.emailService.sendEmail(mailerDto);
-    // const model = this.taskFactory.createEmailTaskModel(command);
-    // const emailTask = this.taskDomain.createEmailTask(model);
-    // await this.taskRepository.createEmailTask(emailTask);
+    const model = this.taskFactory.createEmailTaskModel({
+      ...command,
+      customerUUID: customer.uuid,
+    });
+    const emailTask = this.taskDomain.createEmailTask(model);
+    await this.taskRepository.createEmailTask(emailTask);
   }
 }
