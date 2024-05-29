@@ -5,57 +5,57 @@ networks:
     # external: true
     
 volumes:
-  # postgresdb-data:
-  # rabbitmq-data:
-  # redis-data:
+  postgresdb-data:
+  rabbitmq-data:
+  redis-data:
   tnt-ccs-server:
 
 services:
-  # local-postgres:
-  #   image: postgres:15.2
-  #   restart: always
-  #   container_name: local-postgres
-  #   ports:
-  #     - 5432:5432
-  #   volumes:
-  #     - postgresdb-data:/var/lib/postgresql/data
-  #   environment:
-  #     - TZ=Asia/Ho_Chi_Minh
-  #     - POSTGRES_USER=admin
-  #     - POSTGRES_PASSWORD=abc12345
-  #   networks:
-  #     - gateway-network
+  local-postgres:
+    image: postgres:15.2
+    restart: always
+    container_name: local-postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresdb-data:/var/lib/postgresql/data
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=abc12345
+    networks:
+      - gateway-network
   
-  # local-rabbitmq:
-  #   image: rabbitmq:3.12.2-management
-  #   restart: always
-  #   container_name: local-rabbitmq
-  #   hostname: local-rabbitmq
-  #   ports:
-  #     - 5672:5672
-  #     - 15672:15672
-  #   volumes: 
-  #     - rabbitmq-data:/var/lib/rabbitmq/mnesia
-  #   environment:
-  #     - TZ=Asia/Ho_Chi_Minh
-  #     - RABBITMQ_DEFAULT_USER=admin
-  #     - RABBITMQ_DEFAULT_PASS=abc12345
-  #   networks:
-  #     - gateway-network
+  local-rabbitmq:
+    image: rabbitmq:3.12.2-management
+    restart: always
+    container_name: local-rabbitmq
+    hostname: local-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes: 
+      - rabbitmq-data:/var/lib/rabbitmq/mnesia
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=abc12345
+    networks:
+      - gateway-network
 
-  # local-redis:
-  #   image: redis:7.0.12
-  #   restart: always
-  #   container_name: local-redis
-  #   ports:
-  #     - 6379:6379
-  #   command: redis-server --save 20 1 --loglevel warning
-  #   volumes: 
-  #     - redis-data:/data
-  #   environment:
-  #     - TZ=Asia/Ho_Chi_Minh
-  #   networks:
-  #     - gateway-network
+  local-redis:
+    image: redis:7.0.12
+    restart: always
+    container_name: local-redis
+    ports:
+      - 6379:6379
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis-data:/data
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+    networks:
+      - gateway-network
   
   tnt-ccs-server:
     container_name: tnt_ccs_server
@@ -64,6 +64,18 @@ services:
         context: .
         target: development
         dockerfile: ./Dockerfile
+    environment:
+      - DATABASE_URL="postgresql://admin:abc12345@localhost:5432/postgres"
+      - RMQ_USER="tbtcvjpa"
+      - RMQ_PASS="7xf5pnWA3iP_fFUhXgahaGTtGmN47jmt"
+      - RMQ_URL="octopus.rmq3.cloudamqp.com/tbtcvjpa"
+      - MAIL_HOST=smtp.gmail.com
+      - MAIL_USER=tnt.ccs.system@gmail.com
+      - MAIL_PASSWORD=xyzellbyoqzuzidb
+      - DEFAULT_MAIL_FROM=info@example.com
+      - APP_NAME=TNT.CCS
+    depends_on:
+      - local-postgres
     command: pnpm start
     ports:
         - 3001:3001
