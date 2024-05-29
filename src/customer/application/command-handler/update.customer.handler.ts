@@ -28,12 +28,12 @@ export class UpdateCustomerHandler
     );
     if (modelCurrent.phaseUUID !== modelUpdated.phaseUUID) {
       return {
-        uuid: await this.customerRespository.update(modelUpdated, false),
+        uuid: await this.customerRespository.update(modelUpdated, true),
         note,
       };
     } else {
       return {
-        uuid: await this.customerRespository.update(modelUpdated, true),
+        uuid: await this.customerRespository.update(modelUpdated, false),
         note,
       };
     }
