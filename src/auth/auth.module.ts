@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
 import { EmailModule } from 'libs/email.module';
 import { RmqModule } from 'libs/rabbitmq.module';
+import { ChangePasswordHandler } from './application/command-handler/change.password.handler';
 import { RefreshTokensPairHandler } from './application/command-handler/refreshTokenPair.handler';
 import { SignOutHandler } from './application/command-handler/signout.handler';
 import { SignUpHandler } from './application/command-handler/signup.handler';
@@ -21,6 +22,7 @@ const application = [
   SignOutHandler,
   SignUpHandler,
   RefreshTokensPairHandler,
+  ChangePasswordHandler,
 ];
 
 const infrastructure = [AuthRepository, AuthQuery, AuthFactory];
