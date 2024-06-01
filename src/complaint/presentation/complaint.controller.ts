@@ -99,12 +99,6 @@ export class ComplaintController {
 
   @Get('/detail')
   async readComlaint(@Query() q: ReadComplaintDTO, @GetUser() user: User) {
-    if (user.type === 'CUSTOMER') {
-      return new HttpException(
-        "You don't have permission to access this resource",
-        HttpStatus.FORBIDDEN,
-      );
-    }
     const query = new ReadComplaintQuery(q.uuid, user.tenantId);
     return await this.queryBus.execute(query);
   }

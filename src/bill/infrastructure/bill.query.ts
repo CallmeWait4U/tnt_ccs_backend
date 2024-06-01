@@ -40,11 +40,12 @@ export class BillQuery {
         conditions.push(obj);
       }
     }
+    console.log(conditions, offset, limit);
     const [data, total] = await Promise.all([
       this.prisma.bill.findMany({
         skip: Number(offset),
         take: Number(limit),
-        where: { AND: conditions },
+        where: { customerUUID },
         include: {
           customer: {
             include: {

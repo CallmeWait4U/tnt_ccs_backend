@@ -86,7 +86,7 @@ export class BillController {
         HttpStatus.FORBIDDEN,
       );
     }
-    const command = new CreateBillCommand(body);
+    const command = new CreateBillCommand({ ...body, tenantId: user.tenantId });
     return await this.commandBus.execute(command);
   }
 

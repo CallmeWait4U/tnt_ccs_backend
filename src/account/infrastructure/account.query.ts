@@ -73,7 +73,6 @@ export class AccountQuery {
             conditions.push(obj);
           }
         }
-        conditions.push({ hasAccount: StatusCustomerAccount.APPROVED });
       } else {
         for (const [prop, item] of Object.entries(search)) {
           const obj = {};
@@ -110,6 +109,7 @@ export class AccountQuery {
       }
     }
     if (type === TypeAccount.CUSTOMER) {
+      conditions.push({ hasAccount: StatusCustomerAccount.APPROVED });
       const [data, total] = await Promise.all([
         this.prisma.customer.findMany({
           skip: Number(offset),
@@ -123,6 +123,7 @@ export class AccountQuery {
             },
             business: true,
             individual: true,
+            account: true,
           },
           orderBy: [{ id: 'asc' }],
         }),
@@ -144,6 +145,7 @@ export class AccountQuery {
             {
               ...i,
               ...propRelation,
+              uuid: i.account.uuid,
               phaseName: i.phase.name,
             },
             { excludeExtraneousValues: true },
@@ -152,6 +154,9 @@ export class AccountQuery {
         total,
       };
     }
+    conditions.push({
+      type: { in: [TypeAccount.ADMIN, TypeAccount.EMPLOYEE] },
+    });
     const [data, total] = await Promise.all([
       this.prisma.account.findMany({
         skip: Number(offset),
@@ -285,19 +290,37 @@ export class AccountQuery {
     uuid: string,
     tenantId: string,
   ): Promise<ReadAccountResult> {
+    console.log(uuid);
     const res = await this.prisma.account.findUnique({
       where: { uuid, tenantId },
       include: {
         employee: true,
+        customer: { include: { business: true, individual: true } },
       },
     });
     if (res) {
-      const employee = res.employee ? res.employee : {};
-      return plainToClass(
-        ReadAccountResult,
-        { ...res, ...employee },
-        { excludeExtraneousValues: true },
-      );
+      if (res.type === TypeAccount.CUSTOMER) {
+        const propRelation = {
+          name: res.customer.name,
+          email: res.customer.isBusiness
+            ? res.customer.business.representativeEmail
+            : res.customer.individual.email,
+          phoneNumber: res.customer.isBusiness
+            ? res.customer.business.representativePhone
+            : res.customer.individual.phoneNumber,
+        };
+        return plainToClass(
+          ReadAccountResult,
+          { ...res, ...res.customer, ...propRelation },
+          { excludeExtraneousValues: true },
+        );
+      } else {
+        return plainToClass(
+          ReadAccountResult,
+          { ...res, ...res.employee },
+          { excludeExtraneousValues: true },
+        );
+      }
     }
     return {} as ReadAccountResult;
   }

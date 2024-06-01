@@ -114,7 +114,7 @@ export class TestService {
       dataAccount.push(
         new CreateAccountCommand({
           name: faker.person.fullName(),
-          code: 'NV-' + i.toString().padStart(8, '0'),
+          code: 'NV-' + faker.string.numeric(8),
           position: faker.person.jobTitle(),
           dayOfBirth: faker.date.birthdate({
             min: 18,
@@ -210,6 +210,7 @@ export class TestService {
         new CreateCustomerCommand({
           isBusiness: true,
           source: 1,
+          code: 'KH-' + faker.string.numeric(8),
           city: faker.location.city(),
           district: faker.location.county(),
           detailAddress: faker.location.streetAddress(),
@@ -258,6 +259,7 @@ export class TestService {
         new CreateCustomerCommand({
           isBusiness: false,
           source: 1,
+          code: 'KH-' + faker.string.numeric(8),
           city: faker.location.city(),
           district: faker.location.county(),
           detailAddress: faker.location.streetAddress(),
@@ -521,6 +523,7 @@ export class TestService {
                   ) * 1000,
               };
             }),
+            tenantId: customer.tenantId,
           }),
         );
       }

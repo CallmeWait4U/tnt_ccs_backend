@@ -305,9 +305,9 @@ export class StatisticQuery {
       const tenant = await this.prisma.tenant.findFirst({
         where: { tenantId },
       });
-      if (tenant.createdDate.getFullYear() < listTimes[0].getFullYear()) {
+      if (tenant.createdDate.getFullYear() <= listTimes[0].getFullYear()) {
         for (
-          let i = tenant.createdDate.getFullYear();
+          let i = tenant.createdDate.getFullYear() - 1;
           i < listTimes[0].getFullYear();
           i++
         ) {
@@ -342,7 +342,7 @@ export class StatisticQuery {
         items.push({
           numPriceQuotes,
           numPriceQuotesConvertBill,
-          time: listTimes[i].getFullYear() + 1,
+          time: listTimes[i].getFullYear(),
         });
       }
     }
@@ -363,7 +363,7 @@ export class StatisticQuery {
       ];
       const complaints = await this.prisma.complaint.findMany({
         where: { typeComplaintUUID: typeComplaint.uuid },
-        include: { listStatus: { orderBy: { date: 'asc' } } },
+        include: { listStatus: { orderBy: { date: 'desc' } } },
       });
       complaints.forEach((complaint) => {
         if (complaint.listStatus[0].status === StatusComplaint.PENDING) {
