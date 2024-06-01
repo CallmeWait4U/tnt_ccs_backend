@@ -93,13 +93,15 @@ export class ChatQuery {
       },
       include: {
         sender: {
-          select: {
-            username: true,
+          include: {
+            customer: { select: { name: true } },
+            employee: { select: { name: true } },
           },
         },
         receiver: {
-          select: {
-            username: true,
+          include: {
+            customer: { select: { name: true } },
+            employee: { select: { name: true } },
           },
         },
       },
@@ -126,8 +128,10 @@ export class ChatQuery {
         isSender,
         content: item.content,
         createdAt: item.createdAt,
-        senderUsername: item?.sender?.username,
-        receiverUsername: item?.receiver?.username,
+        senderUsername:
+          item?.sender?.customer?.name || item?.sender?.employee?.name,
+        receiverUsername:
+          item?.receiver?.customer?.name || item?.receiver?.employee?.name,
       };
     });
     const result: ListChatCustomerResult = {
